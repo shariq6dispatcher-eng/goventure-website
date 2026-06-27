@@ -1,4 +1,3 @@
-// wrangler.json
 {
   "name": "goventure-website",
   "main": ".open-next/worker.js",
