@@ -10,9 +10,8 @@
 
   "assets": {
     "directory": ".open-next/assets"
-  }
-}
-{
+  },
+
   "observability": {
     "logs": {
       "enabled": true,
