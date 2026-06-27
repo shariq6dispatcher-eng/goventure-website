@@ -1,13 +1,12 @@
 "use client";
 
+import { Suspense, useState } from "react";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
 
-export default function OrderPage() {
+function OrderForm() {
   const searchParams = useSearchParams();
 
-  const product =
-    searchParams.get("product") || "";
+  const product = searchParams.get("product") || "";
 
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -35,13 +34,11 @@ export default function OrderPage() {
     });
 
     alert("Order Submitted!");
-
     setLoading(false);
   };
 
   return (
     <main className="min-h-screen bg-black text-white py-24">
-
       <div className="max-w-3xl mx-auto px-6">
 
         <h1 className="text-5xl font-bold mb-10">
@@ -83,44 +80,36 @@ export default function OrderPage() {
 
           <input
             type="number"
-            placeholder="Quantity"
             className="w-full p-4 rounded-xl bg-zinc-900"
             value={quantity}
-            onChange={(e) =>
-              setQuantity(e.target.value)
-            }
+            onChange={(e) => setQuantity(e.target.value)}
           />
 
           <textarea
-            placeholder="Project Details"
             className="w-full p-4 rounded-xl bg-zinc-900 h-40"
             value={notes}
-            onChange={(e) =>
-              setNotes(e.target.value)
-            }
+            onChange={(e) => setNotes(e.target.value)}
           />
 
           <button
             onClick={handleSubmit}
             disabled={loading}
-            className="
-              bg-[#D4AF37]
-              text-black
-              px-8
-              py-4
-              rounded-full
-              font-semibold
-            "
+            className="bg-[#D4AF37] text-black px-8 py-4 rounded-full font-semibold"
           >
-            {loading
-              ? "Submitting..."
-              : "Submit Order"}
+            {loading ? "Submitting..." : "Submit Order"}
           </button>
 
         </div>
 
       </div>
-
     </main>
+  );
+}
+
+export default function OrderPage() {
+  return (
+    <Suspense fallback={<div className="text-white p-10">Loading...</div>}>
+      <OrderForm />
+    </Suspense>
   );
 }

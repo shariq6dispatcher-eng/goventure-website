@@ -2,13 +2,14 @@
   "name": "goventure",
   "version": "0.1.0",
   "private": true,
-  "scripts": {
-    "dev": "next dev",
-    "build": "opennextjs-cloudflare build",
-    "preview": "opennextjs-cloudflare preview",
-    "deploy": "opennextjs-cloudflare deploy",
-    "lint": "eslint"
-  },
+ "scripts": {
+  "dev": "next dev",
+  "build": "next build",
+  "preview": "opennextjs-cloudflare preview",
+  "deploy": "opennextjs-cloudflare deploy",
+  "cf-build": "opennextjs-cloudflare build",
+  "lint": "eslint"
+},
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@prisma/client": "^7.8.0",
