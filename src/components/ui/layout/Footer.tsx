@@ -30,7 +30,7 @@ export default function Footer() {
               worldwide.
             </p>
 
-            <div className="flex gap-4 mt-6">
+            {/* <div className="flex gap-4 mt-6">
 
               <a
                 href="https://instagram.com/"
@@ -59,7 +59,7 @@ export default function Footer() {
                 <Linkedin size={20} />
               </a>
 
-            </div>
+            </div> */}
           </div>
 
           {/* Services */}
@@ -174,7 +174,7 @@ export default function Footer() {
               </a>
 
               <a
-                href="https://wa.me/923001234567"
+                href="https://wa.me/18322807084"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 hover:text-[#D4AF37] transition"
