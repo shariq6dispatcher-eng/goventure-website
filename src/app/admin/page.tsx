@@ -18,9 +18,9 @@ useState<any>(null);
   const [portfolio, setPortfolio] = useState<any[]>([]);
   const [loadingPortfolio, setLoadingPortfolio] =
     useState(false);
-const [orders, setOrders] = useState<any[]>([]);
-const [loadingOrders, setLoadingOrders] = useState(true);
-const [selectedOrder, setSelectedOrder] = useState<any>(null);
+// const [orders, setOrders] = useState<any[]>([]);
+// const [loadingOrders, setLoadingOrders] = useState(true);
+// const [selectedOrder, setSelectedOrder] = useState<any>(null);
 
 const [quotes, setQuotes] = useState<any[]>([]);
 const [loadingQuotes, setLoadingQuotes] = useState(true);
