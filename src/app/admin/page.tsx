@@ -77,25 +77,25 @@ const fetchQuotes = async () => {
   }
 };
 
-const fetchOrders = async () => {
-  try {
-    setLoadingOrders(true);
+// const fetchOrders = async () => {
+//   try {
+//     setLoadingOrders(true);
 
-    const res = await fetch("/api/orders");
+//     const res = await fetch("/api/orders");
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch orders");
-    }
+//     if (!res.ok) {
+//       throw new Error("Failed to fetch orders");
+//     }
 
-    const data = await res.json();
+//     const data = await res.json();
 
-    setOrders(data);
-  } catch (err) {
-    console.error(err);
-  } finally {
-    setLoadingOrders(false);
-  }
-};
+//     setOrders(data);
+//   } catch (err) {
+//     console.error(err);
+//   } finally {
+//     setLoadingOrders(false);
+//   }
+// };
   // ==========================
   // FETCH PRODUCTS
   // ==========================
