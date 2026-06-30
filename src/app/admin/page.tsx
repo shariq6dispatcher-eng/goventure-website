@@ -134,7 +134,6 @@ useEffect(() => {
     fetchPortfolio();
     fetchProducts();
     fetchQuotes();
-    fetchOrders();
   }, []);
 
   // ==========================
