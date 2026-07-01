@@ -23,21 +23,21 @@ export async function POST(req: Request) {
     }
 
     const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+const buffer = Buffer.from(bytes);
 
-    const result = await new Promise<any>((resolve, reject) => {
-      cloudinary.uploader
-        .upload_stream(
-          {
-            folder: "goventure-portfolio",
-          },
-          (error, result) => {
-            if (error) reject(error);
-            else resolve(result);
-          }
-        )
-        .end(buffer);
-    });
+const result = await new Promise<any>((resolve, reject) => {
+  cloudinary.uploader
+    .upload_stream(
+      {
+        folder: "goventure-portfolio",
+      },
+      (error, result) => {
+        if (error) reject(error);
+        else resolve(result);
+      }
+    )
+    .end(buffer);
+});
 
     return NextResponse.json({
       success: true,
