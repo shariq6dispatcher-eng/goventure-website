@@ -20,7 +20,32 @@ export async function POST(req: Request) {
 }
 
 export async function GET() {
-  return Response.json({
-    test: "Portfolio API works",
-  });
+  try {
+    console.log("Before Mongo");
+
+    const client = await clientPromise;
+
+    console.log("Mongo Connected");
+
+    const db = client.db("goventure");
+
+    console.log("Database Selected");
+
+    const portfolio = await db
+      .collection("portfolio")
+      .find({})
+      .toArray();
+
+    console.log("Fetched", portfolio.length);
+
+    return Response.json(portfolio);
+  } catch (err) {
+    console.error("ERROR:", err);
+
+    return Response.json(
+      { error: String(err) },
+      { status: 500 }
+    );
+  }
 }
+
