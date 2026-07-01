@@ -1,9 +1,7 @@
 import PageHero from "@/components/ui/common/PageHero";
 import CategoryPreview from "@/components/ui/gallery/CategoryPreview";
 
-export const dynamic = "force-dynamic";
-
-export default async function PortfolioPage() {
+async function getPortfolio() {
   const baseUrl =
     process.env.NEXT_PUBLIC_SITE_URL ||
     "https://www.goventuresembroidery.shop";
@@ -13,10 +11,14 @@ export default async function PortfolioPage() {
   });
 
   if (!res.ok) {
-    throw new Error("Failed to load portfolio");
+    return [];
   }
 
-  const projects = await res.json();
+  return res.json();
+}
+
+export default async function PortfolioPage() {
+  const projects = await getPortfolio();
 
   const categoriesMap = new Map<string, any>();
 
