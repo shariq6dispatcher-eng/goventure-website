@@ -1,14 +1,23 @@
 import PageHero from "@/components/ui/common/PageHero";
-import clientPromise from "@/lib/mongodb";
 import CategoryPreview from "@/components/ui/gallery/CategoryPreview";
 
+export const dynamic = "force-dynamic";
+
 export default async function PortfolioPage() {
-  const client = await clientPromise;
-  const db = client.db("goventure");
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    "https://www.goventuresembroidery.shop";
 
-  const projects = await db.collection("portfolio").find({}).toArray();
+  const res = await fetch(`${baseUrl}/api/portfolio`, {
+    cache: "no-store",
+  });
 
-  // group by category and get latest image
+  if (!res.ok) {
+    throw new Error("Failed to load portfolio");
+  }
+
+  const projects = await res.json();
+
   const categoriesMap = new Map<string, any>();
 
   for (const p of projects) {
@@ -16,7 +25,8 @@ export default async function PortfolioPage() {
 
     if (
       !categoriesMap.has(key) ||
-      new Date(p.createdAt) > new Date(categoriesMap.get(key).createdAt)
+      new Date(p.createdAt) >
+        new Date(categoriesMap.get(key).createdAt)
     ) {
       categoriesMap.set(key, p);
     }
@@ -28,7 +38,7 @@ export default async function PortfolioPage() {
   }));
 
   return (
-    <main className="bg-black text-white ">
+    <main className="bg-black text-white">
       <PageHero
         title="Our Portfolio"
         subtitle="Browse our categories"
