@@ -1,6 +1,20 @@
 import CategoryGridClient from "@/components/ui/gallery/CategoryGridClient";
 
-export const dynamic = "force-dynamic";
+async function getPortfolio() {
+  const baseUrl =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    "https://www.goventuresembroidery.shop";
+
+  const res = await fetch(`${baseUrl}/api/portfolio`, {
+    cache: "no-store",
+  });
+
+  if (!res.ok) {
+    return [];
+  }
+
+  return res.json();
+}
 
 export default async function CategoryPage({
   params,
@@ -11,22 +25,11 @@ export default async function CategoryPage({
 
   const categoryName = category.replace(/-/g, " ");
 
-  const baseUrl =
-    process.env.NEXT_PUBLIC_SITE_URL ||
-    "https://www.goventuresembroidery.shop";
+  const allProjects = await getPortfolio();
 
-  const res = await fetch(
-    `${baseUrl}/api/portfolio?category=${encodeURIComponent(categoryName)}`,
-    {
-      cache: "no-store",
-    }
+  const projects = allProjects.filter((p: any) =>
+    p.category?.toLowerCase().includes(categoryName.toLowerCase())
   );
-
-  if (!res.ok) {
-    throw new Error("Failed to load portfolio");
-  }
-
-  const projects = await res.json();
 
   const safeProjects = projects.map((p: any) => ({
     _id: p._id,
