@@ -23,16 +23,18 @@ export default async function PortfolioPage() {
   const categoriesMap = new Map<string, any>();
 
   for (const p of projects) {
-    const key = p.category;
+  if (!p.image) continue;
 
-    if (
-      !categoriesMap.has(key) ||
-      new Date(p.createdAt) >
-        new Date(categoriesMap.get(key).createdAt)
-    ) {
-      categoriesMap.set(key, p);
-    }
+  const key = p.category;
+
+  if (
+    !categoriesMap.has(key) ||
+    new Date(p.createdAt) >
+      new Date(categoriesMap.get(key).createdAt)
+  ) {
+    categoriesMap.set(key, p);
   }
+}
 
   const categories = Array.from(categoriesMap.values()).map((p: any) => ({
     category: p.category,
