@@ -19,33 +19,38 @@ export async function POST(req: Request) {
   });
 }
 
-export async function GET() {
+export async function GET(req: Request) {
   try {
-    console.log("Before Mongo");
-
     const client = await clientPromise;
-
-    console.log("Mongo Connected");
-
     const db = client.db("goventure");
 
-    console.log("Database Selected");
+    const { searchParams } = new URL(req.url);
+
+    const category = searchParams.get("category");
+
+    let query = {};
+
+    if (category) {
+      query = {
+        category: {
+          $regex: new RegExp(category, "i"),
+        },
+      };
+    }
 
     const portfolio = await db
       .collection("portfolio")
-      .find({})
+      .find(query)
+      .sort({ createdAt: -1 })
       .toArray();
 
-    console.log("Fetched", portfolio.length);
+    return NextResponse.json(portfolio);
+  } catch (error) {
+    console.error(error);
 
-    return Response.json(portfolio);
-  } catch (err) {
-    console.error("ERROR:", err);
-
-    return Response.json(
-      { error: String(err) },
+    return NextResponse.json(
+      { error: "Database Error" },
       { status: 500 }
     );
   }
 }
-
