@@ -20,24 +20,7 @@ export async function POST(req: Request) {
 }
 
 export async function GET() {
-  try {
-    const client = await clientPromise;
-
-    const db = client.db("goventure");
-
-    const portfolio = await db
-      .collection("portfolio")
-      .find({})
-      .sort({ createdAt: -1 })
-      .toArray();
-
-    return NextResponse.json(portfolio);
-  } catch (error) {
-    console.error("Mongo Error:", error);
-
-    return NextResponse.json(
-      { error: "Database Error" },
-      { status: 500 }
-    );
-  }
+  return Response.json({
+    test: "Portfolio API works",
+  });
 }
