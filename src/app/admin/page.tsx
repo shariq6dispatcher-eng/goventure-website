@@ -18,9 +18,9 @@ useState<any>(null);
   const [portfolio, setPortfolio] = useState<any[]>([]);
   const [loadingPortfolio, setLoadingPortfolio] =
     useState(false);
-const [orders, setOrders] = useState<any[]>([]);
-const [loadingOrders, setLoadingOrders] = useState(true);
-const [selectedOrder, setSelectedOrder] = useState<any>(null);
+// const [orders, setOrders] = useState<any[]>([]);
+// const [loadingOrders, setLoadingOrders] = useState(true);
+// const [selectedOrder, setSelectedOrder] = useState<any>(null);
 
 const [quotes, setQuotes] = useState<any[]>([]);
 const [loadingQuotes, setLoadingQuotes] = useState(true);
@@ -77,25 +77,25 @@ const fetchQuotes = async () => {
   }
 };
 
-const fetchOrders = async () => {
-  try {
-    setLoadingOrders(true);
+// const fetchOrders = async () => {
+//   try {
+//     setLoadingOrders(true);
 
-    const res = await fetch("/api/orders");
+//     const res = await fetch("/api/orders");
 
-    if (!res.ok) {
-      throw new Error("Failed to fetch orders");
-    }
+//     if (!res.ok) {
+//       throw new Error("Failed to fetch orders");
+//     }
 
-    const data = await res.json();
+//     const data = await res.json();
 
-    setOrders(data);
-  } catch (err) {
-    console.error(err);
-  } finally {
-    setLoadingOrders(false);
-  }
-};
+//     setOrders(data);
+//   } catch (err) {
+//     console.error(err);
+//   } finally {
+//     setLoadingOrders(false);
+//   }
+// };
   // ==========================
   // FETCH PRODUCTS
   // ==========================
@@ -134,7 +134,6 @@ useEffect(() => {
     fetchPortfolio();
     fetchProducts();
     fetchQuotes();
-    fetchOrders();
   }, []);
 
   // ==========================
@@ -256,7 +255,7 @@ useEffect(() => {
   >
     Shop Products
   </button>
-<button
+{/* <button
   onClick={() => setActiveTab("orders")}
   className={
     activeTab === "orders"
@@ -265,7 +264,7 @@ useEffect(() => {
   }
 >
   Orders
-</button>
+</button> */}
   <button
     onClick={() => setActiveTab("quotes")}
     className={activeTab === "quotes"
@@ -356,97 +355,7 @@ useEffect(() => {
 
 </div>
 )}
-{activeTab === "orders" && (
 
-<div className="bg-zinc-950 rounded-3xl border border-zinc-800 p-8">
-
-<h2 className="text-3xl font-bold mb-8">
-Orders
-</h2>
-
-<div className="overflow-x-auto">
-
-<table className="w-full">
-
-<thead>
-
-<tr className="border-b border-zinc-800">
-
-<th className="p-4 text-left">Order ID</th>
-<th className="p-4 text-left">Customer</th>
-<th className="p-4 text-left">Amount</th>
-<th className="p-4 text-left">Status</th>
-<th className="p-4 text-left">Action</th>
-
-</tr>
-
-</thead>
-
-<tbody>
-
-{orders.map((order) => (
-
-<tr
-key={order._id}
-className="border-b border-zinc-800"
->
-
-<td className="p-4">
-#{order.orderNumber}
-</td>
-
-<td className="p-4">
-{order.customerName}
-</td>
-
-<td className="p-4">
-${order.total}
-</td>
-
-<td className="p-4">
-
-<span
-className={`px-3 py-1 rounded-full text-sm ${
-order.status === "Paid"
-? "bg-green-600"
-: order.status === "Pending"
-? "bg-yellow-600"
-: "bg-red-600"
-}`}
->
-
-{order.status}
-
-</span>
-
-</td>
-
-<td className="p-4">
-
-<button
-onClick={() => setSelectedOrder(order)}
-className="bg-[#D4AF37] text-black px-4 py-2 rounded-lg"
->
-
-View
-
-</button>
-
-</td>
-
-</tr>
-
-))}
-
-</tbody>
-
-</table>
-
-</div>
-
-</div>
-
-)}
         {/* PORTFOLIO */}
 
         {activeTab === "portfolio" && (

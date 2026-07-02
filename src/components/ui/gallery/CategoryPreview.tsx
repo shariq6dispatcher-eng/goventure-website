@@ -20,12 +20,11 @@ export default function CategoryPreview({
           className="relative aspect-square cursor-pointer overflow-hidden rounded-lg group"
         >
           <Image
-            src={cat.image}
-            alt={cat.category}
-            fill
-            className="object-cover group-hover:scale-110 transition"
-          />
-
+    src={cat.image || "/placeholder.jpg"}
+    alt={cat.category}
+    fill
+    className="object-cover group-hover:scale-110 transition"
+/>
           <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
             <h2 className="text-white font-bold uppercase tracking-widest">
               {cat.category}

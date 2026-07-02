@@ -1,5 +1,16 @@
-import clientPromise from "@/lib/mongodb";
 import CategoryGridClient from "@/components/ui/gallery/CategoryGridClient";
+import clientPromise from "@/lib/mongodb";
+
+async function getPortfolio() {
+  const client = await clientPromise;
+  const db = client.db("goventure");
+
+  return await db
+    .collection("portfolio")
+    .find({})
+    .sort({ createdAt: -1 })
+    .toArray();
+}
 
 export default async function CategoryPage({
   params,
@@ -8,21 +19,16 @@ export default async function CategoryPage({
 }) {
   const { category } = await params;
 
-  const client = await clientPromise;
-  const db = client.db("goventure");
-
   const categoryName = category.replace(/-/g, " ");
 
-  const projects = await db
-    .collection("portfolio")
-    .find({
-      category: { $regex: new RegExp(categoryName, "i") },
-    })
-    .toArray();
+  const allProjects = await getPortfolio();
 
-  // convert Mongo _id to string (IMPORTANT for React keys)
+  const projects = allProjects.filter((p: any) =>
+    p.category?.toLowerCase().includes(categoryName.toLowerCase())
+  );
+
   const safeProjects = projects.map((p: any) => ({
-    _id: p._id.toString(),
+    _id: p._id,
     image: p.image,
     title: p.title,
   }));
@@ -33,11 +39,10 @@ export default async function CategoryPage({
         {categoryName}
       </h1>
 
-      {/* 🔥 THIS ENABLES LIGHTBOX + SWIPE */}
       <CategoryGridClient
-  projects={safeProjects}
-  categoryName={categoryName}
-/>
+        projects={safeProjects}
+        categoryName={categoryName}
+      />
     </div>
   );
 }
