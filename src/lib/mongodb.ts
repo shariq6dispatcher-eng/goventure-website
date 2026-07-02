@@ -2,8 +2,15 @@ import { MongoClient } from "mongodb";
 
 const uri = process.env.MONGODB_URI!;
 
-if (!uri) {
-  throw new Error("Missing MONGODB_URI");
+export async function POST(req: Request) {
+  if (!process.env.MONGODB_URI) {
+    return Response.json(
+      { error: "Missing MongoDB URI" },
+      { status: 500 }
+    );
+  }
+
+  // connect to MongoDB...
 }
 
 let client: MongoClient;

@@ -33,7 +33,6 @@ export default async function PortfolioPage() {
         title="Our Portfolio"
         subtitle="Browse our categories"
       />
-
       <CategoryPreview categories={categories} />
     </main>
   );
