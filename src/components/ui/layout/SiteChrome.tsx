@@ -28,7 +28,7 @@ export default function SiteChrome({
   return (
     <>
       <Navbar />
-      <main className="pt-40">{children}</main>
+      <main className="pt-20">{children}</main>
       <Footer />
       <WhatsAppButton />
       <StickyQuote />
