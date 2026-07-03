@@ -17,7 +17,10 @@ async function getPortfolio(): Promise<PortfolioProject[]> {
 export default async function PortfolioPage() {
   const projects = await getPortfolio();
 
-  const categoriesMap = new Map<string, PortfolioProject>();
+  const categoriesMap = new Map<
+    string,
+    { image: string; createdAt: string | Date; count: number }
+  >();
 
   for (const p of projects) {
     if (!p.image) continue;
@@ -25,23 +28,32 @@ export default async function PortfolioPage() {
     const key: string = p.category;
     const existing = categoriesMap.get(key);
 
-    if (
-      !existing ||
-      new Date(p.createdAt) > new Date(existing.createdAt)
-    ) {
-      categoriesMap.set(key, p);
+    if (!existing) {
+      categoriesMap.set(key, {
+        image: p.image,
+        createdAt: p.createdAt,
+        count: 1,
+      });
+      continue;
+    }
+
+    existing.count += 1;
+    if (new Date(p.createdAt) > new Date(existing.createdAt)) {
+      existing.image = p.image;
+      existing.createdAt = p.createdAt;
     }
   }
 
-  const categories = Array.from(categoriesMap.values()).map((p) => ({
-    category: p.category,
-    // Non-null assertion is safe here: the loop above skips any
-    // project without an image before it's added to categoriesMap.
-    image: p.image as string,
-  }));
+  const categories = Array.from(categoriesMap.entries()).map(
+    ([category, data]) => ({
+      category,
+      image: data.image,
+      count: data.count,
+    })
+  );
 
   return (
-    <main className="bg-black text-white">
+    <main className="bg-black text-white min-h-screen">
       <PageHero title="Our Portfolio" subtitle="Browse our categories" />
       <CategoryPreview categories={categories} />
     </main>

@@ -1,8 +1,20 @@
 import CategoryGridClient from "@/components/ui/gallery/CategoryGridClient";
 import { mongo } from "@/lib/mongodb";
 
-async function getPortfolio() {
-  return await mongo.find("portfolio", {}, { createdAt: -1 });
+interface PortfolioProject {
+  _id: string;
+  category: string;
+  image?: string;
+  title?: string;
+  [key: string]: unknown;
+}
+
+async function getPortfolio(): Promise<PortfolioProject[]> {
+  return (await mongo.find(
+    "portfolio",
+    {},
+    { createdAt: -1 }
+  )) as PortfolioProject[];
 }
 
 export default async function CategoryPage({
@@ -16,26 +28,26 @@ export default async function CategoryPage({
 
   const allProjects = await getPortfolio();
 
-  const projects = allProjects.filter((p: any) =>
-    p.category?.toLowerCase().includes(categoryName.toLowerCase())
+  const projects = allProjects.filter(
+    (p) =>
+      p.image &&
+      p.category?.toLowerCase().includes(categoryName.toLowerCase())
   );
 
-  const safeProjects = projects.map((p: any) => ({
+  const safeProjects = projects.map((p) => ({
     _id: p._id,
-    image: p.image,
+    image: p.image as string,
     title: p.title,
   }));
 
   return (
-    <div className="p-6 text-white pt-40">
-      <h1 className="text-2xl mb-6 uppercase">
-        {categoryName}
-      </h1>
-
-      <CategoryGridClient
-        projects={safeProjects}
-        categoryName={categoryName}
-      />
-    </div>
+    <main className="min-h-screen bg-black px-4 pb-20 pt-32 text-white sm:px-6 sm:pt-40">
+      <div className="mx-auto max-w-7xl">
+        <CategoryGridClient
+          projects={safeProjects}
+          categoryName={categoryName}
+        />
+      </div>
+    </main>
   );
 }
