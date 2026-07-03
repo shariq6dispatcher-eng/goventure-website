@@ -203,7 +203,7 @@ export default function Hero() {
 
           <div className="absolute -inset-4 sm:-inset-6 rounded-2xl sm:rounded-3xl border border-dashed border-[#D4AF37]/20 pointer-events-none hidden md:block animate-spin-slow" />
 
-          <div
+          <motion.div
             ref={cardRef}
             onPointerMove={handlePointerMove}
             onPointerLeave={handlePointerLeave}
@@ -223,7 +223,7 @@ export default function Hero() {
 
             <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
 
-          </div>
+          </motion.div>
 
           <motion.div
             initial={{ opacity: 0, y: 20 }}
