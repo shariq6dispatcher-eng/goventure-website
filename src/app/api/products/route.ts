@@ -1,17 +1,9 @@
-import clientPromise from "@/lib/mongodb";
+import { mongo } from "@/lib/mongodb";
 import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const client = await clientPromise;
-    const db = client.db("goventure");
-
-    const products = await db
-      .collection("products")
-      .find({})
-      .sort({ createdAt: -1 })
-      .toArray();
-
+    const products = await mongo.find("products", {}, { createdAt: -1 });
     return NextResponse.json(products);
   } catch (error) {
     console.error("Products GET Error:", error);
@@ -27,17 +19,14 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    const client = await clientPromise;
-    const db = client.db("goventure");
-
-    const result = await db.collection("products").insertOne({
+    const result = await mongo.insertOne("products", {
       title: body.title,
       description: body.description,
       category: body.category,
       price: body.price,
       image: body.image,
       featured: false,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     });
 
     return NextResponse.json({

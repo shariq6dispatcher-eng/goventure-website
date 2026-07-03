@@ -3,10 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 
 import "./globals.css";
 
-import Navbar from "@/components/ui/layout/Navbar";
-import Footer from "@/components/ui/layout/Footer";
-import WhatsAppButton from "@/components/ui/layout/WhatsAppButton";
-import StickyQuote from "@/components/ui/layout/StickyQuote";
+import SiteChrome from "@/components/ui/layout/SiteChrome";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,16 +34,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}
       >
-        <Navbar />
-
-         <main className="pt-40">
-  {children}
-</main>
-
-        <Footer />
-
-        <WhatsAppButton />
-        <StickyQuote />
+        <SiteChrome>{children}</SiteChrome>
       </body>
     </html>
   );

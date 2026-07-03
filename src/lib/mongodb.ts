@@ -1,30 +1,201 @@
-import { MongoClient } from "mongodb";
+/**
+ * Cloudflare Workers-compatible MongoDB client.
+ *
+ * IMPORTANT: The native `mongodb` npm driver opens raw TCP/TLS sockets
+ * (Node's `net`/`tls` modules) and, for `mongodb+srv://` URIs, performs a
+ * DNS SRV lookup (Node's `dns` module). Cloudflare Workers (even with the
+ * `nodejs_compat` flag) do not support arbitrary outbound TCP sockets or
+ * DNS resolution the way the driver expects. Any route that imported the
+ * old driver-based client would throw at runtime on Cloudflare, which is
+ * the root cause of the Error 1103 responses on every DB-backed page.
+ *
+ * The fix: talk to MongoDB Atlas over HTTPS using the Atlas Data API,
+ * which is just `fetch()` under the hood and works identically in
+ * Node.js, Vercel, and Cloudflare Workers.
+ *
+ * Setup required in MongoDB Atlas:
+ *   1. Atlas UI -> Data API -> Enable the Data API for your cluster.
+ *   2. Copy the generated "Data API URL Endpoint" (looks like
+ *      https://<region>.data.mongodb-api.com/app/<app-id>/endpoint/data/v1)
+ *   3. Create a Data API Key (Atlas UI -> Data API -> Create API Key).
+ *
+ * Required environment variables (set via `wrangler secret put` or the
+ * Cloudflare dashboard -> Settings -> Variables):
+ *   MONGODB_DATA_API_URL   e.g. https://us-east-1.aws.data.mongodb-api.com/app/data-abcde/endpoint/data/v1
+ *   MONGODB_DATA_API_KEY   the Data API key created above
+ *   MONGODB_DATA_SOURCE    the name of your Atlas cluster (e.g. "Cluster0")
+ *   MONGODB_DATABASE       database name (defaults to "goventure")
+ */
 
-const uri = process.env.MONGODB_URI!;
+type JsonRecord = Record<string, unknown>;
 
-if (!uri) {
-  throw new Error("Missing MONGODB_URI");
+interface DataApiConfig {
+  url: string;
+  apiKey: string;
+  dataSource: string;
+  database: string;
 }
 
-let client: MongoClient;
-let clientPromise: Promise<MongoClient>;
+function getConfig(): DataApiConfig {
+  const url = process.env.MONGODB_DATA_API_URL;
+  const apiKey = process.env.MONGODB_DATA_API_KEY;
+  const dataSource = process.env.MONGODB_DATA_SOURCE;
+  const database = process.env.MONGODB_DATABASE || "goventure";
 
-declare global {
-  var _mongoClientPromise: Promise<MongoClient>;
-}
-
-if (process.env.NODE_ENV === "development") {
-  if (!global._mongoClientPromise) {
-    client = new MongoClient(uri);
-
-    global._mongoClientPromise = client.connect();
+  if (!url || !apiKey || !dataSource) {
+    throw new Error(
+      "Missing MongoDB Data API configuration. Please set MONGODB_DATA_API_URL, " +
+        "MONGODB_DATA_API_KEY and MONGODB_DATA_SOURCE as environment variables/secrets."
+    );
   }
 
-  clientPromise = global._mongoClientPromise;
-} else {
-  client = new MongoClient(uri);
-
-  clientPromise = client.connect();
+  return { url, apiKey, dataSource, database };
 }
 
-export default clientPromise;
+async function callDataApi<T = unknown>(
+  action:
+    | "find"
+    | "findOne"
+    | "insertOne"
+    | "updateOne"
+    | "deleteOne"
+    | "deleteMany",
+  collection: string,
+  body: JsonRecord
+): Promise<T> {
+  const config = getConfig();
+
+  const res = await fetch(`${config.url}/action/${action}`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Access-Control-Request-Headers": "*",
+      "api-key": config.apiKey,
+    },
+    body: JSON.stringify({
+      dataSource: config.dataSource,
+      database: config.database,
+      collection,
+      ...body,
+    }),
+  });
+
+  if (!res.ok) {
+    const text = await res.text().catch(() => "");
+    throw new Error(
+      `MongoDB Data API request failed (${action} on ${collection}): ${res.status} ${text}`
+    );
+  }
+
+  return (await res.json()) as T;
+}
+
+export function toObjectId(id: string): { $oid: string } {
+  return { $oid: id };
+}
+
+/**
+ * The Data API (and our proxy) returns documents in MongoDB Extended
+ * JSON, so _id comes back as `{ $oid: "..." }` and any Date fields as
+ * `{ $date: "..." }` rather than plain values. Left as-is, every
+ * consumer that does `item._id` in a URL (e.g. for edit/delete) would
+ * silently send "[object Object]" instead of the real id. Normalize
+ * recursively so callers always get plain strings.
+ */
+function normalizeEJSON<T = unknown>(value: unknown): T {
+  if (Array.isArray(value)) {
+    return value.map((v) => normalizeEJSON(v)) as unknown as T;
+  }
+
+  if (value && typeof value === "object") {
+    const obj = value as Record<string, unknown>;
+    const keys = Object.keys(obj);
+
+    if (keys.length === 1 && keys[0] === "$oid") {
+      return obj.$oid as unknown as T;
+    }
+
+    if (keys.length === 1 && keys[0] === "$date") {
+      const raw = obj.$date;
+      const iso =
+        raw && typeof raw === "object" && "$numberLong" in (raw as object)
+          ? new Date(
+              Number((raw as { $numberLong: string }).$numberLong)
+            ).toISOString()
+          : new Date(raw as string | number).toISOString();
+      return iso as unknown as T;
+    }
+
+    const result: Record<string, unknown> = {};
+    for (const key of keys) {
+      result[key] = normalizeEJSON(obj[key]);
+    }
+    return result as unknown as T;
+  }
+
+  return value as T;
+}
+
+export const mongo = {
+  async find<T = JsonRecord>(
+    collection: string,
+    filter: JsonRecord = {},
+    sort?: JsonRecord
+  ): Promise<T[]> {
+    const data = await callDataApi<{ documents: T[] }>("find", collection, {
+      filter,
+      ...(sort ? { sort } : {}),
+    });
+    return normalizeEJSON<T[]>(data.documents);
+  },
+
+  async findOne<T = JsonRecord>(
+    collection: string,
+    filter: JsonRecord
+  ): Promise<T | null> {
+    const data = await callDataApi<{ document: T | null }>(
+      "findOne",
+      collection,
+      { filter }
+    );
+    return normalizeEJSON<T | null>(data.document);
+  },
+
+  async insertOne(
+    collection: string,
+    document: JsonRecord
+  ): Promise<{ insertedId: string }> {
+    const data = await callDataApi<{ insertedId: string }>(
+      "insertOne",
+      collection,
+      { document }
+    );
+    return data;
+  },
+
+  async deleteOne(
+    collection: string,
+    filter: JsonRecord
+  ): Promise<{ deletedCount: number }> {
+    const data = await callDataApi<{ deletedCount: number }>(
+      "deleteOne",
+      collection,
+      { filter }
+    );
+    return data;
+  },
+
+  async updateOne(
+    collection: string,
+    filter: JsonRecord,
+    update: JsonRecord
+  ): Promise<{ matchedCount: number; modifiedCount: number }> {
+    const data = await callDataApi<{
+      matchedCount: number;
+      modifiedCount: number;
+    }>("updateOne", collection, { filter, update: { $set: update } });
+    return data;
+  },
+};
+
+export default mongo;

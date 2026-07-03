@@ -29,13 +29,13 @@ export default function ServicesPage() {
             <ServiceCard
   title="Custom Patches"
   description="Premium embroidered, woven, PVC, chenille and leather patches."
-  image="/images/services/patches.png"
+  image="/portfolio/patches.png"
 />
 
             <ServiceCard
   title="Apparel Manufacturing"
   description="Sportswear, jerseys, uniforms and private label apparel production."
-  image="/images/services/jerseys.png"
+  image="\images\pricing\manufacturing.png"
 />
 
           </div>
@@ -211,7 +211,7 @@ export default function ServicesPage() {
 >
   <div className="relative h-56">
     <Image
-      src="/images/pricing/digitizing.jpeg"
+      src="/images/portfolio/portfolio-6.jpeg"
       alt="Digitizing"
       fill
       sizes="33vw"

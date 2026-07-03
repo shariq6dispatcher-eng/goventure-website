@@ -11,7 +11,7 @@ const portfolioItems = [
   },
   {
     title: "Manufacturing",
-    image: "/portfolio/digitizing-3.png",
+    image: "/images/Hero.jpg",
   },
   {
     title: "Custom Physical Patches",
