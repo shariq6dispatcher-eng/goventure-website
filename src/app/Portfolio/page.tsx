@@ -35,7 +35,9 @@ export default async function PortfolioPage() {
 
   const categories = Array.from(categoriesMap.values()).map((p) => ({
     category: p.category,
-    image: p.image,
+    // Non-null assertion is safe here: the loop above skips any
+    // project without an image before it's added to categoriesMap.
+    image: p.image as string,
   }));
 
   return (

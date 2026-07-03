@@ -94,6 +94,7 @@ export function toObjectId(id: string): { $oid: string } {
   return { $oid: id };
 }
 
+<<<<<<< HEAD
 /**
  * The Data API (and our proxy) returns documents in MongoDB Extended
  * JSON, so _id comes back as `{ $oid: "..." }` and any Date fields as
@@ -136,6 +137,8 @@ function normalizeEJSON<T = unknown>(value: unknown): T {
   return value as T;
 }
 
+=======
+>>>>>>> bdb5e6d2fa8a2953224b3009eb0d00e3cd66b60c
 export const mongo = {
   async find<T = JsonRecord>(
     collection: string,
@@ -146,7 +149,11 @@ export const mongo = {
       filter,
       ...(sort ? { sort } : {}),
     });
+<<<<<<< HEAD
     return normalizeEJSON<T[]>(data.documents);
+=======
+    return data.documents;
+>>>>>>> bdb5e6d2fa8a2953224b3009eb0d00e3cd66b60c
   },
 
   async findOne<T = JsonRecord>(
@@ -158,7 +165,11 @@ export const mongo = {
       collection,
       { filter }
     );
+<<<<<<< HEAD
     return normalizeEJSON<T | null>(data.document);
+=======
+    return data.document;
+>>>>>>> bdb5e6d2fa8a2953224b3009eb0d00e3cd66b60c
   },
 
   async insertOne(
