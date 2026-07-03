@@ -2,39 +2,45 @@ import PageHero from "@/components/ui/common/PageHero";
 import CategoryPreview from "@/components/ui/gallery/CategoryPreview";
 import { mongo } from "@/lib/mongodb";
  
-async function getPortfolio() {
-  return await mongo.find("portfolio", {}, { createdAt: -1 });
+interface PortfolioProject {
+  category: string;
+  image?: string;
+  createdAt: string | Date;
+  [key: string]: unknown;
 }
+ 
+async function getPortfolio(): Promise<PortfolioProject[]> {
+  const results = await mongo.find("portfolio", {}, { createdAt: -1 });
+  return results as PortfolioProject[];
+}
+ 
 export default async function PortfolioPage() {
   const projects = await getPortfolio();
  
-  const categoriesMap = new Map<string, any>();
+  const categoriesMap = new Map<string, PortfolioProject>();
  
-  for (const p of projects as any[]) {
-  if (!p.image) continue;
+  for (const p of projects) {
+    if (!p.image) continue;
  
-  const key = p.category as string;
+    const key: string = p.category;
+    const existing = categoriesMap.get(key);
  
-  if (
-    !categoriesMap.has(key) ||
-    new Date(p.createdAt) >
-      new Date(categoriesMap.get(key).createdAt)
-  ) {
-    categoriesMap.set(key, p);
+    if (
+      !existing ||
+      new Date(p.createdAt) > new Date(existing.createdAt)
+    ) {
+      categoriesMap.set(key, p);
+    }
   }
-}
  
-  const categories = Array.from(categoriesMap.values()).map((p: any) => ({
+  const categories = Array.from(categoriesMap.values()).map((p) => ({
     category: p.category,
     image: p.image,
   }));
  
   return (
     <main className="bg-black text-white">
-      <PageHero
-        title="Our Portfolio"
-        subtitle="Browse our categories"
-      />
+      <PageHero title="Our Portfolio" subtitle="Browse our categories" />
       <CategoryPreview categories={categories} />
     </main>
   );
