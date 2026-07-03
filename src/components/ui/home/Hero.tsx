@@ -128,7 +128,7 @@ export default function Hero() {
           >
 
             <Image
-  src="/images/hero/hero-1.png"
+  src="/images/pricing/manufacturing.png"
   alt="Luxury Embroidery Manufacturing"
   width={900}
   height={1000}
