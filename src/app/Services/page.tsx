@@ -35,7 +35,7 @@ export default function ServicesPage() {
             <ServiceCard
   title="Apparel Manufacturing"
   description="Sportswear, jerseys, uniforms and private label apparel production."
-  image="/images/services/jerseys.png"
+  image="/portfolio/patches.png"
 />
 
           </div>
