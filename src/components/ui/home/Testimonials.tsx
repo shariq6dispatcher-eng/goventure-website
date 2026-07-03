@@ -23,23 +23,23 @@ export default function Testimonials() {
 
   return (
     <AnimatedSection>
-    <section className="py-32 border-t border-zinc-900">
+    <section className="py-20 sm:py-28 lg:py-32 border-t border-zinc-900">
 
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-5 sm:px-6">
 
         <div className="text-center">
 
-          <p className="text-[#D4AF37] uppercase tracking-[4px] text-sm mb-4">
+          <p className="text-[#D4AF37] uppercase tracking-[3px] sm:tracking-[4px] text-xs sm:text-sm mb-4">
             Testimonials
           </p>
 
-          <h2 className="text-5xl font-bold">
+          <h2 className="text-3xl sm:text-5xl font-bold">
             What Our Clients Say
           </h2>
 
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8 mt-20">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mt-12 sm:mt-20">
 
           {testimonials.map((item) => (
             <div
@@ -48,8 +48,10 @@ export default function Testimonials() {
   bg-zinc-950
   border
   border-zinc-800
-  rounded-3xl
-  p-8
+  rounded-2xl
+  sm:rounded-3xl
+  p-6
+  sm:p-8
   hover:border-[#D4AF37]
   hover:-translate-y-2
   hover:shadow-[0_0_40px_rgba(212,175,55,0.15)]
