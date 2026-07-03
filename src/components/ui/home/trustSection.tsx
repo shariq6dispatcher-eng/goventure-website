@@ -6,25 +6,6 @@ import {
 } from "lucide-react";
 import AnimatedSection from "@/components/ui/AnimatedSection";
 export default function TrustSection() {
-    
-  const stats = [
-    {
-      number: "5000+",
-      label: "Orders Completed",
-    },
-    {
-      number: "50+",
-      label: "Countries Served",
-    },
-    {
-      number: "10+",
-      label: "Years Experience",
-    },
-    {
-      number: "99%",
-      label: "Client Satisfaction",
-    },
-  ];
 
   const features = [
     {
@@ -51,22 +32,22 @@ export default function TrustSection() {
 
   return (
     <AnimatedSection>
-    <section className="py-32 border-t border-zinc-900">
+    <section className="py-20 sm:py-28 lg:py-32 border-t border-zinc-900">
 
-      <div className="max-w-7xl mx-auto px-6">
+      <div className="max-w-7xl mx-auto px-5 sm:px-6">
 
         <div className="text-center">
 
-          <p className="text-[#D4AF37] uppercase tracking-[4px] text-sm mb-4">
+          <p className="text-[#D4AF37] uppercase tracking-[3px] sm:tracking-[4px] text-xs sm:text-sm mb-4">
             Why Brands Trust Us
           </p>
 
-          <h2 className="text-5xl md:text-6xl font-bold">
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold">
             Built For Quality,
             Speed & Scale
           </h2>
 
-          <p className="text-zinc-400 mt-6 max-w-3xl mx-auto">
+          <p className="text-zinc-400 mt-4 sm:mt-6 max-w-3xl mx-auto text-sm sm:text-base">
             GoVenture provides embroidery digitizing,
             custom patches and apparel manufacturing
             solutions trusted by clients worldwide.
@@ -74,42 +55,9 @@ export default function TrustSection() {
 
         </div>
 
-        {/* Statistics */}
-
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mt-20">
-
-          {stats.map((stat) => (
-            <div
-              key={stat.label}
-              className="
-  text-center
-  bg-white/5
-  border
-  border-white/10
-  rounded-3xl
-  p-8
-  hover:border-[#D4AF37]
-  hover:-translate-y-2
-  hover:shadow-[0_0_40px_rgba(212,175,55,0.15)]
-  transition-all
-  duration-300
-"
-            >
-              <h3 className="text-5xl font-bold text-[#D4AF37]">
-                {stat.number}
-              </h3>
-
-              <p className="text-zinc-400 mt-3">
-                {stat.label}
-              </p>
-            </div>
-          ))}
-
-        </div>
-
         {/* Features */}
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mt-20">
+        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 mt-14 sm:mt-20">
 
           {features.map((feature) => {
             const Icon = feature.icon;
@@ -121,8 +69,10 @@ export default function TrustSection() {
   bg-zinc-950
   border
   border-zinc-800
-  rounded-3xl
-  p-8
+  rounded-2xl
+  sm:rounded-3xl
+  p-6
+  sm:p-8
   hover:border-[#D4AF37]
   hover:-translate-y-2
   hover:shadow-[0_0_40px_rgba(212,175,55,0.15)]
@@ -130,13 +80,13 @@ export default function TrustSection() {
   duration-300
 "
               >
-                <Icon className="w-10 h-10 text-[#D4AF37] mb-6" />
+                <Icon className="w-9 h-9 sm:w-10 sm:h-10 text-[#D4AF37] mb-5 sm:mb-6" />
 
-                <h3 className="text-xl font-semibold">
+                <h3 className="text-lg sm:text-xl font-semibold">
                   {feature.title}
                 </h3>
 
-                <p className="text-zinc-400 mt-4">
+                <p className="text-zinc-400 mt-3 sm:mt-4 text-sm sm:text-base">
                   {feature.desc}
                 </p>
               </div>
