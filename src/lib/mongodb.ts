@@ -27,6 +27,7 @@
  *   MONGODB_DATABASE       database name (defaults to "goventure")
  */
 
+<<<<<<< HEAD
 type JsonRecord = Record<string, unknown>;
 
 interface DataApiConfig {
@@ -64,6 +65,16 @@ async function callDataApi<T = unknown>(
   body: JsonRecord
 ): Promise<T> {
   const config = getConfig();
+=======
+if (!process.env.MONGODB_URI) {
+  throw new Error("Please define the MONGODB_URI environment variable");
+}
+
+const uri: string = process.env.MONGODB_URI;
+
+let client: MongoClient;
+let clientPromise: Promise<MongoClient>;
+>>>>>>> c793eac1b7c99797abfcc5d70074259a10c67a2b
 
   const res = await fetch(`${config.url}/action/${action}`, {
     method: "POST",
