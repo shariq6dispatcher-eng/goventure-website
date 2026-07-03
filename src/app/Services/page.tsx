@@ -211,7 +211,7 @@ export default function ServicesPage() {
 >
   <div className="relative h-56">
     <Image
-      src="/images/pricing/digitizing.jpeg"
+      src="/images/portfolio/portfolio-6.jpeg"
       alt="Digitizing"
       fill
       sizes="33vw"
