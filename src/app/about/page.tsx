@@ -24,7 +24,7 @@ export default function AboutPage() {
             className="relative h-[600px] rounded-3xl overflow-hidden border border-zinc-800"
           >
             <Image
-              src="/images/about/about-story1.png"
+              src="\images\pricing\patches.jpeg"
               alt="GoVenture Story"
               fill
               sizes="50vw"
