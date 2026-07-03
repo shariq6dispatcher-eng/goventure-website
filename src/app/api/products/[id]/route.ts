@@ -29,7 +29,7 @@ export async function GET(
     );
   }
 }
-<<<<<<< HEAD
+
 
 export async function PATCH(
   req: Request,
@@ -118,5 +118,3 @@ export async function DELETE(
     );
   }
 }
-=======
->>>>>>> bdb5e6d2fa8a2953224b3009eb0d00e3cd66b60c
