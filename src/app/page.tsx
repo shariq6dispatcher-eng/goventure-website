@@ -1,6 +1,7 @@
 import Navbar from "@/components/ui/layout/Navbar";
 import Footer from "@/components/ui/layout/Footer";
 import Hero from "@/components/ui/home/Hero";
+import TrustMarquee from "@/components/ui/home/TrustMarquee";
 import Services from "@/components/ui/home/Services";
 import Portfolio from "@/components/ui/home/Portfolio";
 import TrustSection from "@/components/ui/home/trustSection";
@@ -15,6 +16,7 @@ export default function HomePage() {
   return (
     <main>
       <Hero />
+      <TrustMarquee />
       <Stats />
       <Services />
       <Portfolio />
