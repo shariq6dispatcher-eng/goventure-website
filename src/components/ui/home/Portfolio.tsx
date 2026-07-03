@@ -24,26 +24,26 @@ export default function Portfolio() {
     <AnimatedSection>
     <section
       id="portfolio"
-      className="py-32 bg-black border-t border-zinc-900"
+      className="py-20 sm:py-28 lg:py-32 bg-black border-t border-zinc-900"
     >
-      <div className="max-w-7xl mx-auto px-6">
-        <div className="text-center mb-20">
-          <p className="text-[#D4AF37] uppercase tracking-[4px] text-sm mb-4">
+      <div className="max-w-7xl mx-auto px-5 sm:px-6">
+        <div className="text-center mb-14 sm:mb-20">
+          <p className="text-[#D4AF37] uppercase tracking-[3px] sm:tracking-[4px] text-xs sm:text-sm mb-4">
             Our Work
           </p>
 
-          <h2 className="text-5xl md:text-6xl font-bold text-white">
+          <h2 className="text-3xl sm:text-5xl md:text-6xl font-bold text-white">
             Portfolio Showcase
           </h2>
 
-          <p className="text-zinc-400 max-w-3xl mx-auto mt-6">
+          <p className="text-zinc-400 max-w-3xl mx-auto mt-4 sm:mt-6 text-sm sm:text-base">
             Explore our premium embroidery digitizing, custom patch
             manufacturing and apparel production projects delivered to clients
             worldwide.
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-8">
+        <div className="grid sm:grid-cols-2 gap-6 sm:gap-8">
           {portfolioItems.map((item, index) => (
             <div
   key={index}
@@ -62,12 +62,12 @@ export default function Portfolio() {
     duration-300
   "
 >
-              <div className="relative h-[500px]">
+              <div className="relative h-[280px] sm:h-[360px] md:h-[420px] lg:h-[500px]">
                 <Image
   src={item.image}
   alt={item.title}
   fill
-  sizes="(max-width: 768px) 100vw, 50vw"
+  sizes="(max-width: 640px) 100vw, 50vw"
   className="
     object-cover
     transition-all
@@ -88,8 +88,8 @@ export default function Portfolio() {
                 "
               />
 
-              <div className="absolute bottom-8 left-8">
-                <h3 className="text-2xl font-semibold text-white">
+              <div className="absolute bottom-5 left-5 sm:bottom-8 sm:left-8">
+                <h3 className="text-xl sm:text-2xl font-semibold text-white">
                   {item.title}
                 </h3>
               </div>
