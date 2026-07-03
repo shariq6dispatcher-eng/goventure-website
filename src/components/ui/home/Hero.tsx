@@ -60,7 +60,7 @@ export default function Hero() {
             <button
               className="bg-[#D4AF37] text-black px-8 py-4 rounded-full font-semibold hover:scale-105 hover:shadow-[0_0_30px_rgba(212,175,55,0.35)] transition-all"
             >
-             <Link href="/quote" className="hover:text-[#D4AF37] transition"> Get Quote → </Link>
+            Get Quote →
             </button>
 
             <button
