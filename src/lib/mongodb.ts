@@ -1,21 +1,10 @@
 import { MongoClient } from "mongodb";
 
-const uri = process.env.MONGODB_URI!;
-
-if (!uri) {
-  throw new Error("Missing MONGODB_URI");
+if (!process.env.MONGODB_URI) {
+  throw new Error("Please define the MONGODB_URI environment variable");
 }
 
-export async function POST(req: Request) {
-  if (!process.env.MONGODB_URI) {
-    return Response.json(
-      { error: "Missing MongoDB URI" },
-      { status: 500 }
-    );
-  }
-
-  // connect to MongoDB...
-}
+const uri: string = process.env.MONGODB_URI;
 
 let client: MongoClient;
 let clientPromise: Promise<MongoClient>;
