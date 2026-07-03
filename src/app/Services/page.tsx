@@ -29,13 +29,13 @@ export default function ServicesPage() {
             <ServiceCard
   title="Custom Patches"
   description="Premium embroidered, woven, PVC, chenille and leather patches."
-  image="/images/services/patches.png"
+  image="/portfolio/patches.png"
 />
 
             <ServiceCard
   title="Apparel Manufacturing"
   description="Sportswear, jerseys, uniforms and private label apparel production."
-  image="/portfolio/patches.png"
+  image="\images\pricing\manufacturing.png"
 />
 
           </div>
