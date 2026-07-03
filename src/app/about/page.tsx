@@ -190,7 +190,7 @@ export default function AboutPage() {
 
           <div className="grid md:grid-cols-3 gap-8">
             {[
-              "/images/about/about-factory.jpg",
+              "/images/Hero.jpg",
               "/images/about/about-quality.jpg",
               "/images/about/about-story.jpg",
             ].map((img, index) => (
