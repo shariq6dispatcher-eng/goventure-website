@@ -27,7 +27,6 @@
  *   MONGODB_DATABASE       database name (defaults to "goventure")
  */
 
-<<<<<<< HEAD
 type JsonRecord = Record<string, unknown>;
 
 interface DataApiConfig {
@@ -65,16 +64,6 @@ async function callDataApi<T = unknown>(
   body: JsonRecord
 ): Promise<T> {
   const config = getConfig();
-=======
-if (!process.env.MONGODB_URI) {
-  throw new Error("Please define the MONGODB_URI environment variable");
-}
-
-const uri: string = process.env.MONGODB_URI;
-
-let client: MongoClient;
-let clientPromise: Promise<MongoClient>;
->>>>>>> c793eac1b7c99797abfcc5d70074259a10c67a2b
 
   const res = await fetch(`${config.url}/action/${action}`, {
     method: "POST",
@@ -101,13 +90,11 @@ let clientPromise: Promise<MongoClient>;
   return (await res.json()) as T;
 }
 
-/** Converts a 24-char hex string into the Data API's Extended JSON ObjectId form. */
 export function toObjectId(id: string): { $oid: string } {
   return { $oid: id };
 }
 
 export const mongo = {
-  /** Find many documents, optionally sorted. */
   async find<T = JsonRecord>(
     collection: string,
     filter: JsonRecord = {},
@@ -120,7 +107,6 @@ export const mongo = {
     return data.documents;
   },
 
-  /** Find a single document. */
   async findOne<T = JsonRecord>(
     collection: string,
     filter: JsonRecord
@@ -133,7 +119,6 @@ export const mongo = {
     return data.document;
   },
 
-  /** Insert a single document. */
   async insertOne(
     collection: string,
     document: JsonRecord
@@ -146,7 +131,6 @@ export const mongo = {
     return data;
   },
 
-  /** Delete a single document. */
   async deleteOne(
     collection: string,
     filter: JsonRecord
@@ -159,7 +143,6 @@ export const mongo = {
     return data;
   },
 
-  /** Update a single document. */
   async updateOne(
     collection: string,
     filter: JsonRecord,
