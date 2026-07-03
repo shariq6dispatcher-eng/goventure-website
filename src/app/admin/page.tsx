@@ -25,19 +25,18 @@ import ProductModal, { Product } from "@/components/admin/ProductModal";
 import QuoteDrawer, { Quote } from "@/components/admin/QuoteDrawer";
 import { ToastProvider, useToast } from "@/components/admin/Toast";
 
-<<<<<<< HEAD
+
 type PendingDelete =
   | { kind: "portfolio"; id: string; label: string }
   | { kind: "product"; id: string; label: string }
   | { kind: "quote"; id: string; label: string };
-=======
   const [portfolio, setPortfolio] = useState<any[]>([]);
   const [loadingPortfolio, setLoadingPortfolio] =
     useState(false);
 // const [orders, setOrders] = useState<any[]>([]);
 // const [loadingOrders, setLoadingOrders] = useState(true);
 // const [selectedOrder, setSelectedOrder] = useState<any>(null);
->>>>>>> bdb5e6d2fa8a2953224b3009eb0d00e3cd66b60c
+
 
 function AdminDashboard() {
   const { showToast } = useToast();
@@ -93,8 +92,7 @@ function AdminDashboard() {
       setLoadingPortfolio(false);
     }
   };
-<<<<<<< HEAD
-=======
+
 const fetchQuotes = async () => {
   try {
     setLoadingQuotes(true);
@@ -137,7 +135,6 @@ const fetchQuotes = async () => {
   // ==========================
   // FETCH PRODUCTS
   // ==========================
->>>>>>> bdb5e6d2fa8a2953224b3009eb0d00e3cd66b60c
 
   const fetchProducts = async () => {
     try {
@@ -169,10 +166,7 @@ const fetchQuotes = async () => {
     fetchPortfolio();
     fetchProducts();
     fetchQuotes();
-<<<<<<< HEAD
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-=======
->>>>>>> bdb5e6d2fa8a2953224b3009eb0d00e3cd66b60c
+
   }, []);
 
   // ==========================
@@ -256,7 +250,7 @@ const fetchQuotes = async () => {
     }
   };
 
-<<<<<<< HEAD
+
   // ==========================
   // QUOTE ACTIONS
   // ==========================
@@ -752,7 +746,6 @@ export default function AdminPage() {
       <AdminDashboard />
     </ToastProvider>
   );
-=======
   return (
     <main className="min-h-screen bg-black text-white pt-28">
       <div className="max-w-7xl mx-auto">
@@ -1219,5 +1212,3 @@ export default function AdminPage() {
       </div>
     </main>
   );
->>>>>>> bdb5e6d2fa8a2953224b3009eb0d00e3cd66b60c
-}
