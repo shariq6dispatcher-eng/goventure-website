@@ -1,15 +1,8 @@
 import CategoryGridClient from "@/components/ui/gallery/CategoryGridClient";
-import clientPromise from "@/lib/mongodb";
+import { mongo } from "@/lib/mongodb";
 
 async function getPortfolio() {
-  const client = await clientPromise;
-  const db = client.db("goventure");
-
-  return await db
-    .collection("portfolio")
-    .find({})
-    .sort({ createdAt: -1 })
-    .toArray();
+  return await mongo.find("portfolio", {}, { createdAt: -1 });
 }
 
 export default async function CategoryPage({

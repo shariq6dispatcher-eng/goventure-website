@@ -1,16 +1,9 @@
 import PageHero from "@/components/ui/common/PageHero";
 import CategoryPreview from "@/components/ui/gallery/CategoryPreview";
-import clientPromise from "@/lib/mongodb";
+import { mongo } from "@/lib/mongodb";
 
 async function getPortfolio() {
-  const client = await clientPromise;
-  const db = client.db("goventure");
-
-  return await db
-    .collection("portfolio")
-    .find({})
-    .sort({ createdAt: -1 })
-    .toArray();
+  return await mongo.find("portfolio", {}, { createdAt: -1 });
 }
 export default async function PortfolioPage() {
   const projects = await getPortfolio();

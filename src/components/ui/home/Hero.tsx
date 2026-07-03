@@ -60,7 +60,7 @@ export default function Hero() {
             <button
               className="bg-[#D4AF37] text-black px-8 py-4 rounded-full font-semibold hover:scale-105 hover:shadow-[0_0_30px_rgba(212,175,55,0.35)] transition-all"
             >
-              Get Quote →
+             <Link href="/quote" className="hover:text-[#D4AF37] transition"> Get Quote → </Link>
             </button>
 
             <button
@@ -128,7 +128,7 @@ export default function Hero() {
           >
 
             <Image
-  src="/images/hero/hero-1.png"
+  src="/images/pricing/manufacturing.png"
   alt="Luxury Embroidery Manufacturing"
   width={900}
   height={1000}
@@ -148,11 +148,11 @@ export default function Hero() {
           >
 
             <h4 className="text-[#D4AF37] text-xl font-semibold">
-              Custom Patches
+              Custom T-Shirts & Jerseys
             </h4>
 
             <p className="text-zinc-400 text-sm mt-2">
-              Embroidered • PVC • Leather • Woven
+              Jerseys • Sportswear • Teamwear • Caps
             </p>
 
           </div>
