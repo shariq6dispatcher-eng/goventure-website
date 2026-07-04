@@ -299,12 +299,12 @@ function AdminDashboard() {
       />
 
       <div className="flex-1 min-w-0">
-        <div className="max-w-6xl mx-auto px-6 py-10">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-10">
           {/* OVERVIEW */}
           {activeTab === "overview" && (
             <>
-              <h2 className="text-2xl font-bold mb-8">Overview</h2>
-              <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-5 mb-10">
+              <h2 className="text-xl sm:text-2xl font-bold mb-6 sm:mb-8">Overview</h2>
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-5 mb-8 sm:mb-10">
                 <StatCard
                   icon={Images}
                   label="Portfolio Items"
@@ -328,7 +328,7 @@ function AdminDashboard() {
                 />
               </div>
 
-              <h3 className="text-lg font-semibold mb-4">
+              <h3 className="text-base sm:text-lg font-semibold mb-4">
                 Recent Quote Requests
               </h3>
               <div className="rounded-2xl border border-zinc-800 overflow-hidden">
@@ -339,7 +339,8 @@ function AdminDashboard() {
                     No quote requests yet.
                   </p>
                 ) : (
-                  <table className="w-full text-sm">
+                  <div className="overflow-x-auto">
+                  <table className="w-full text-sm min-w-[420px]">
                     <tbody>
                       {quotes.slice(0, 5).map((q) => (
                         <tr
@@ -356,6 +357,7 @@ function AdminDashboard() {
                       ))}
                     </tbody>
                   </table>
+                  </div>
                 )}
               </div>
             </>
@@ -364,8 +366,8 @@ function AdminDashboard() {
           {/* PORTFOLIO */}
           {activeTab === "portfolio" && (
             <>
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-bold">Portfolio</h2>
+              <div className="flex flex-wrap items-center justify-between gap-4 mb-6 sm:mb-8">
+                <h2 className="text-xl sm:text-2xl font-bold">Portfolio</h2>
                 <button
                   onClick={() => {
                     setEditingPortfolioItem(null);
@@ -448,8 +450,8 @@ function AdminDashboard() {
           {/* PRODUCTS */}
           {activeTab === "products" && (
             <>
-              <div className="flex items-center justify-between mb-8">
-                <h2 className="text-2xl font-bold">Shop Products</h2>
+              <div className="flex flex-wrap items-center justify-between gap-4 mb-6 sm:mb-8">
+                <h2 className="text-xl sm:text-2xl font-bold">Shop Products</h2>
                 <button
                   onClick={() => {
                     setEditingProduct(null);
@@ -537,11 +539,11 @@ function AdminDashboard() {
           {/* QUOTES */}
           {activeTab === "quotes" && (
             <>
-              <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-                <h2 className="text-2xl font-bold">Quote Requests</h2>
+              <div className="flex flex-wrap items-center justify-between gap-4 mb-6 sm:mb-8">
+                <h2 className="text-xl sm:text-2xl font-bold">Quote Requests</h2>
 
-                <div className="flex flex-wrap items-center gap-3">
-                  <div className="relative">
+                <div className="flex flex-col sm:flex-row w-full sm:w-auto items-stretch sm:items-center gap-3">
+                  <div className="relative w-full sm:w-64">
                     <Search
                       size={15}
                       className="absolute left-3.5 top-1/2 -translate-y-1/2 text-zinc-500"
@@ -550,14 +552,14 @@ function AdminDashboard() {
                       value={quoteSearch}
                       onChange={(e) => setQuoteSearch(e.target.value)}
                       placeholder="Search name, email, company…"
-                      className="bg-zinc-950 border border-zinc-800 focus:border-[#D4AF37] outline-none pl-9 pr-4 py-2.5 rounded-xl text-sm w-64 transition-colors"
+                      className="w-full bg-zinc-950 border border-zinc-800 focus:border-[#D4AF37] outline-none pl-9 pr-4 py-2.5 rounded-xl text-sm transition-colors"
                     />
                   </div>
 
                   <select
                     value={quoteStatusFilter}
                     onChange={(e) => setQuoteStatusFilter(e.target.value)}
-                    className="bg-zinc-950 border border-zinc-800 focus:border-[#D4AF37] outline-none px-4 py-2.5 rounded-xl text-sm transition-colors"
+                    className="w-full sm:w-auto bg-zinc-950 border border-zinc-800 focus:border-[#D4AF37] outline-none px-4 py-2.5 rounded-xl text-sm transition-colors"
                   >
                     {[
                       "All",
