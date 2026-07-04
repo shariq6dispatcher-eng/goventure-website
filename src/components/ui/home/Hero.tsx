@@ -2,7 +2,13 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import {
+  motion,
+  useMotionValue,
+  useSpring,
+  useTransform,
+  useScroll,
+} from "framer-motion";
 import { useRef } from "react";
 import { Sparkles, ArrowRight } from "lucide-react";
 
@@ -31,6 +37,7 @@ const wordVariant = {
 export default function Hero() {
   const cardRef = useRef<HTMLDivElement>(null);
 
+  // Mouse-tilt on the manufacturing photo card (desktop only).
   const mx = useMotionValue(0);
   const my = useMotionValue(0);
   const rotateX = useSpring(useTransform(my, [-0.5, 0.5], [8, -8]), {
@@ -43,6 +50,7 @@ export default function Hero() {
   });
 
   function handlePointerMove(e: React.PointerEvent<HTMLDivElement>) {
+    if (e.pointerType !== "mouse") return;
     const rect = cardRef.current?.getBoundingClientRect();
     if (!rect) return;
     mx.set((e.clientX - rect.left) / rect.width - 0.5);
@@ -54,8 +62,35 @@ export default function Hero() {
     my.set(0);
   }
 
+  // Scroll-driven "flip away" on the whole hero — as the user scrolls down,
+  // the hero pins in place, folds backward at the top edge like a page
+  // turning, lifts and fades, while the next section rises up over it.
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: wrapRef,
+    offset: ["start start", "end end"],
+  });
+
+  const heroRotateX = useTransform(scrollYProgress, [0, 1], [0, -65]);
+  const heroY = useTransform(scrollYProgress, [0, 1], [0, -140]);
+  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.88]);
+  const heroOpacity = useTransform(scrollYProgress, [0, 0.6, 1], [1, 0.9, 0]);
+  const heroBrightness = useTransform(scrollYProgress, [0, 1], [1, 0.5]);
+
   return (
-    <section className="relative overflow-hidden hero-grid py-14 sm:py-20 lg:min-h-screen lg:flex lg:items-center lg:py-0">
+    <div ref={wrapRef} className="relative" style={{ perspective: 1400 }}>
+      <motion.section
+        style={{
+          rotateX: heroRotateX,
+          y: heroY,
+          scale: heroScale,
+          opacity: heroOpacity,
+          filter: useTransform(heroBrightness, (b) => `brightness(${b})`),
+          transformOrigin: "top center",
+          transformStyle: "preserve-3d",
+        }}
+        className="sticky top-0 relative overflow-hidden hero-grid py-14 sm:py-20 lg:min-h-screen lg:flex lg:items-center lg:py-0 bg-black"
+      >
 
       <div className="absolute top-0 right-0 w-[280px] h-[280px] sm:w-[450px] sm:h-[450px] md:w-[700px] md:h-[700px] bg-[#D4AF37]/10 blur-[100px] md:blur-[180px] rounded-full pointer-events-none animate-drift" />
       <div className="absolute bottom-0 left-0 w-[220px] h-[220px] sm:w-[380px] sm:h-[380px] bg-[#D4AF37]/5 blur-[100px] md:blur-[140px] rounded-full pointer-events-none animate-drift [animation-delay:3s]" />
@@ -258,6 +293,11 @@ export default function Hero() {
         </div>
       </motion.div>
 
-    </section>
+      </motion.section>
+
+      {/* Scroll runway: gives the pinned hero room to flip/wrap away before
+          the next section rises up over it. */}
+      <div className="h-[55vh] sm:h-[70vh] lg:h-[85vh]" aria-hidden="true" />
+    </div>
   );
 }
