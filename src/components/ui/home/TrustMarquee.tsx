@@ -38,7 +38,7 @@ function Row({ reverse = false }: { reverse?: boolean }) {
 
 export default function TrustMarquee() {
   return (
-    <section className="relative py-6 sm:py-8 border-y border-zinc-900 bg-zinc-950/60 overflow-hidden">
+    <section className="relative z-20 py-6 sm:py-8 border-y border-zinc-900 bg-black overflow-hidden">
       <div className="pointer-events-none absolute inset-y-0 left-0 w-16 sm:w-32 bg-gradient-to-r from-black to-transparent z-10" />
       <div className="pointer-events-none absolute inset-y-0 right-0 w-16 sm:w-32 bg-gradient-to-l from-black to-transparent z-10" />
 
