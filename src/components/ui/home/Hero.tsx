@@ -310,7 +310,7 @@ export default function Hero() {
 
       {/* Scroll runway: gives the pinned hero room to flip/wrap away before
           the next section rises up over it. */}
-      <div className="h-[55vh] sm:h-[70vh] lg:h-[85vh]" aria-hidden="true" />
+      <div className="h-[25vh] sm:h-[30vh] lg:h-[35vh]" aria-hidden="true" />
     </div>
   );
 }
