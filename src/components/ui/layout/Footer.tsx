@@ -84,7 +84,7 @@ export default function Footer() {
               </a>
 
               <a
-                href="https://www.etsy.com/shop/YOUR_SHOP_NAME"
+                href="https://www.etsy.com/shop/GoventuresDesign"
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Etsy"
