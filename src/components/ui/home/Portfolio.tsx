@@ -78,9 +78,10 @@ export default function Portfolio() {
                 key={index}
                 variants={revealUp}
                 whileHover="hover"
+                whileTap="hover"
                 initial="rest"
                 animate="rest"
-                className="group relative overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950 hover:border-[#D4AF37] hover:shadow-[0_0_40px_rgba(212,175,55,0.15)] transition-colors duration-300"
+                className="group relative overflow-hidden rounded-3xl border border-zinc-800 bg-zinc-950 hover:border-[#D4AF37] active:border-[#D4AF37] hover:shadow-[0_0_40px_rgba(212,175,55,0.15)] transition-colors duration-300"
               >
                 <div className="relative h-[280px] sm:h-[360px] md:h-[420px] lg:h-[500px] overflow-hidden">
                   <motion.div
@@ -122,7 +123,7 @@ export default function Portfolio() {
                   transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
                   className="absolute bottom-5 left-5 sm:bottom-8 sm:left-8"
                 >
-                  <span className="inline-block text-[10px] uppercase tracking-[0.25em] text-[#D4AF37] mb-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <span className="inline-block text-[10px] uppercase tracking-[0.25em] text-[#D4AF37] mb-2 opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity duration-300">
                     View Project
                   </span>
                   <h3 className="text-xl sm:text-2xl font-semibold text-white">
