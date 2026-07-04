@@ -291,7 +291,7 @@ function AdminDashboard() {
   // ==========================
 
   return (
-    <div className="flex min-h-screen bg-black text-white">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-black text-white">
       <Sidebar
         activeTab={activeTab}
         onTabChange={setActiveTab}
