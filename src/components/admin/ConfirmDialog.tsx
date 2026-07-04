@@ -25,12 +25,12 @@ export default function ConfirmDialog({
 
   return (
     <div
-      className="fixed inset-0 z-[9998] bg-black/80 backdrop-blur-sm flex items-center justify-center p-6"
+      className="fixed inset-0 z-[9998] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6"
       onClick={onCancel}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-2xl bg-zinc-950 border border-zinc-800 p-6"
+        className="w-full max-w-md rounded-2xl bg-zinc-950 border border-zinc-800 p-5 sm:p-6"
       >
         <div className="flex items-start gap-4">
           <div className="shrink-0 w-10 h-10 rounded-full bg-red-950 border border-red-900 flex items-center justify-center">
