@@ -5,6 +5,7 @@ import Link from "next/link";
 import {
   motion,
   useMotionValue,
+  useMotionTemplate,
   useSpring,
   useTransform,
   useScroll,
@@ -71,11 +72,22 @@ export default function Hero() {
     offset: ["start start", "end end"],
   });
 
-  const heroRotateX = useTransform(scrollYProgress, [0, 1], [0, -65]);
-  const heroY = useTransform(scrollYProgress, [0, 1], [0, -140]);
-  const heroScale = useTransform(scrollYProgress, [0, 1], [1, 0.88]);
-  const heroOpacity = useTransform(scrollYProgress, [0, 0.6, 1], [1, 0.9, 0]);
-  const heroBrightness = useTransform(scrollYProgress, [0, 1], [1, 0.5]);
+  // Smooth out the raw scroll progress so the flip glides between scroll
+  // ticks instead of jumping — this is what makes it feel buttery rather
+  // than jittery, especially on mouse-wheel/trackpad scrolling.
+  const smoothProgress = useSpring(scrollYProgress, {
+    stiffness: 260,
+    damping: 40,
+    mass: 0.6,
+    restDelta: 0.001,
+  });
+
+  const heroRotateX = useTransform(smoothProgress, [0, 1], [0, -65]);
+  const heroY = useTransform(smoothProgress, [0, 1], [0, -140]);
+  const heroScale = useTransform(smoothProgress, [0, 1], [1, 0.88]);
+  const heroOpacity = useTransform(smoothProgress, [0, 0.6, 1], [1, 0.9, 0]);
+  const heroBrightness = useTransform(smoothProgress, [0, 1], [1, 0.5]);
+  const heroFilter = useMotionTemplate`brightness(${heroBrightness})`;
 
   return (
     <div ref={wrapRef} className="relative" style={{ perspective: 1400 }}>
@@ -85,9 +97,10 @@ export default function Hero() {
           y: heroY,
           scale: heroScale,
           opacity: heroOpacity,
-          filter: useTransform(heroBrightness, (b) => `brightness(${b})`),
+          filter: heroFilter,
           transformOrigin: "top center",
           transformStyle: "preserve-3d",
+          willChange: "transform, opacity, filter",
         }}
         className="sticky top-0 relative overflow-hidden hero-grid py-14 sm:py-20 lg:min-h-screen lg:flex lg:items-center lg:py-0 bg-black"
       >
