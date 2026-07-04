@@ -38,6 +38,9 @@ export default function TiltCard({
   });
 
   function handlePointerMove(e: React.PointerEvent<HTMLDivElement>) {
+    // Only respond to an actual mouse — touch drags are scroll gestures,
+    // not hover intent, and reacting to them fights with mobile scrolling.
+    if (e.pointerType !== "mouse") return;
     const rect = ref.current?.getBoundingClientRect();
     if (!rect) return;
     mx.set((e.clientX - rect.left) / rect.width - 0.5);
