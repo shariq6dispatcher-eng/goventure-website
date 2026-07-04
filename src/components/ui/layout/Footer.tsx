@@ -1,21 +1,42 @@
 import Link from "next/link";
 
 function InstagramIcon() {
+  const gradId = "ig-gradient";
   return (
-    <svg viewBox="0 0 24 24" fill="none" className="w-[18px] h-[18px]">
-      <rect x="2.5" y="2.5" width="19" height="19" rx="5" stroke="currentColor" strokeWidth="1.8" />
-      <circle cx="12" cy="12" r="4.3" stroke="currentColor" strokeWidth="1.8" />
-      <circle cx="17.4" cy="6.6" r="1.15" fill="currentColor" />
+    <svg viewBox="0 0 24 24" className="w-full h-full">
+      <defs>
+        <radialGradient id={gradId} cx="30%" cy="107%" r="150%">
+          <stop offset="0%" stopColor="#fdf497" />
+          <stop offset="5%" stopColor="#fdf497" />
+          <stop offset="45%" stopColor="#fd5949" />
+          <stop offset="60%" stopColor="#d6249f" />
+          <stop offset="90%" stopColor="#285AEB" />
+        </radialGradient>
+      </defs>
+      <rect x="1" y="1" width="22" height="22" rx="6" fill={`url(#${gradId})`} />
+      <rect
+        x="6.2"
+        y="6.2"
+        width="11.6"
+        height="11.6"
+        rx="3.6"
+        fill="none"
+        stroke="#fff"
+        strokeWidth="1.4"
+      />
+      <circle cx="12" cy="12" r="3.1" fill="none" stroke="#fff" strokeWidth="1.4" />
+      <circle cx="15.6" cy="8.4" r="0.9" fill="#fff" />
     </svg>
   );
 }
 
 function EtsyIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="none" className="w-[18px] h-[18px]">
+    <svg viewBox="0 0 24 24" className="w-full h-full">
+      <circle cx="12" cy="12" r="12" fill="#F1641E" />
       <path
-        d="M7.2 3.2h9.4l.9 3.9h-1.3c-.5-1.7-1-2.4-2.8-2.4h-3.1c-.5 0-.6.1-.6.6v5.1h2.1c1.4 0 1.6-.5 1.9-1.9h1.2v5.4h-1.2c-.2-1.3-.5-1.9-1.9-1.9h-2.1v4.4c0 .8.3 1.1 1.2 1.1h2.9c1.9 0 2.6-.7 3.4-2.6h1.2l-.6 4.1H7.1v-1.2c1.4-.1 1.7-.2 1.7-1.2V5.7c0-.9-.3-1.1-1.7-1.2z"
-        fill="currentColor"
+        d="M9.3 6.6c-.35 0-.55.18-.55.55v9.7c0 .37.2.55.55.55h5.55c.3 0 .45-.12.5-.4l.4-2.05h-.85c-.2.85-.4 1.15-1.2 1.15h-2.9c-.3 0-.42-.12-.42-.4v-3.35h2.35c.55 0 .7.32.83 1h.8v-2.95h-.8c-.13.68-.28 1-.83 1h-2.35V7.8c0-.28.12-.4.42-.4h2.8c.8 0 .98.42 1.15 1.15h.85l-.32-1.95c-.05-.28-.2-.4-.5-.4H9.3z"
+        fill="#fff"
       />
     </svg>
   );
@@ -23,9 +44,12 @@ function EtsyIcon() {
 
 function WhatsAppIcon() {
   return (
-    <svg viewBox="0 0 24 24" fill="currentColor" className="w-[18px] h-[18px]">
-      <path d="M17.5 14.4c-.3-.1-1.6-.8-1.9-.9-.3-.1-.4-.1-.6.1-.2.3-.7.9-.8 1-.1.2-.3.2-.5.1-.3-.1-1.2-.4-2.2-1.4-.8-.7-1.4-1.6-1.6-1.9-.2-.3 0-.4.1-.6l.4-.5c.1-.1.2-.3.2-.4.1-.2 0-.3 0-.4-.1-.1-.6-1.4-.8-1.9-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s1 2.5 1.1 2.7c.1.2 2 3 4.8 4.2.7.3 1.2.5 1.6.6.7.2 1.3.2 1.8.1.5-.1 1.6-.7 1.9-1.3.2-.6.2-1.1.2-1.3-.1-.1-.3-.2-.5-.3z" />
-      <path d="M12 2C6.5 2 2 6.5 2 12c0 1.9.5 3.6 1.4 5.2L2 22l4.9-1.3C8.4 21.5 10.1 22 12 22c5.5 0 10-4.5 10-10S17.5 2 12 2zm0 18c-1.7 0-3.3-.5-4.7-1.3l-.3-.2-3 .8.8-2.9-.2-.3C3.7 15 3.3 13.5 3.3 12c0-4.8 3.9-8.7 8.7-8.7s8.7 3.9 8.7 8.7-3.9 8.7-8.7 8.7z" />
+    <svg viewBox="0 0 24 24" className="w-full h-full">
+      <circle cx="12" cy="12" r="12" fill="#25D366" />
+      <path
+        fill="#fff"
+        d="M12.01 5.5c-3.6 0-6.5 2.9-6.5 6.5 0 1.15.3 2.25.87 3.22L5.5 18.5l3.36-.88a6.47 6.47 0 0 0 3.15.82c3.6 0 6.5-2.9 6.5-6.5s-2.91-6.44-6.5-6.44zm3.8 9.1c-.16.44-.79.81-1.28.9-.34.06-.79.11-2.28-.49-1.91-.79-3.16-2.71-3.26-2.84-.1-.13-.78-1.04-.78-1.98s.49-1.4.67-1.6c.16-.16.35-.2.47-.2h.34c.11 0 .26-.03.4.3.16.4.53 1.31.58 1.4.05.1.08.21.02.34-.05.13-.08.2-.16.3-.08.1-.17.22-.24.3-.08.08-.16.17-.07.33.09.16.4.68.87 1.1.6.53 1.1.7 1.26.78.16.08.26.07.35-.03.11-.13.44-.51.56-.68.12-.17.24-.14.4-.08.16.05 1.03.48 1.2.57.18.09.3.13.34.2.04.08.04.44-.12.88z"
+      />
     </svg>
   );
 }
@@ -54,7 +78,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Instagram"
-                className="w-9 h-9 rounded-full border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-[#D4AF37] hover:border-[#D4AF37] transition"
+                className="w-9 h-9 rounded-full overflow-hidden hover:scale-110 hover:opacity-90 transition-transform"
               >
                 <InstagramIcon />
               </a>
@@ -64,7 +88,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="Etsy"
-                className="w-9 h-9 rounded-full border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-[#D4AF37] hover:border-[#D4AF37] transition"
+                className="w-9 h-9 rounded-full overflow-hidden hover:scale-110 hover:opacity-90 transition-transform"
               >
                 <EtsyIcon />
               </a>
@@ -74,7 +98,7 @@ export default function Footer() {
                 target="_blank"
                 rel="noopener noreferrer"
                 aria-label="WhatsApp"
-                className="w-9 h-9 rounded-full border border-zinc-800 flex items-center justify-center text-zinc-400 hover:text-[#D4AF37] hover:border-[#D4AF37] transition"
+                className="w-9 h-9 rounded-full overflow-hidden hover:scale-110 hover:opacity-90 transition-transform"
               >
                 <WhatsAppIcon />
               </a>
