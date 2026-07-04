@@ -72,7 +72,7 @@ export default function QuoteDrawer({
         onClick={(e) => e.stopPropagation()}
         className="w-full max-w-lg h-full bg-zinc-950 border-l border-zinc-800 overflow-y-auto animate-in slide-in-from-right"
       >
-        <div className="sticky top-0 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800 px-6 py-5 flex items-center justify-between z-10">
+        <div className="sticky top-0 bg-zinc-950/95 backdrop-blur-md border-b border-zinc-800 px-4 sm:px-6 py-4 sm:py-5 flex items-center justify-between z-10">
           <div>
             <h3 className="text-lg font-semibold">{quote.name}</h3>
             {quote.createdAt && (
@@ -95,7 +95,7 @@ export default function QuoteDrawer({
           </button>
         </div>
 
-        <div className="p-6 space-y-7">
+        <div className="p-4 sm:p-6 space-y-6 sm:space-y-7">
           <div>
             <label className="block text-xs text-zinc-500 mb-2">Status</label>
             <div className="flex items-center gap-3">
@@ -115,7 +115,7 @@ export default function QuoteDrawer({
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
             <Field icon={Mail} label="Email" value={quote.email} />
             <Field icon={Phone} label="Phone" value={quote.phone} />
             <Field icon={Building2} label="Company" value={quote.company} />
