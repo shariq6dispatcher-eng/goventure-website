@@ -29,13 +29,13 @@ export default function Lightbox({ src, alt = "", onClose }: LightboxProps) {
 
   return (
     <div
-      className="fixed inset-0 z-[9997] bg-black/95 backdrop-blur-sm flex items-center justify-center p-6 animate-in fade-in"
+      className="fixed inset-0 z-[9997] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 animate-in fade-in"
       onClick={onClose}
     >
       <button
         onClick={onClose}
         aria-label="Close"
-        className="absolute top-6 right-6 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+        className="absolute top-4 right-4 sm:top-6 sm:right-6 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
       >
         <X size={20} />
       </button>
@@ -47,7 +47,7 @@ export default function Lightbox({ src, alt = "", onClose }: LightboxProps) {
         rel="noreferrer"
         onClick={(e) => e.stopPropagation()}
         aria-label="Download image"
-        className="absolute top-6 right-20 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
+        className="absolute top-4 right-16 sm:top-6 sm:right-20 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
       >
         <Download size={18} />
       </a>
