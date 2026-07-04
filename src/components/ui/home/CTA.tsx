@@ -21,6 +21,7 @@ function MagneticLink({
   const sy = useSpring(y, { stiffness: 200, damping: 15 });
 
   function handleMove(e: React.PointerEvent<HTMLAnchorElement>) {
+    if (e.pointerType !== "mouse") return;
     const rect = ref.current?.getBoundingClientRect();
     if (!rect) return;
     x.set((e.clientX - rect.left - rect.width / 2) * 0.35);
