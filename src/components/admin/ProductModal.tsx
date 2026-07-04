@@ -61,12 +61,12 @@ export default function ProductModal({
 
   return (
     <div
-      className="fixed inset-0 z-[9996] bg-black/80 backdrop-blur-sm flex items-center justify-center p-6 overflow-y-auto"
+      className="fixed inset-0 z-[9996] bg-black/80 backdrop-blur-sm flex items-center justify-center p-4 sm:p-6 overflow-y-auto"
       onClick={onClose}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-lg rounded-2xl bg-zinc-950 border border-zinc-800 p-6 my-10"
+        className="w-full max-w-lg rounded-2xl bg-zinc-950 border border-zinc-800 p-5 sm:p-6 my-6 sm:my-10"
       >
         <div className="flex items-center justify-between mb-6">
           <h3 className="text-xl font-semibold">
@@ -113,7 +113,7 @@ export default function ProductModal({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-sm text-zinc-400 mb-1.5">
                 Price (USD)
