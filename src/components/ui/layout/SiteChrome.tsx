@@ -6,6 +6,7 @@ import Navbar from "@/components/ui/layout/Navbar";
 import Footer from "@/components/ui/layout/Footer";
 import WhatsAppButton from "@/components/ui/layout/WhatsAppButton";
 import StickyQuote from "@/components/ui/layout/StickyQuote";
+import LoadingScreen from "@/components/ui/layout/LoadingScreen";
 
 /**
  * The admin dashboard is a separate, self-contained application shell.
@@ -27,6 +28,7 @@ export default function SiteChrome({
 
   return (
     <>
+      <LoadingScreen />
       <Navbar />
       <main className="pt-20">{children}</main>
       <Footer />
