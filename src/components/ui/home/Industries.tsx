@@ -68,6 +68,10 @@ export default function Industries() {
                   rotate: [0, -1.5, 1.5, 0],
                   y: -6,
                 }}
+                whileTap={{
+                  scale: 1.06,
+                  rotate: [0, -1.5, 1.5, 0],
+                }}
                 transition={{ duration: 0.4 }}
                 className="border border-zinc-800 bg-zinc-950 rounded-2xl sm:rounded-3xl p-4 sm:p-8 text-sm sm:text-base text-center flex items-center justify-center min-h-[88px] sm:min-h-0 hover:border-[#D4AF37] hover:shadow-[0_0_40px_rgba(212,175,55,0.15)] transition-colors duration-300 cursor-default"
               >
