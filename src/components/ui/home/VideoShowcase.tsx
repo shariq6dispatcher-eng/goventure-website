@@ -37,14 +37,14 @@ export default function VideoShowcase() {
   }
 
   return (
-    <section className="relative bg-black py-16 sm:py-24">
+    <section className="relative bg-black py-6 sm:py-24">
       <div className="max-w-7xl mx-auto px-5 sm:px-6">
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, amount: 0.3 }}
           transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
-          className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-[#D4AF37]/20 shadow-[0_0_60px_rgba(212,175,55,0.12)] aspect-video group"
+          className="relative rounded-2xl sm:rounded-3xl overflow-hidden border border-[#D4AF37]/20 shadow-[0_0_60px_rgba(212,175,55,0.12)] aspect-[3/4] sm:aspect-video group"
         >
           <video
             ref={videoRef}
