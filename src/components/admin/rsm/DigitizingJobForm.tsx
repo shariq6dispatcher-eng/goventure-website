@@ -156,3 +156,63 @@ export default function DigitizingJobForm({ job }: DigitizingJobFormProps) {
           <select
             value={format}
             onChange={(e) => setFormat(e.target.value as FileFormat)}
+            className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
+          >
+            {FILE_FORMATS.map((f) => (
+              <option key={f} value={f}>{f}</option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="block text-xs text-zinc-500 mb-1.5">Price</label>
+          <input
+            type="number"
+            step="0.01"
+            min="0"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
+            placeholder="0.00"
+          />
+        </div>
+
+        <div className="sm:col-span-2">
+          <label className="block text-xs text-zinc-500 mb-1.5">Notes</label>
+          <textarea
+            value={notes}
+            onChange={(e) => setNotes(e.target.value)}
+            rows={3}
+            className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
+            placeholder="Optional notes about this digitizing job…"
+          />
+        </div>
+      </div>
+
+      {error && (
+        <p className="text-sm text-red-400 bg-red-950/30 border border-red-900/50 rounded-xl px-3.5 py-2.5">
+          {error}
+        </p>
+      )}
+
+      <div className="flex items-center gap-3">
+        <button
+          type="submit"
+          disabled={saving}
+          className="flex items-center gap-2 bg-[#D4AF37] text-black px-4 py-2.5 rounded-xl text-sm font-medium disabled:opacity-50"
+        >
+          {saving && <Loader2 className="w-4 h-4 animate-spin" />}
+          {job ? "Save Changes" : "Create Job"}
+        </button>
+        <button
+          type="button"
+          onClick={() => router.back()}
+          disabled={saving}
+          className="px-4 py-2.5 rounded-xl text-sm font-medium text-zinc-400 hover:text-zinc-200 disabled:opacity-50"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
+  );
+}
