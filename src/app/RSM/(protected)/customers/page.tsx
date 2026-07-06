@@ -4,10 +4,9 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Plus, Search, Pencil, Trash2, Loader2 } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
+import CustomerModal from "@/components/admin/rsm/CustomerModal";
 import type { Customer } from "@/types/rsm";
 
-// Replaced by real values from the layout in Part 3E — for now this page
-// fetches its own auth display info the same way the dashboard does.
 async function fetchMe(): Promise<{ username: string; role: "admin" | "staff" }> {
   const res = await fetch("/api/rsm/me");
   if (!res.ok) throw new Error("not authed");
@@ -22,6 +21,8 @@ export default function CustomersPage() {
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [editingCustomer, setEditingCustomer] = useState<Customer | null>(null);
 
   useEffect(() => {
     fetchMe()
@@ -51,6 +52,26 @@ export default function CustomersPage() {
     } finally {
       setDeletingId(null);
     }
+  };
+
+  const openAddModal = () => {
+    setEditingCustomer(null);
+    setModalOpen(true);
+  };
+
+  const openEditModal = (c: Customer) => {
+    setEditingCustomer(c);
+    setModalOpen(true);
+  };
+
+  const handleSaved = (saved: Customer) => {
+    setCustomers((prev) => {
+      const exists = prev.some((c) => c._id === saved._id);
+      return exists
+        ? prev.map((c) => (c._id === saved._id ? saved : c))
+        : [saved, ...prev];
+    });
+    setModalOpen(false);
   };
 
   const filtered = customers.filter((c) => {
@@ -86,7 +107,7 @@ export default function CustomersPage() {
           />
         </div>
         <button
-          onClick={() => alert("Add Customer form comes in Part 3D")}
+          onClick={openAddModal}
           className="flex items-center justify-center gap-2 bg-[#D4AF37] text-black font-medium text-sm px-4 py-2.5 rounded-xl hover:opacity-90 transition-opacity"
         >
           <Plus size={16} />
@@ -141,7 +162,7 @@ export default function CustomersPage() {
                     <td className="px-5 py-3">
                       <div className="flex items-center justify-end gap-2">
                         <button
-                          onClick={() => alert("Edit form comes in Part 3D")}
+                          onClick={() => openEditModal(c)}
                           className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
                           aria-label="Edit"
                         >
@@ -167,6 +188,14 @@ export default function CustomersPage() {
             </table>
           </div>
         </div>
+      )}
+
+      {modalOpen && (
+        <CustomerModal
+          customer={editingCustomer}
+          onClose={() => setModalOpen(false)}
+          onSaved={handleSaved}
+        />
       )}
     </RsmShell>
   );
