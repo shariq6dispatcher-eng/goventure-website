@@ -3,7 +3,7 @@ import { mongo } from "@/lib/mongodb";
 import { RSM_COLLECTIONS } from "@/types/constants";
 import { getRsmAuth } from "@/lib/rsm-auth";
 import type { Order, Payment, Customer, DigitizingJob } from "@/types/rsm";
-
+// new changes
 export async function GET() {
   await getRsmAuth();
 
