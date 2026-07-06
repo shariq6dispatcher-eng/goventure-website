@@ -12,7 +12,6 @@ import {
   Users,
   BarChart3,
   Sparkles,
-  Hammer,
   UserCog,
   LogOut,
   Menu,
@@ -33,14 +32,13 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { label: "Dashboard", href: "/RSM", icon: LayoutDashboard },
-  { label: "Orders", href: "/RSM/orders", icon: ClipboardList},
+  { label: "Orders", href: "/RSM/orders", icon: ClipboardList },
   { label: "Payments", href: "/RSM/payments", icon: Wallet },
-  { label: "Customer Ledgers", href: "/RSM/ledger", icon: BookOpen, },
+  { label: "Customer Ledger", href: "/RSM/ledger", icon: BookOpen },
   { label: "Expenses", href: "/RSM/expenses", icon: Receipt },
   { label: "Customers", href: "/RSM/customers", icon: Users },
   { label: "Reports", href: "/RSM/reports", icon: BarChart3, comingSoon: true },
-  { label: "Digitizing Orders", href: "/RSM/digitizing", icon: Sparkles, comingSoon: true },
-  { label: "Digitizing Work", href: "/RSM/digitizing-work", icon: Hammer, comingSoon: true },
+  { label: "Digitizing Jobs", href: "/RSM/digitizing-jobs", icon: Sparkles },
   { label: "Users", href: "/RSM/users", icon: UserCog, comingSoon: true },
 ];
 
