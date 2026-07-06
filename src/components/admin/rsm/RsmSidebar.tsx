@@ -33,7 +33,7 @@ interface NavItem {
 
 const NAV_ITEMS: NavItem[] = [
   { label: "Dashboard", href: "/RSM", icon: LayoutDashboard },
-  { label: "Orders", href: "/RSM/orders", icon: ClipboardList, comingSoon: true },
+  { label: "Orders", href: "/RSM/orders", icon: ClipboardList},
   { label: "Payments", href: "/RSM/payments", icon: Wallet, comingSoon: true },
   { label: "Customer Ledgers", href: "/RSM/ledgers", icon: BookOpen, comingSoon: true },
   { label: "Expenses", href: "/RSM/expenses", icon: Receipt, comingSoon: true },
