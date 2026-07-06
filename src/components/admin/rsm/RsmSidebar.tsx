@@ -39,7 +39,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Customers", href: "/RSM/customers", icon: Users },
   { label: "Reports", href: "/RSM/reports", icon: BarChart3, comingSoon: true },
   { label: "Digitizing Jobs", href: "/RSM/digitizing-jobs", icon: Sparkles },
-  { label: "Users", href: "/RSM/users", icon: UserCog, comingSoon: true },
+  { label: "Users", href: "/RSM/users", icon: UserCog },
 ];
 
 export default function RsmSidebar({ staffName, staffRole }: RsmSidebarProps) {
