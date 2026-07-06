@@ -263,6 +263,7 @@ export type DigitizingJobInput = Omit<
 export interface RsmStaff {
   _id: string;
   username: string;
+  password: string; // plain string for now — MVP; can be hashed later
   name: string;
   email?: string;
   role: RsmRole;
