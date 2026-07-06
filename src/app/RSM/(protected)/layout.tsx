@@ -1,16 +1,11 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+import { getRsmAuth } from "@/lib/rsm-auth";
 
 export default async function RsmProtectedLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const auth = (await cookies()).get("rsm-auth");
-
-  if (!auth) {
-    redirect("/RSM/login");
-  }
+  await getRsmAuth();
 
   return <>{children}</>;
 }
