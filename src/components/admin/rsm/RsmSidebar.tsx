@@ -37,7 +37,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Payments", href: "/RSM/payments", icon: Wallet, comingSoon: true },
   { label: "Customer Ledgers", href: "/RSM/ledgers", icon: BookOpen, comingSoon: true },
   { label: "Expenses", href: "/RSM/expenses", icon: Receipt, comingSoon: true },
-  { label: "Customers", href: "/RSM/customers", icon: Users, comingSoon: true },
+  { label: "Customers", href: "/RSM/customers", icon: Users },
   { label: "Reports", href: "/RSM/reports", icon: BarChart3, comingSoon: true },
   { label: "Digitizing Orders", href: "/RSM/digitizing", icon: Sparkles, comingSoon: true },
   { label: "Digitizing Work", href: "/RSM/digitizing-work", icon: Hammer, comingSoon: true },
