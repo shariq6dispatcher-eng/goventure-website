@@ -70,6 +70,30 @@ export async function POST(req: Request) {
     };
 
     const result = await mongo.insertOne(RSM_COLLECTIONS.orders, doc);
+
+    // Write the matching ledger debit entry — every order is an invoice
+    // that increases what the customer owes, until payments bring it down.
+    const lastEntry = await mongo.find<LedgerEntry>(
+      RSM_COLLECTIONS.ledger,
+      { customerId: body.customerId },
+      { createdAt: -1 }
+    );
+    const previousBalance = lastEntry[0]?.balance ?? 0;
+
+    await mongo.insertOne(RSM_COLLECTIONS.ledger, {
+      customerId: body.customerId,
+      customerName: customer.name,
+      date: body.orderDate,
+      type: "Invoice",
+      referenceId: result.insertedId,
+      referenceNo: orderNo,
+      description: `Invoice for ${orderNo}`,
+      debit: body.total,
+      credit: 0,
+      balance: previousBalance + body.total,
+      createdAt: new Date().toISOString(),
+    });
+
     return NextResponse.json({
       success: true,
       order: { _id: result.insertedId, ...doc },
