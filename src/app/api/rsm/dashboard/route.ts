@@ -8,7 +8,7 @@ export async function GET() {
   await getRsmAuth();
 
   try {
-    const [orders, payments, customers, digitizingJobs] = await Promise.all([
+   const [orders, payments, customers, digitizingJobs] = await Promise.all([
   mongo.find<Order>(RSM_COLLECTIONS.orders),
   mongo.find<Payment>(RSM_COLLECTIONS.payments),
   mongo.find<Customer>(RSM_COLLECTIONS.customers),
