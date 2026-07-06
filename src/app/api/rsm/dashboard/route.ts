@@ -21,11 +21,12 @@ export async function GET() {
 
     const pendingPayments = payments.filter((p) => !p.confirmed).length;
 
-    // Digitizing Jobs collection doesn't exist as a module yet (that's a
-    // later phase), so this stays at 0 for now rather than erroring —
-    // once that module ships, swap this for a real query the same way
-    // orders/payments/customers work above.
-    const digitizingJobsCount = 0;
+    // Counts jobs still in progress (not yet delivered), same spirit as
+    // "Open Orders" above — a completed-and-delivered job isn't something
+    // that needs attention on the dashboard anymore.
+    const digitizingJobsCount = digitizingJobs.filter(
+      (j) => j.status !== "Delivered"
+    ).length;
 
     const totalOutstanding = orders.reduce((sum, o) => sum + o.balanceDue, 0);
     const totalRevenue = payments
