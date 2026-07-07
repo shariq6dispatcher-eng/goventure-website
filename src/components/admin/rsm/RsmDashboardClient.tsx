@@ -1,7 +1,9 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { Receipt, ArrowDownRight, Clock, Scissors } from "lucide-react";
+import Link from "next/link";
+import { Receipt, ArrowDownRight, Clock, Scissors, Eye } from "lucide-react";
+import RsmStatusBadge from "./RsmStatusBadge";
 import type { Order, Payment, Expense, Customer } from "@/types/rsm";
 
 interface Props {
@@ -100,6 +102,22 @@ export default function RsmDashboardClient({
       netProfit,
     };
   }, [orders, payments, expenses, customers, selectedMonth]);
+
+  const activeOrders = useMemo(
+    () =>
+      orders.filter((o) => o.status !== "Delivered" && o.status !== "Cancelled"),
+    [orders]
+  );
+
+  const pipelineCounts = useMemo(
+    () => ({
+      pending: orders.filter((o) => o.status === "Pending").length,
+      inProgress: orders.filter((o) => o.status === "In Progress").length,
+      completed: orders.filter((o) => o.status === "Completed").length,
+      delivered: orders.filter((o) => o.status === "Delivered").length,
+    }),
+    [orders]
+  );
 
   const selectedMonthName = new Date(
     selectedMonth + "-02"
@@ -226,6 +244,115 @@ export default function RsmDashboardClient({
               Net: {money(stats.netProfit)}
             </span>
           </div>
+        </div>
+      </div>
+
+      {/* ACTIVE PRODUCTION PIPELINE */}
+      <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5 space-y-4">
+        <div className="flex justify-between items-center border-b border-zinc-900 pb-3">
+          <div>
+            <h4 className="font-bold text-sm text-white">
+              Active Production Pipeline
+            </h4>
+            <p className="text-xs text-zinc-400">
+              Real-time status of orders and digitizing designs
+            </p>
+          </div>
+          <Link
+            href="/RSM/orders"
+            className="text-xs text-[#D4AF37] hover:text-[#e5c458] font-bold whitespace-nowrap"
+          >
+            Manage All Orders →
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="bg-black border border-zinc-800 p-3.5 rounded-lg text-center">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 block">
+              Pending Check
+            </span>
+            <span className="text-2xl font-mono font-bold text-amber-400 block mt-1">
+              {pipelineCounts.pending}
+            </span>
+          </div>
+          <div className="bg-black border border-zinc-800 p-3.5 rounded-lg text-center">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 block">
+              In Digitizing / Prod
+            </span>
+            <span className="text-2xl font-mono font-bold text-sky-400 block mt-1">
+              {pipelineCounts.inProgress}
+            </span>
+          </div>
+          <div className="bg-black border border-zinc-800 p-3.5 rounded-lg text-center">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 block">
+              Completed Files
+            </span>
+            <span className="text-2xl font-mono font-bold text-[#D4AF37] block mt-1">
+              {pipelineCounts.completed}
+            </span>
+          </div>
+          <div className="bg-black border border-zinc-800 p-3.5 rounded-lg text-center">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 block">
+              Delivered Orders
+            </span>
+            <span className="text-2xl font-mono font-bold text-emerald-400 block mt-1">
+              {pipelineCounts.delivered}
+            </span>
+          </div>
+        </div>
+
+        <div className="space-y-3 mt-4">
+          <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 block">
+            Urgent & Active Orders
+          </span>
+
+          {activeOrders.slice(0, 4).map((o) => (
+            <div
+              key={o._id}
+              className="bg-black border border-zinc-900 p-3.5 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:border-zinc-700 transition"
+            >
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-mono font-black text-[#D4AF37]">
+                    {o.orderNo}
+                  </span>
+                  <span className="text-xs font-bold text-white">
+                    {o.designName || "Custom Items"}
+                  </span>
+                  <span className="text-[10px] text-zinc-500 font-mono">
+                    ({o.items.length} items)
+                  </span>
+                </div>
+                <div className="flex items-center gap-2 text-[11px] text-zinc-400 mt-1">
+                  <span>
+                    Client:{" "}
+                    <span className="text-zinc-300 font-semibold">
+                      {o.customerName}
+                    </span>
+                  </span>
+                  <span>•</span>
+                  <span className="text-rose-400">Due: {o.dueDate}</span>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+                <RsmStatusBadge status={o.status} />
+                <Link
+                  href={`/RSM/orders/${o._id}`}
+                  className="p-1.5 bg-zinc-900 border border-zinc-800 rounded-lg text-zinc-400 hover:text-white transition"
+                  title="View Order"
+                >
+                  <Eye className="w-3.5 h-3.5" />
+                </Link>
+              </div>
+            </div>
+          ))}
+
+          {activeOrders.length === 0 && (
+            <div className="text-center py-8 text-zinc-500 border border-dashed border-zinc-800 rounded-lg text-xs">
+              No active orders in production. Create some in the Orders tab!
+            </div>
+          )}
         </div>
       </div>
     </div>
