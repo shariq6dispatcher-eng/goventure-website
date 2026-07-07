@@ -154,27 +154,26 @@ export default function WorkVaultPage() {
                       {new Date(f.uploadedAt).toLocaleDateString()}
                     </td>
                     <td className="px-5 py-3">
-                      <div className="flex items-center justify-end gap-2">
-                        
-                          href={f.fileUrl}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
-                          aria-label="Open"
-                        >
-                          <ExternalLink size={15} />
-                        </a>
-                        
-                          href={f.fileUrl}
-                          download
-                          className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
-                          aria-label="Download"
-                        >
-                          <Download size={15} />
-                        </a>
-                      </div>
-                    </td>
-                  </tr>
+  <div className="flex items-center justify-end gap-2">
+    
+      href={f.fileUrl}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
+      aria-label="Open"
+    >
+      <ExternalLink size={15} />
+    </a>
+    
+      href={f.fileUrl}
+      download
+      className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
+      aria-label="Download"
+    >
+      <Download size={15} />
+    </a>
+  </div>
+</td>                  </tr>
                 ))}
               </tbody>
             </table>
