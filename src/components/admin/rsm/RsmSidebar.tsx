@@ -60,7 +60,7 @@ export default function RsmSidebar({ staffName, staffRole }: RsmSidebarProps) {
   useEffect(() => {
     fetch("/api/rsm/me")
       .then((r) => r.json())
-      .then((data) => setAllowedModules(data.allowedModules ?? []))
+      .then((data) => setAllowedModules(data.allowedModules))
       .catch(() => {});
   }, []);
 
