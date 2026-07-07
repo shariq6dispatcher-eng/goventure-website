@@ -29,10 +29,16 @@ export default function ViewDigitizingJobPage() {
       .finally(() => setLoading(false));
   };
 
-  useEffect(() => {
+ useEffect(() => {
     loadJob();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  useEffect(() => {
+    if (!loading && job && window.location.hash === "#submit-files") {
+      document.getElementById("submit-files")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [loading, job]);
 
   const updateStatus = async (newStatus: string) => {
     if (!job) return;
@@ -251,8 +257,10 @@ export default function ViewDigitizingJobPage() {
             )}
           </div>
 
-          {/* Submit new files */}
-          <RsmJobFolderSubmit jobId={job._id} onSubmitted={loadJob} />
+         {/* Submit new files */}
+          <div id="submit-files" className="scroll-mt-20">
+            <RsmJobFolderSubmit jobId={job._id} onSubmitted={loadJob} />
+          </div>
         </div>
       )}
     </RsmShell>
