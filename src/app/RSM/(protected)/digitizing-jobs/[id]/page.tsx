@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { Loader2, ArrowLeft, Pencil, FileImage } from "lucide-react";
+import { Loader2, ArrowLeft, Pencil, FileImage, Play, CheckCircle2, Truck } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
 import RsmJobStatusBadge from "@/components/admin/rsm/RsmJobStatusBadge";
 import { useRsmAccess } from "@/lib/useRsmAccess";
@@ -14,9 +14,10 @@ export default function ViewDigitizingJobPage() {
   const id = params.id as string;
 
   const me = useRsmAccess("digitizing");
-  const [job, setJob] = useState<DigitizingJob | null>(null);
+ const [job, setJob] = useState<DigitizingJob | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [updatingStatus, setUpdatingStatus] = useState(false);
 
   const loadJob = () => {
     fetch(`/api/rsm/digitizing-jobs/${id}`)
@@ -33,6 +34,36 @@ export default function ViewDigitizingJobPage() {
     loadJob();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
+
+  const updateStatus = async (newStatus: string) => {
+    if (!job) return;
+    setUpdatingStatus(true);
+    try {
+      const res = await fetch(`/api/rsm/digitizing-jobs/${job._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerId: job.customerId,
+          orderId: job.orderId,
+          designName: job.designName,
+          status: newStatus,
+          price: job.price,
+          format: job.format,
+          notes: job.notes,
+          imageUrl: job.imageUrl,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Update failed");
+      setJob({ ...job, status: newStatus as DigitizingJob["status"] });
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Update failed");
+    } finally {
+      setUpdatingStatus(false);
+    }
+  };
+
+  if (!me) return null;
 
   if (!me) return null;
 
@@ -122,6 +153,41 @@ export default function ViewDigitizingJobPage() {
                 {new Date(job.createdAt).toLocaleDateString()}
               </p>
             </div>
+          </div>
+
+          {/* Status actions */}
+          <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5">
+            <h4 className="font-bold text-sm text-white mb-3">Update Status</h4>
+            <div className="flex flex-wrap gap-3">
+              <button
+                onClick={() => updateStatus("Start Digitizing")}
+                disabled={updatingStatus || job.status !== "Pending"}
+                className="flex items-center gap-2 text-xs font-bold px-4 py-2.5 rounded-xl bg-amber-950 text-amber-300 border border-amber-900 hover:bg-amber-900/60 transition disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <Play className="w-3.5 h-3.5" />
+                Start Digitizing
+              </button>
+              <button
+                onClick={() => updateStatus("Completed")}
+                disabled={updatingStatus || job.status !== "Start Digitizing"}
+                className="flex items-center gap-2 text-xs font-bold px-4 py-2.5 rounded-xl bg-emerald-950 text-emerald-300 border border-emerald-900 hover:bg-emerald-900/60 transition disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                Mark Completed
+              </button>
+              <button
+                onClick={() => updateStatus("Delivered")}
+                disabled={updatingStatus || job.status !== "Completed"}
+                className="flex items-center gap-2 text-xs font-bold px-4 py-2.5 rounded-xl bg-blue-950 text-blue-300 border border-blue-900 hover:bg-blue-900/60 transition disabled:opacity-30 disabled:cursor-not-allowed"
+              >
+                <Truck className="w-3.5 h-3.5" />
+                Mark Delivered
+              </button>
+              {updatingStatus && <Loader2 className="w-4 h-4 animate-spin text-zinc-500" />}
+            </div>
+            <p className="text-[11px] text-zinc-600 mt-2">
+              Buttons follow the workflow order — each stage unlocks the next.
+            </p>
           </div>
 
           {/* Reference image */}
