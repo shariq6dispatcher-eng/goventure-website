@@ -20,7 +20,8 @@ export default function SiteChrome({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const isAdminRoute = pathname?.startsWith("/admin");
+  const isAdminRoute =
+    pathname?.startsWith("/admin") || pathname?.startsWith("/RSM");
 
   if (isAdminRoute) {
     return <main className="min-h-screen">{children}</main>;
