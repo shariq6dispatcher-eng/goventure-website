@@ -1,42 +1,32 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
 import PaymentForm from "@/components/admin/rsm/PaymentForm";
+import { useRsmAccess } from "@/lib/useRsmAccess";
 import type { Payment } from "@/types/rsm";
 
-async function fetchMe(): Promise<{ username: string; role: "admin" | "staff" }> {
-  const res = await fetch("/api/rsm/me");
-  if (!res.ok) throw new Error("not authed");
-  return res.json();
-}
-
 export default function EditPaymentPage() {
-  const router = useRouter();
   const params = useParams();
   const id = params.id as string;
 
-  const [me, setMe] = useState<{ username: string; role: "admin" | "staff" } | null>(null);
+  const me = useRsmAccess("payments");
   const [payment, setPayment] = useState<Payment | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetchMe()
-      .then(setMe)
-      .catch(() => router.push("/RSM/login"));
-
     fetch(`/api/rsm/payments/${id}`)
       .then((r) => r.json())
       .then((data) => {
         if (data.error) throw new Error(data.error);
         setPayment(data.payment);
       })
-      .catch((err) => setError(err.message || "Failed to load payment"))
+     .catch((err) => setError(err.message || "Failed to load payment"))
       .finally(() => setLoading(false));
-  }, [id, router]);
+  }, [id]);
 
   if (!me) return null;
 
