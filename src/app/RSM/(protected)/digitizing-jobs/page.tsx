@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus, Search, Loader2, Pencil, Trash2 } from "lucide-react";
+import { Plus, Search, Loader2, Pencil, Trash2, Eye } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
 import RsmJobStatusBadge from "@/components/admin/rsm/RsmJobStatusBadge";
 import { useRsmAccess } from "@/lib/useRsmAccess";
@@ -137,7 +137,14 @@ export default function DigitizingJobsPage() {
                     key={j._id}
                     className="border-b border-zinc-900/60 last:border-0 hover:bg-zinc-900/40"
                   >
-                    <td className="px-5 py-3 font-medium">{j.designName}</td>
+                    <td className="px-5 py-3 font-medium">
+                      <Link
+                        href={`/RSM/digitizing-jobs/${j._id}`}
+                        className="hover:text-[#D4AF37] transition-colors"
+                      >
+                        {j.designName}
+                      </Link>
+                    </td>
                     <td className="px-5 py-3 text-zinc-400">{j.customerName}</td>
                     <td className="px-5 py-3 text-zinc-400">{j.format}</td>
                     <td className="px-5 py-3">
@@ -145,7 +152,14 @@ export default function DigitizingJobsPage() {
                     </td>
                     <td className="px-5 py-3 text-right">${j.price.toFixed(2)}</td>
                     <td className="px-5 py-3">
-                      <div className="flex items-center justify-end gap-2">
+                     <div className="flex items-center justify-end gap-2">
+                        <Link
+                          href={`/RSM/digitizing-jobs/${j._id}`}
+                          className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
+                          aria-label="View"
+                        >
+                          <Eye size={15} />
+                        </Link>
                         <Link
                           href={`/RSM/digitizing-jobs/${j._id}/edit`}
                           className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
