@@ -23,23 +23,27 @@ interface RsmSidebarProps {
   staffRole: "admin" | "staff";
 }
 
+import type { RsmModule } from "@/types/rsm";
+
 interface NavItem {
   label: string;
   href: string;
   icon: React.ElementType;
   comingSoon?: boolean;
+  module?: RsmModule; // omitted = always visible to any logged-in staff (e.g. Dashboard)
+  adminOnly?: boolean;
 }
 
 const NAV_ITEMS: NavItem[] = [
   { label: "Dashboard", href: "/RSM", icon: LayoutDashboard },
-  { label: "Orders", href: "/RSM/orders", icon: ClipboardList },
-  { label: "Payments", href: "/RSM/payments", icon: Wallet },
-  { label: "Customer Ledger", href: "/RSM/ledger", icon: BookOpen },
-  { label: "Expenses", href: "/RSM/expenses", icon: Receipt },
-  { label: "Customers", href: "/RSM/customers", icon: Users },
-  { label: "Reports", href: "/RSM/reports", icon: BarChart3, comingSoon: true },
-  { label: "Digitizing Jobs", href: "/RSM/digitizing-jobs", icon: Sparkles },
-  { label: "Users", href: "/RSM/users", icon: UserCog },
+  { label: "Orders", href: "/RSM/orders", icon: ClipboardList, module: "orders" },
+  { label: "Payments", href: "/RSM/payments", icon: Wallet, module: "payments" },
+  { label: "Customer Ledger", href: "/RSM/ledger", icon: BookOpen, module: "ledgers" },
+  { label: "Expenses", href: "/RSM/expenses", icon: Receipt, module: "expenses" },
+  { label: "Customers", href: "/RSM/customers", icon: Users, module: "customers" },
+  { label: "Reports", href: "/RSM/reports", icon: BarChart3, comingSoon: true, module: "reports" },
+  { label: "Digitizing Jobs", href: "/RSM/digitizing-jobs", icon: Sparkles, module: "digitizing" },
+  { label: "Users", href: "/RSM/users", icon: UserCog, adminOnly: true },
 ];
 
 export default function RsmSidebar({ staffName, staffRole }: RsmSidebarProps) {
