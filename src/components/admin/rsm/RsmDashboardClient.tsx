@@ -11,6 +11,8 @@ import {
   TrendingUp,
   TrendingDown,
   FileBarChart,
+  PlusCircle,
+  Users,
 } from "lucide-react";
 import RsmStatusBadge from "./RsmStatusBadge";
 import type { Order, Payment, Expense, Customer } from "@/types/rsm";
@@ -461,8 +463,39 @@ export default function RsmDashboardClient({
               }`}
             >
               {money(profitability.netProfit)}
-            </span>
+          </span>
           </div>
+        </div>
+
+        <div className="flex flex-wrap gap-3 pt-2">
+          <Link
+            href="/RSM/orders/new"
+            className="flex items-center gap-2 text-xs font-bold px-4 py-2.5 rounded-xl bg-[#D4AF37] text-black hover:bg-[#e5c458] transition"
+          >
+            <PlusCircle className="w-3.5 h-3.5" />
+            New Order
+          </Link>
+          <Link
+            href="/RSM/payments/new"
+            className="flex items-center gap-2 text-xs font-bold px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-200 hover:border-zinc-700 transition"
+          >
+            <ArrowDownRight className="w-3.5 h-3.5" />
+            Record Payment
+          </Link>
+          <Link
+            href="/RSM/expenses/new"
+            className="flex items-center gap-2 text-xs font-bold px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-200 hover:border-zinc-700 transition"
+          >
+            <Scissors className="w-3.5 h-3.5" />
+            Log Expense
+          </Link>
+          <Link
+            href="/RSM/customers"
+            className="flex items-center gap-2 text-xs font-bold px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-200 hover:border-zinc-700 transition"
+          >
+            <Users className="w-3.5 h-3.5" />
+            Manage Customers
+          </Link>
         </div>
       </div>
     </div>
