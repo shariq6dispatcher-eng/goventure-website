@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
@@ -13,9 +12,8 @@ import type { DigitizingJob } from "@/types/rsm";
 export default function ViewDigitizingJobPage() {
   const params = useParams();
   const id = params.id as string;
-
   const me = useRsmAccess("digitizing");
- const [job, setJob] = useState<DigitizingJob | null>(null);
+  const [job, setJob] = useState<DigitizingJob | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [updatingStatus, setUpdatingStatus] = useState(false);
@@ -66,8 +64,6 @@ export default function ViewDigitizingJobPage() {
 
   if (!me) return null;
 
-  if (!me) return null;
-
   const money = (n: number) =>
     new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n || 0);
 
@@ -85,7 +81,6 @@ export default function ViewDigitizingJobPage() {
         >
           <ArrowLeft size={15} /> Back to Digitizing Jobs
         </Link>
-
         {job && (
           <Link
             href={`/RSM/digitizing-jobs/${job._id}/edit`}
@@ -216,7 +211,7 @@ export default function ViewDigitizingJobPage() {
             </div>
           )}
 
-         {/* Submitted folders */}
+          {/* Submitted folders */}
           <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5">
             <h4 className="font-bold text-sm text-white mb-3">
               Submitted Files ({job.folders?.length || 0} folder{job.folders?.length === 1 ? "" : "s"})
