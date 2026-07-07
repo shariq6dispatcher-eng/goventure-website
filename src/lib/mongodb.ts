@@ -205,6 +205,18 @@ export const mongo = {
     }>("updateOne", collection, { filter, update: { $set: update } });
     return data;
   },
+
+  async updateMany(
+    collection: string,
+    filter: JsonRecord,
+    update: JsonRecord
+  ): Promise<{ matchedCount: number; modifiedCount: number }> {
+    const data = await callDataApi<{
+      matchedCount: number;
+      modifiedCount: number;
+    }>("updateMany", collection, { filter, update: { $set: update } });
+    return data;
+  },
 };
 
 export default mongo;
