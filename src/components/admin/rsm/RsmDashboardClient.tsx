@@ -168,28 +168,28 @@ export default function RsmDashboardClient({
 
   return (
     <div className="space-y-6">
-      {/* MONTH FILTER */}
-      <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-        <div>
-          <h4 className="font-bold text-sm text-white">
+    {/* MONTH FILTER */}
+      <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-3.5 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
+        <div className="min-w-0">
+          <h4 className="font-bold text-xs sm:text-sm text-white">
             Monthly Business Situation
           </h4>
-          <p className="text-xs text-zinc-400 mt-1">
-            Viewing financials and operation metrics for{" "}
+          <p className="text-[11px] sm:text-xs text-zinc-400 mt-1">
+            Viewing financials for{" "}
             <span className="text-[#D4AF37] font-bold font-mono">
               {selectedMonthName}
             </span>
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
-          <label className="text-zinc-400 text-xs font-bold whitespace-nowrap">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <label className="text-zinc-400 text-[11px] sm:text-xs font-bold whitespace-nowrap hidden sm:inline">
             Change Month:
           </label>
           <select
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
-            className="bg-black border border-zinc-800 hover:border-zinc-700 text-xs font-bold text-zinc-200 p-2.5 rounded-xl outline-none focus:border-[#D4AF37] transition font-mono min-w-[180px]"
+            className="w-full sm:w-auto bg-black border border-zinc-800 hover:border-zinc-700 text-xs font-bold text-zinc-200 p-2.5 rounded-xl outline-none focus:border-[#D4AF37] transition font-mono sm:min-w-[180px]"
           >
             {availableMonths.map((month) => {
               const dateObj = new Date(month + "-02");
