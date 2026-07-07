@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus, Search, Loader2, Pencil, Trash2, Eye } from "lucide-react";
+import { Plus, Search, Loader2, Pencil, Trash2, Eye, UploadCloud } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
 import RsmJobStatusBadge from "@/components/admin/rsm/RsmJobStatusBadge";
 import { useRsmAccess } from "@/lib/useRsmAccess";
@@ -142,7 +142,7 @@ export default function DigitizingJobsPage() {
                       <span className="text-[11px] text-zinc-500">{j.format}</span>
                     </div>
                   </div>
-                  <div className="flex items-center gap-1 shrink-0">
+                 <div className="flex items-center gap-1 shrink-0">
                     <Link
                       href={`/RSM/digitizing-jobs/${j._id}`}
                       className="p-2 text-zinc-400 active:text-[#D4AF37] active:bg-zinc-800 rounded-lg transition-colors"
@@ -171,10 +171,16 @@ export default function DigitizingJobsPage() {
                     </button>
                   </div>
                 </div>
-                <div className="flex items-center justify-end mt-3 pt-3 border-t border-zinc-900 text-xs">
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-zinc-900 text-xs">
                   <span className="font-mono font-bold text-white">${j.price.toFixed(2)}</span>
-                </div>
-              </div>
+                  <Link
+                    href={`/RSM/digitizing-jobs/${j._id}#submit-files`}
+                    className="flex items-center gap-1.5 text-[11px] font-bold text-[#D4AF37] active:opacity-70"
+                  >
+                    <UploadCloud size={13} />
+                    Upload Files
+                  </Link>
+                </div>              </div>
             ))}
           </div>
 
@@ -213,7 +219,15 @@ export default function DigitizingJobsPage() {
                       </td>
                       <td className="px-5 py-3 text-right">${j.price.toFixed(2)}</td>
                       <td className="px-5 py-3">
-                       <div className="flex items-center justify-end gap-2">
+                     <div className="flex items-center justify-end gap-2">
+                          <Link
+                            href={`/RSM/digitizing-jobs/${j._id}#submit-files`}
+                            className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
+                            aria-label="Upload Files"
+                            title="Upload completed files"
+                          >
+                            <UploadCloud size={15} />
+                          </Link>
                           <Link
                             href={`/RSM/digitizing-jobs/${j._id}`}
                             className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
@@ -241,8 +255,7 @@ export default function DigitizingJobsPage() {
                             )}
                           </button>
                         </div>
-                      </td>
-                    </tr>
+                      </td>                    </tr>
                   ))}
                 </tbody>
               </table>
