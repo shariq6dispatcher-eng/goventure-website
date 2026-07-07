@@ -19,7 +19,7 @@ export default function RsmShell({
   children,
 }: RsmShellProps) {
   return (
-    <div className="min-h-screen bg-black text-white flex">
+   <div className="min-h-screen bg-black text-white flex flex-col lg:flex-row">
       <RsmSidebar staffName={staffName} staffRole={staffRole} />
 
       <main className="flex-1 min-w-0">
