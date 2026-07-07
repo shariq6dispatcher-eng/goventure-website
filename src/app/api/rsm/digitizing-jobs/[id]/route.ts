@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { mongo, toObjectId } from "@/lib/mongodb";
 import { RSM_COLLECTIONS } from "@/types/constants";
 import { getRsmAuth } from "@/lib/rsm-auth";
+import { notifyRsm } from "@/lib/rsm-notify";
 import type { DigitizingJob, DigitizingJobInput, Customer } from "@/types/rsm";
 
 export async function GET(
@@ -83,7 +84,7 @@ export async function PUT(
       updatedAt: new Date().toISOString(),
     };
 
-    const result = await mongo.updateOne(
+   const result = await mongo.updateOne(
       RSM_COLLECTIONS.digitizingJobs,
       { _id: toObjectId(id) },
       update
@@ -91,6 +92,15 @@ export async function PUT(
 
     if (result.matchedCount === 0) {
       return NextResponse.json({ error: "Job not found" }, { status: 404 });
+    }
+
+    if (body.status && body.status !== existing.status) {
+      await notifyRsm({
+        title: `Digitizing Job: ${update.status}`,
+        message: `${update.designName} for ${update.customerName} is now "${update.status}".`,
+        jobId: id,
+        orderId: update.orderId,
+      });
     }
 
     return NextResponse.json({ success: true });
