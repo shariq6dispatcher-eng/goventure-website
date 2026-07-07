@@ -23,15 +23,17 @@ export default function RsmShell({
       <RsmSidebar staffName={staffName} staffRole={staffRole} />
 
       <main className="flex-1 min-w-0">
-       <div className="px-4 sm:px-8 py-8 sm:py-10 max-w-7xl mx-auto">
-          <div className="mb-8 flex items-start justify-between gap-4">
-            <div>
-              <h1 className="text-2xl sm:text-3xl font-bold">{title}</h1>
+       <div className="px-3 sm:px-8 py-4 sm:py-10 max-w-7xl mx-auto">
+          <div className="mb-5 sm:mb-8 flex items-start justify-between gap-3">
+            <div className="min-w-0">
+              <h1 className="text-lg sm:text-3xl font-bold truncate">{title}</h1>
               {subtitle && (
-                <p className="text-zinc-500 text-sm mt-1">{subtitle}</p>
+                <p className="text-zinc-500 text-xs sm:text-sm mt-1 line-clamp-1">{subtitle}</p>
               )}
             </div>
-            <RsmNotificationBell />
+            <div className="shrink-0">
+              <RsmNotificationBell />
+            </div>
           </div>
 
           {children}
