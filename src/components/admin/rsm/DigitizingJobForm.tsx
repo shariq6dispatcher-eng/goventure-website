@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { Loader2, UploadCloud, X } from "lucide-react";
 import type { Customer, Order, DigitizingJob, DigitizingJobStatus, FileFormat } from "@/types/rsm";
 import { DIGITIZING_JOB_STATUSES, FILE_FORMATS } from "@/types/constants";
 
@@ -22,9 +22,31 @@ export default function DigitizingJobForm({ job }: DigitizingJobFormProps) {
   const [price, setPrice] = useState(job?.price?.toString() || "");
   const [format, setFormat] = useState<FileFormat>(job?.format || "DST");
   const [notes, setNotes] = useState(job?.notes || "");
+  const [imageUrl, setImageUrl] = useState(job?.imageUrl || "");
+  const [uploadingImage, setUploadingImage] = useState(false);
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+
+  const handleImageUpload = async (file: File) => {
+    setUploadingImage(true);
+    setError("");
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/rsm/digitizing-jobs/upload", {
+        method: "POST",
+        body: fd,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Image upload failed");
+      setImageUrl(data.url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Image upload failed");
+    } finally {
+      setUploadingImage(false);
+    }
+  };
 
   useEffect(() => {
     fetch("/api/rsm/customers")
@@ -63,8 +85,8 @@ export default function DigitizingJobForm({ job }: DigitizingJobFormProps) {
         price: price ? Number(price) : 0,
         format,
         notes,
+        imageUrl,
       };
-
       const url = job
         ? `/api/rsm/digitizing-jobs/${job._id}`
         : "/api/rsm/digitizing-jobs";
@@ -90,7 +112,7 @@ export default function DigitizingJobForm({ job }: DigitizingJobFormProps) {
   return (
     <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
       <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5 grid sm:grid-cols-2 gap-4">
-        <div className="sm:col-span-2">
+       <div className="sm:col-span-2">
           <label className="block text-xs text-zinc-500 mb-1.5">Design Name *</label>
           <input
             value={designName}
@@ -98,6 +120,43 @@ export default function DigitizingJobForm({ job }: DigitizingJobFormProps) {
             className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
             placeholder="e.g. Left Chest Logo"
           />
+        </div>
+
+        <div className="sm:col-span-2">
+          <label className="block text-xs text-zinc-500 mb-1.5">
+            Design Reference Image
+          </label>
+          {imageUrl ? (
+            <div className="relative w-32 h-32 rounded-xl overflow-hidden border border-zinc-800">
+              <img src={imageUrl} alt="Design reference" className="w-full h-full object-cover" />
+              <button
+                type="button"
+                onClick={() => setImageUrl("")}
+                className="absolute top-1 right-1 bg-black/70 rounded-full p-1 hover:bg-black"
+              >
+                <X className="w-3 h-3 text-white" />
+              </button>
+            </div>
+          ) : (
+            <label className="flex items-center gap-2 w-fit cursor-pointer bg-zinc-900 border border-dashed border-zinc-800 rounded-xl px-4 py-3 text-xs text-zinc-400 hover:border-zinc-600 transition">
+              {uploadingImage ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                <UploadCloud className="w-4 h-4" />
+              )}
+              {uploadingImage ? "Uploading…" : "Click to upload image"}
+              <input
+                type="file"
+                accept="image/*"
+                className="hidden"
+                disabled={uploadingImage}
+                onChange={(e) => {
+                  const file = e.target.files?.[0];
+                  if (file) handleImageUpload(file);
+                }}
+              />
+            </label>
+          )}
         </div>
 
         <div>
