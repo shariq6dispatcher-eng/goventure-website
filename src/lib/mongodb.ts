@@ -58,6 +58,7 @@ async function callDataApi<T = unknown>(
     | "findOne"
     | "insertOne"
     | "updateOne"
+    | "updateMany"
     | "deleteOne"
     | "deleteMany",
   collection: string,
