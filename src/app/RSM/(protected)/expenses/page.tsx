@@ -26,7 +26,7 @@ export default function ExpensesPage() {
       })
       .catch((err) => setError(err.message || "Failed to load expenses"))
       .finally(() => setLoading(false));
-  }, [router]);
+  }, []);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this expense? This cannot be undone.")) return;
