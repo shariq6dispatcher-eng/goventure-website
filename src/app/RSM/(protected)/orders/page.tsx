@@ -63,7 +63,7 @@ export default function OrdersPage() {
       title="Orders"
       subtitle={`${orders.length} total`}
     >
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+      <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 mb-5 sm:mb-6">
         <div className="relative flex-1">
           <Search
             size={16}
@@ -72,33 +72,34 @@ export default function OrdersPage() {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by order #, customer, design…"
+            placeholder="Search order #, customer, design…"
             className="w-full bg-zinc-900/60 border border-zinc-800 rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
           />
         </div>
 
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value as OrderStatus | "All")}
-          className="bg-zinc-900/60 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
-        >
-          <option value="All">All statuses</option>
-          {ORDER_STATUSES.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
-        </select>
+        <div className="flex gap-2.5 sm:gap-3">
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as OrderStatus | "All")}
+            className="flex-1 sm:flex-none bg-zinc-900/60 border border-zinc-800 rounded-xl px-3 sm:px-4 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
+          >
+            <option value="All">All statuses</option>
+            {ORDER_STATUSES.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
 
-        <Link
-          href="/RSM/orders/new"
-          className="flex items-center justify-center gap-2 bg-[#D4AF37] text-black font-medium text-sm px-4 py-2.5 rounded-xl hover:opacity-90 transition-opacity whitespace-nowrap"
-        >
-          <Plus size={16} />
-          New Order
-        </Link>
+          <Link
+            href="/RSM/orders/new"
+            className="flex items-center justify-center gap-2 bg-[#D4AF37] text-black font-medium text-sm px-4 py-2.5 rounded-xl hover:opacity-90 transition-opacity whitespace-nowrap"
+          >
+            <Plus size={16} />
+            <span className="hidden sm:inline">New Order</span>
+          </Link>
+        </div>
       </div>
-
       {loading && (
         <div className="flex items-center justify-center py-20 text-zinc-500">
           <Loader2 size={20} className="animate-spin mr-2" />
@@ -121,74 +122,144 @@ export default function OrdersPage() {
       )}
 
       {!loading && !error && filtered.length > 0 && (
-        <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-zinc-900 text-zinc-500 text-xs uppercase tracking-wide">
-                  <th className="text-left px-5 py-3 font-medium">Order #</th>
-                  <th className="text-left px-5 py-3 font-medium">Customer</th>
-                  <th className="text-left px-5 py-3 font-medium">Status</th>
-                  <th className="text-right px-5 py-3 font-medium">Total</th>
-                  <th className="text-right px-5 py-3 font-medium">Balance</th>
-                  <th className="text-left px-5 py-3 font-medium">Due</th>
-                  <th className="text-right px-5 py-3 font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((o) => (
-                  <tr
-                    key={o._id}
-                    className="border-b border-zinc-900/60 last:border-0 hover:bg-zinc-900/40"
-                  >
-                    <td className="px-5 py-3 font-medium">{o.orderNo}</td>
-                    <td className="px-5 py-3 text-zinc-400">{o.customerName}</td>
-                    <td className="px-5 py-3">
-                      <RsmStatusBadge status={o.status} />
-                    </td>
-                    <td className="px-5 py-3 text-right">${o.total.toFixed(2)}</td>
-                    <td className="px-5 py-3 text-right">
-                      <span className={o.balanceDue > 0 ? "text-amber-400" : "text-zinc-500"}>
-                        ${o.balanceDue.toFixed(2)}
+        <>
+          {/* Mobile card list */}
+          <div className="sm:hidden space-y-2.5">
+            {filtered.map((o) => (
+              <div
+                key={o._id}
+                className="bg-zinc-900/60 border border-zinc-900 rounded-xl p-3.5"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-xs font-mono font-black text-[#D4AF37]">
+                        {o.orderNo}
                       </span>
-                    </td>
-                    <td className="px-5 py-3 text-zinc-400">{o.dueDate}</td>
-                    <td className="px-5 py-3">
-                      <div className="flex items-center justify-end gap-2">
-                        <Link
-                          href={`/RSM/orders/${o._id}`}
-                          className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
-                          aria-label="View"
-                        >
-                          <Eye size={15} />
-                        </Link>
-                        <Link
-                          href={`/RSM/orders/${o._id}/edit`}
-                          className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
-                          aria-label="Edit"
-                        >
-                          <Pencil size={15} />
-                        </Link>
-                        <button
-                          onClick={() => handleDelete(o._id)}
-                          disabled={deletingId === o._id}
-                          className="p-2 text-zinc-400 hover:text-red-400 hover:bg-red-950/30 rounded-lg transition-colors disabled:opacity-50"
-                          aria-label="Delete"
-                        >
-                          {deletingId === o._id ? (
-                            <Loader2 size={15} className="animate-spin" />
-                          ) : (
-                            <Trash2 size={15} />
-                          )}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      <RsmStatusBadge status={o.status} />
+                    </div>
+                    <p className="text-xs text-zinc-400 mt-1 truncate">{o.customerName}</p>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <Link
+                      href={`/RSM/orders/${o._id}`}
+                      className="p-2 text-zinc-400 active:text-[#D4AF37] active:bg-zinc-800 rounded-lg transition-colors"
+                      aria-label="View"
+                    >
+                      <Eye size={15} />
+                    </Link>
+                    <Link
+                      href={`/RSM/orders/${o._id}/edit`}
+                      className="p-2 text-zinc-400 active:text-[#D4AF37] active:bg-zinc-800 rounded-lg transition-colors"
+                      aria-label="Edit"
+                    >
+                      <Pencil size={15} />
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(o._id)}
+                      disabled={deletingId === o._id}
+                      className="p-2 text-zinc-400 active:text-red-400 active:bg-red-950/30 rounded-lg transition-colors disabled:opacity-50"
+                      aria-label="Delete"
+                    >
+                      {deletingId === o._id ? (
+                        <Loader2 size={15} className="animate-spin" />
+                      ) : (
+                        <Trash2 size={15} />
+                      )}
+                    </button>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-zinc-900 text-xs">
+                  <div>
+                    <span className="text-zinc-500">Total: </span>
+                    <span className="font-mono font-bold text-white">${o.total.toFixed(2)}</span>
+                  </div>
+                  <div>
+                    <span className="text-zinc-500">Balance: </span>
+                    <span
+                      className={`font-mono font-bold ${
+                        o.balanceDue > 0 ? "text-amber-400" : "text-zinc-500"
+                      }`}
+                    >
+                      ${o.balanceDue.toFixed(2)}
+                    </span>
+                  </div>
+                  <div className="text-zinc-500">Due: {o.dueDate}</div>
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
+
+          {/* Desktop table */}
+          <div className="hidden sm:block bg-zinc-900/60 border border-zinc-900 rounded-2xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-zinc-900 text-zinc-500 text-xs uppercase tracking-wide">
+                    <th className="text-left px-5 py-3 font-medium">Order #</th>
+                    <th className="text-left px-5 py-3 font-medium">Customer</th>
+                    <th className="text-left px-5 py-3 font-medium">Status</th>
+                    <th className="text-right px-5 py-3 font-medium">Total</th>
+                    <th className="text-right px-5 py-3 font-medium">Balance</th>
+                    <th className="text-left px-5 py-3 font-medium">Due</th>
+                    <th className="text-right px-5 py-3 font-medium">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((o) => (
+                    <tr
+                      key={o._id}
+                      className="border-b border-zinc-900/60 last:border-0 hover:bg-zinc-900/40"
+                    >
+                      <td className="px-5 py-3 font-medium">{o.orderNo}</td>
+                      <td className="px-5 py-3 text-zinc-400">{o.customerName}</td>
+                      <td className="px-5 py-3">
+                        <RsmStatusBadge status={o.status} />
+                      </td>
+                      <td className="px-5 py-3 text-right">${o.total.toFixed(2)}</td>
+                      <td className="px-5 py-3 text-right">
+                        <span className={o.balanceDue > 0 ? "text-amber-400" : "text-zinc-500"}>
+                          ${o.balanceDue.toFixed(2)}
+                        </span>
+                      </td>
+                      <td className="px-5 py-3 text-zinc-400">{o.dueDate}</td>
+                      <td className="px-5 py-3">
+                        <div className="flex items-center justify-end gap-2">
+                          <Link
+                            href={`/RSM/orders/${o._id}`}
+                            className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
+                            aria-label="View"
+                          >
+                            <Eye size={15} />
+                          </Link>
+                          <Link
+                            href={`/RSM/orders/${o._id}/edit`}
+                            className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
+                            aria-label="Edit"
+                          >
+                            <Pencil size={15} />
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(o._id)}
+                            disabled={deletingId === o._id}
+                            className="p-2 text-zinc-400 hover:text-red-400 hover:bg-red-950/30 rounded-lg transition-colors disabled:opacity-50"
+                            aria-label="Delete"
+                          >
+                            {deletingId === o._id ? (
+                              <Loader2 size={15} className="animate-spin" />
+                            ) : (
+                              <Trash2 size={15} />
+                            )}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
       )}
     </RsmShell>
   );
