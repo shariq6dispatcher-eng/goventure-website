@@ -134,7 +134,7 @@ export default function WorkVaultPage() {
                     <p className="text-xs text-zinc-500 truncate">{f.customerName}</p>
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
-                    
+                    <a
                       href={f.fileUrl}
                       target="_blank"
                       rel="noopener noreferrer"
@@ -143,7 +143,7 @@ export default function WorkVaultPage() {
                     >
                       <ExternalLink size={15} />
                     </a>
-                    
+                    <a
                       href={f.fileUrl}
                       download
                       className="p-2 text-zinc-400 active:text-[#D4AF37] active:bg-zinc-800 rounded-lg transition-colors"
