@@ -34,7 +34,7 @@ export async function POST(req: Request) {
           {
             folder: "goventure-rsm-digitizing",
             resource_type: isImage ? "image" : "raw",
-            public_id: file.name.replace(/\.[^/.]+$/, ""),
+           public_id: isImage ? file.name.replace(/\.[^/.]+$/, "") : file.name,
             use_filename: true,
             unique_filename: true,
           },
