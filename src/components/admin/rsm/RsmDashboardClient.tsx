@@ -462,7 +462,6 @@ export default function RsmDashboardClient({
               {money(profitability.netProfit)}
           </span>
           </div>
-        </div>
 
         <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-3 pt-2">
           <Link
