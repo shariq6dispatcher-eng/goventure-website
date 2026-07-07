@@ -12,6 +12,7 @@ import {
   Users,
   BarChart3,
   Sparkles,
+  FolderOpen,
   UserCog,
   LogOut,
   Menu,
@@ -43,6 +44,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Customers", href: "/RSM/customers", icon: Users, module: "customers" },
   { label: "Reports", href: "/RSM/reports", icon: BarChart3, comingSoon: true, module: "reports" },
   { label: "Digitizing Jobs", href: "/RSM/digitizing-jobs", icon: Sparkles, module: "digitizing" },
+  { label: "Work Vault", href: "/RSM/work-vault", icon: FolderOpen, module: "digitizing_work" },
   { label: "Users", href: "/RSM/users", icon: UserCog, adminOnly: true },
 ];
 
