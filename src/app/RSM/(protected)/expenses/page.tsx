@@ -64,7 +64,7 @@ export default function ExpensesPage() {
       title="Expenses"
       subtitle={`${expenses.length} total · $${totalAmount.toFixed(2)} spent`}
     >
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+      <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 mb-5 sm:mb-6">
         <div className="relative flex-1">
           <Search
             size={16}
@@ -73,29 +73,31 @@ export default function ExpensesPage() {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by expense #, description, ref…"
+            placeholder="Search expense #, description, ref…"
             className="w-full bg-zinc-900/60 border border-zinc-800 rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
           />
         </div>
 
-        <select
-          value={categoryFilter}
-          onChange={(e) => setCategoryFilter(e.target.value as ExpenseCategory | "All")}
-          className="bg-zinc-900/60 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
-        >
-          <option value="All">All categories</option>
-          {EXPENSE_CATEGORIES.map((c) => (
-            <option key={c} value={c}>{c}</option>
-          ))}
-        </select>
+        <div className="flex gap-2.5 sm:gap-3">
+          <select
+            value={categoryFilter}
+            onChange={(e) => setCategoryFilter(e.target.value as ExpenseCategory | "All")}
+            className="flex-1 sm:flex-none bg-zinc-900/60 border border-zinc-800 rounded-xl px-3 sm:px-4 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
+          >
+            <option value="All">All categories</option>
+            {EXPENSE_CATEGORIES.map((c) => (
+              <option key={c} value={c}>{c}</option>
+            ))}
+          </select>
 
-        <Link
-          href="/RSM/expenses/new"
-          className="flex items-center justify-center gap-2 bg-[#D4AF37] text-black font-medium text-sm px-4 py-2.5 rounded-xl hover:opacity-90 transition-opacity whitespace-nowrap"
-        >
-          <Plus size={16} />
-          Add Expense
-        </Link>
+          <Link
+            href="/RSM/expenses/new"
+            className="flex items-center justify-center gap-2 bg-[#D4AF37] text-black font-medium text-sm px-4 py-2.5 rounded-xl hover:opacity-90 transition-opacity whitespace-nowrap"
+          >
+            <Plus size={16} />
+            <span className="hidden sm:inline">Add Expense</span>
+          </Link>
+        </div>
       </div>
 
       {loading && (
@@ -119,64 +121,116 @@ export default function ExpensesPage() {
         </div>
       )}
 
-      {!loading && !error && filtered.length > 0 && (
-        <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-zinc-900 text-zinc-500 text-xs uppercase tracking-wide">
-                  <th className="text-left px-5 py-3 font-medium">Expense #</th>
-                  <th className="text-left px-5 py-3 font-medium">Description</th>
-                  <th className="text-left px-5 py-3 font-medium">Category</th>
-                  <th className="text-right px-5 py-3 font-medium">Amount</th>
-                  <th className="text-left px-5 py-3 font-medium">Date</th>
-                  <th className="text-right px-5 py-3 font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((e) => (
-                  <tr
-                    key={e._id}
-                    className="border-b border-zinc-900/60 last:border-0 hover:bg-zinc-900/40"
-                  >
-                    <td className="px-5 py-3 font-medium">{e.expenseNo}</td>
-                    <td className="px-5 py-3 text-zinc-400">{e.description}</td>
-                    <td className="px-5 py-3">
-                      <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border bg-zinc-800 text-zinc-300 border-zinc-700 whitespace-nowrap">
+     {!loading && !error && filtered.length > 0 && (
+        <>
+          {/* Mobile card list */}
+          <div className="sm:hidden space-y-2.5">
+            {filtered.map((e) => (
+              <div
+                key={e._id}
+                className="bg-zinc-900/60 border border-zinc-900 rounded-xl p-3.5"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-xs font-mono font-black text-[#D4AF37]">
+                        {e.expenseNo}
+                      </span>
+                      <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border bg-zinc-800 text-zinc-300 border-zinc-700 whitespace-nowrap">
                         {e.category}
                       </span>
-                    </td>
-                    <td className="px-5 py-3 text-right">${e.amount.toFixed(2)}</td>
-                    <td className="px-5 py-3 text-zinc-400">{e.date}</td>
-                    <td className="px-5 py-3">
-                      <div className="flex items-center justify-end gap-2">
-                        <Link
-                          href={`/RSM/expenses/${e._id}/edit`}
-                          className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
-                          aria-label="Edit"
-                        >
-                          <Pencil size={15} />
-                        </Link>
-                        <button
-                          onClick={() => handleDelete(e._id)}
-                          disabled={deletingId === e._id}
-                          className="p-2 text-zinc-400 hover:text-red-400 hover:bg-red-950/30 rounded-lg transition-colors disabled:opacity-50"
-                          aria-label="Delete"
-                        >
-                          {deletingId === e._id ? (
-                            <Loader2 size={15} className="animate-spin" />
-                          ) : (
-                            <Trash2 size={15} />
-                          )}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </div>
+                    <p className="text-xs text-zinc-400 mt-1 truncate">{e.description}</p>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <Link
+                      href={`/RSM/expenses/${e._id}/edit`}
+                      className="p-2 text-zinc-400 active:text-[#D4AF37] active:bg-zinc-800 rounded-lg transition-colors"
+                      aria-label="Edit"
+                    >
+                      <Pencil size={15} />
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(e._id)}
+                      disabled={deletingId === e._id}
+                      className="p-2 text-zinc-400 active:text-red-400 active:bg-red-950/30 rounded-lg transition-colors disabled:opacity-50"
+                      aria-label="Delete"
+                    >
+                      {deletingId === e._id ? (
+                        <Loader2 size={15} className="animate-spin" />
+                      ) : (
+                        <Trash2 size={15} />
+                      )}
+                    </button>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-zinc-900 text-xs">
+                  <span className="font-mono font-bold text-white">${e.amount.toFixed(2)}</span>
+                  <span className="text-zinc-500">{e.date}</span>
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
+
+          {/* Desktop table */}
+          <div className="hidden sm:block bg-zinc-900/60 border border-zinc-900 rounded-2xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-zinc-900 text-zinc-500 text-xs uppercase tracking-wide">
+                    <th className="text-left px-5 py-3 font-medium">Expense #</th>
+                    <th className="text-left px-5 py-3 font-medium">Description</th>
+                    <th className="text-left px-5 py-3 font-medium">Category</th>
+                    <th className="text-right px-5 py-3 font-medium">Amount</th>
+                    <th className="text-left px-5 py-3 font-medium">Date</th>
+                    <th className="text-right px-5 py-3 font-medium">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((e) => (
+                    <tr
+                      key={e._id}
+                      className="border-b border-zinc-900/60 last:border-0 hover:bg-zinc-900/40"
+                    >
+                      <td className="px-5 py-3 font-medium">{e.expenseNo}</td>
+                      <td className="px-5 py-3 text-zinc-400">{e.description}</td>
+                      <td className="px-5 py-3">
+                        <span className="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium border bg-zinc-800 text-zinc-300 border-zinc-700 whitespace-nowrap">
+                          {e.category}
+                        </span>
+                      </td>
+                      <td className="px-5 py-3 text-right">${e.amount.toFixed(2)}</td>
+                      <td className="px-5 py-3 text-zinc-400">{e.date}</td>
+                      <td className="px-5 py-3">
+                        <div className="flex items-center justify-end gap-2">
+                          <Link
+                            href={`/RSM/expenses/${e._id}/edit`}
+                            className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
+                            aria-label="Edit"
+                          >
+                            <Pencil size={15} />
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(e._id)}
+                            disabled={deletingId === e._id}
+                            className="p-2 text-zinc-400 hover:text-red-400 hover:bg-red-950/30 rounded-lg transition-colors disabled:opacity-50"
+                            aria-label="Delete"
+                          >
+                            {deletingId === e._id ? (
+                              <Loader2 size={15} className="animate-spin" />
+                            ) : (
+                              <Trash2 size={15} />
+                            )}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
       )}
     </RsmShell>
   );
