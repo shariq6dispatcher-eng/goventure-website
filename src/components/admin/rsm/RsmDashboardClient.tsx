@@ -119,6 +119,35 @@ export default function RsmDashboardClient({
     [orders]
   );
 
+  const profitability = useMemo(() => {
+    const paidOrders = orders.filter(
+      (o) => o.status !== "Cancelled" && o.orderDate.startsWith(selectedMonth)
+    );
+    const grossRevenue = paidOrders.reduce((sum, o) => sum + o.total, 0);
+    const totalDiscount = paidOrders.reduce((sum, o) => sum + (o.discount || 0), 0);
+    const totalTax = paidOrders.reduce((sum, o) => sum + (o.tax || 0), 0);
+
+    const monthExpenses = expenses.filter((e) => e.date.startsWith(selectedMonth));
+    const totalExpenses = monthExpenses.reduce((sum, e) => sum + e.amount, 0);
+
+    const monthPayments = payments.filter((p) => p.date.startsWith(selectedMonth));
+    const totalCollected = monthPayments.reduce((sum, p) => sum + p.amount, 0);
+
+    const netProfit = totalCollected - totalExpenses;
+    const profitMargin =
+      totalCollected > 0 ? (netProfit / totalCollected) * 100 : 0;
+
+    return {
+      grossRevenue,
+      totalDiscount,
+      totalTax,
+      totalExpenses,
+      totalCollected,
+      netProfit,
+      profitMargin,
+    };
+  }, [orders, payments, expenses, selectedMonth]);
+
   const selectedMonthName = new Date(
     selectedMonth + "-02"
   ).toLocaleString("default", { month: "long", year: "numeric" });
