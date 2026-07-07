@@ -286,83 +286,82 @@ export default function RsmDashboardClient({
           </div>
         </div>
       </div>
-      {/* ACTIVE PRODUCTION PIPELINE */}
-      <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5 space-y-4">
-        <div className="flex justify-between items-center border-b border-zinc-900 pb-3">
-          <div>
-            <h4 className="font-bold text-sm text-white">
+     {/* ACTIVE PRODUCTION PIPELINE */}
+      <div className="bg-zinc-900/60 border border-zinc-900 rounded-xl sm:rounded-2xl p-3.5 sm:p-5 space-y-3 sm:space-y-4">
+        <div className="flex justify-between items-center border-b border-zinc-900 pb-3 gap-2">
+          <div className="min-w-0">
+            <h4 className="font-bold text-xs sm:text-sm text-white">
               Active Production Pipeline
             </h4>
-            <p className="text-xs text-zinc-400">
+            <p className="text-[11px] sm:text-xs text-zinc-400 hidden sm:block">
               Real-time status of orders and digitizing designs
             </p>
           </div>
           <Link
             href="/RSM/orders"
-            className="text-xs text-[#D4AF37] hover:text-[#e5c458] font-bold whitespace-nowrap"
+            className="text-[11px] sm:text-xs text-[#D4AF37] hover:text-[#e5c458] font-bold whitespace-nowrap shrink-0"
           >
-            Manage All Orders →
+            Manage All →
           </Link>
         </div>
 
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="bg-black border border-zinc-800 p-3.5 rounded-lg text-center">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 block">
-              Pending Check
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
+          <div className="bg-black border border-zinc-800 p-2.5 sm:p-3.5 rounded-lg text-center">
+            <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-zinc-500 block leading-tight">
+              Pending
             </span>
-            <span className="text-2xl font-mono font-bold text-amber-400 block mt-1">
+            <span className="text-lg sm:text-2xl font-mono font-bold text-amber-400 block mt-1">
               {pipelineCounts.pending}
             </span>
           </div>
-          <div className="bg-black border border-zinc-800 p-3.5 rounded-lg text-center">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 block">
-              In Digitizing / Prod
+          <div className="bg-black border border-zinc-800 p-2.5 sm:p-3.5 rounded-lg text-center">
+            <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-zinc-500 block leading-tight">
+              In Progress
             </span>
-            <span className="text-2xl font-mono font-bold text-sky-400 block mt-1">
+            <span className="text-lg sm:text-2xl font-mono font-bold text-sky-400 block mt-1">
               {pipelineCounts.inProgress}
             </span>
           </div>
-          <div className="bg-black border border-zinc-800 p-3.5 rounded-lg text-center">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 block">
-              Completed Files
+          <div className="bg-black border border-zinc-800 p-2.5 sm:p-3.5 rounded-lg text-center">
+            <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-zinc-500 block leading-tight">
+              Completed
             </span>
-            <span className="text-2xl font-mono font-bold text-[#D4AF37] block mt-1">
+            <span className="text-lg sm:text-2xl font-mono font-bold text-[#D4AF37] block mt-1">
               {pipelineCounts.completed}
             </span>
           </div>
-          <div className="bg-black border border-zinc-800 p-3.5 rounded-lg text-center">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 block">
-              Delivered Orders
+          <div className="bg-black border border-zinc-800 p-2.5 sm:p-3.5 rounded-lg text-center">
+            <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-zinc-500 block leading-tight">
+              Delivered
             </span>
-            <span className="text-2xl font-mono font-bold text-emerald-400 block mt-1">
+            <span className="text-lg sm:text-2xl font-mono font-bold text-emerald-400 block mt-1">
               {pipelineCounts.delivered}
             </span>
           </div>
         </div>
-
         <div className="space-y-3 mt-4">
           <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 block">
             Urgent & Active Orders
           </span>
 
-          {activeOrders.slice(0, 4).map((o) => (
+         {activeOrders.slice(0, 4).map((o) => (
             <div
               key={o._id}
-              className="bg-black border border-zinc-900 p-3.5 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 hover:border-zinc-700 transition"
+              className="bg-black border border-zinc-900 p-3 sm:p-3.5 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 sm:gap-3 hover:border-zinc-700 transition"
             >
-              <div>
-                <div className="flex items-center gap-2">
-                  <span className="text-xs font-mono font-black text-[#D4AF37]">
+              <div className="min-w-0 w-full">
+                <div className="flex items-center gap-1.5 sm:gap-2 flex-wrap">
+                  <span className="text-[11px] sm:text-xs font-mono font-black text-[#D4AF37]">
                     {o.orderNo}
                   </span>
-                  <span className="text-xs font-bold text-white">
+                  <span className="text-[11px] sm:text-xs font-bold text-white truncate">
                     {o.designName || "Custom Items"}
                   </span>
-                  <span className="text-[10px] text-zinc-500 font-mono">
+                  <span className="text-[9px] sm:text-[10px] text-zinc-500 font-mono">
                     ({o.items.length} items)
                   </span>
                 </div>
-                <div className="flex items-center gap-2 text-[11px] text-zinc-400 mt-1">
+                <div className="flex items-center gap-2 text-[10px] sm:text-[11px] text-zinc-400 mt-1 flex-wrap">
                   <span>
                     Client:{" "}
                     <span className="text-zinc-300 font-semibold">
@@ -374,7 +373,7 @@ export default function RsmDashboardClient({
                 </div>
               </div>
 
-              <div className="flex items-center gap-3 w-full sm:w-auto justify-between sm:justify-end">
+              <div className="flex items-center gap-2.5 sm:gap-3 w-full sm:w-auto justify-between sm:justify-end">
                 <RsmStatusBadge status={o.status} />
                 <Link
                   href={`/RSM/orders/${o._id}`}
