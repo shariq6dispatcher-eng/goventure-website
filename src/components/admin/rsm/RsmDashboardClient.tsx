@@ -394,20 +394,20 @@ export default function RsmDashboardClient({
         </div>
       </div>
 
-      {/* BUSINESS PROFITABILITY STATEMENT */}
-      <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5 space-y-4">
-        <div className="flex justify-between items-center border-b border-zinc-900 pb-3">
-          <div>
-            <h4 className="font-bold text-sm text-white flex items-center gap-2">
-              <FileBarChart className="w-4 h-4 text-[#D4AF37]" />
-              Business Profitability Statement
+     {/* BUSINESS PROFITABILITY STATEMENT */}
+      <div className="bg-zinc-900/60 border border-zinc-900 rounded-xl sm:rounded-2xl p-3.5 sm:p-5 space-y-3 sm:space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-900 pb-3">
+          <div className="min-w-0">
+            <h4 className="font-bold text-xs sm:text-sm text-white flex items-center gap-2">
+              <FileBarChart className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#D4AF37] shrink-0" />
+              <span className="truncate">Profitability Statement</span>
             </h4>
-            <p className="text-xs text-zinc-400">
+            <p className="text-[11px] sm:text-xs text-zinc-400 hidden sm:block">
               Financial breakdown for {selectedMonthName}
             </p>
           </div>
           <span
-            className={`flex items-center gap-1 text-xs font-mono font-bold px-2.5 py-1 rounded-full border ${
+            className={`flex items-center gap-1 text-[11px] sm:text-xs font-mono font-bold px-2.5 py-1 rounded-full border w-fit ${
               profitability.netProfit >= 0
                 ? "bg-emerald-950 text-emerald-300 border-emerald-900"
                 : "bg-red-950 text-red-300 border-red-900"
@@ -422,10 +422,9 @@ export default function RsmDashboardClient({
           </span>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
-          <div className="flex justify-between items-center py-1.5 border-b border-zinc-900/80">
-            <span className="text-xs text-zinc-400">Gross Revenue (Invoiced)</span>
-            <span className="text-sm font-mono font-bold text-white">
+       <div className="flex justify-between items-center py-1 sm:py-1.5 border-b border-zinc-900/80">
+            <span className="text-[11px] sm:text-xs text-zinc-400">Gross Revenue</span>
+            <span className="text-xs sm:text-sm font-mono font-bold text-white">
               {money(profitability.grossRevenue)}
             </span>
           </div>
@@ -465,33 +464,33 @@ export default function RsmDashboardClient({
           </div>
         </div>
 
-        <div className="flex flex-wrap gap-3 pt-2">
+        <div className="grid grid-cols-2 sm:flex sm:flex-wrap gap-2 sm:gap-3 pt-2">
           <Link
             href="/RSM/orders/new"
-            className="flex items-center gap-2 text-xs font-bold px-4 py-2.5 rounded-xl bg-[#D4AF37] text-black hover:bg-[#e5c458] transition"
+            className="flex items-center justify-center sm:justify-start gap-2 text-[11px] sm:text-xs font-bold px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-[#D4AF37] text-black hover:bg-[#e5c458] transition"
           >
-            <PlusCircle className="w-3.5 h-3.5" />
+            <PlusCircle className="w-3.5 h-3.5 shrink-0" />
             New Order
           </Link>
           <Link
             href="/RSM/payments/new"
-            className="flex items-center gap-2 text-xs font-bold px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-200 hover:border-zinc-700 transition"
+            className="flex items-center justify-center sm:justify-start gap-2 text-[11px] sm:text-xs font-bold px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-200 hover:border-zinc-700 transition"
           >
-            <ArrowDownRight className="w-3.5 h-3.5" />
+            <ArrowDownRight className="w-3.5 h-3.5 shrink-0" />
             Record Payment
           </Link>
           <Link
             href="/RSM/expenses/new"
-            className="flex items-center gap-2 text-xs font-bold px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-200 hover:border-zinc-700 transition"
+            className="flex items-center justify-center sm:justify-start gap-2 text-[11px] sm:text-xs font-bold px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-200 hover:border-zinc-700 transition"
           >
-            <Scissors className="w-3.5 h-3.5" />
+            <Scissors className="w-3.5 h-3.5 shrink-0" />
             Log Expense
           </Link>
           <Link
             href="/RSM/customers"
-            className="flex items-center gap-2 text-xs font-bold px-4 py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-200 hover:border-zinc-700 transition"
+            className="flex items-center justify-center sm:justify-start gap-2 text-[11px] sm:text-xs font-bold px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-zinc-900 border border-zinc-800 text-zinc-200 hover:border-zinc-700 transition"
           >
-            <Users className="w-3.5 h-3.5" />
+            <Users className="w-3.5 h-3.5 shrink-0" />
             Manage Customers
           </Link>
         </div>
