@@ -13,7 +13,7 @@ interface FlatFile {
   designName: string;
   customerName: string;
   status: string;
-  folderName: string;
+  folderName: string; 
   fileName: string;
   fileUrl: string;
   uploadedAt: string;
