@@ -2,7 +2,16 @@
 
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import { Receipt, ArrowDownRight, Clock, Scissors, Eye } from "lucide-react";
+import {
+  Receipt,
+  ArrowDownRight,
+  Clock,
+  Scissors,
+  Eye,
+  TrendingUp,
+  TrendingDown,
+  FileBarChart,
+} from "lucide-react";
 import RsmStatusBadge from "./RsmStatusBadge";
 import type { Order, Payment, Expense, Customer } from "@/types/rsm";
 
@@ -382,6 +391,78 @@ export default function RsmDashboardClient({
               No active orders in production. Create some in the Orders tab!
             </div>
           )}
+        </div>
+      </div>
+
+      {/* BUSINESS PROFITABILITY STATEMENT */}
+      <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5 space-y-4">
+        <div className="flex justify-between items-center border-b border-zinc-900 pb-3">
+          <div>
+            <h4 className="font-bold text-sm text-white flex items-center gap-2">
+              <FileBarChart className="w-4 h-4 text-[#D4AF37]" />
+              Business Profitability Statement
+            </h4>
+            <p className="text-xs text-zinc-400">
+              Financial breakdown for {selectedMonthName}
+            </p>
+          </div>
+          <span
+            className={`flex items-center gap-1 text-xs font-mono font-bold px-2.5 py-1 rounded-full border ${
+              profitability.netProfit >= 0
+                ? "bg-emerald-950 text-emerald-300 border-emerald-900"
+                : "bg-red-950 text-red-300 border-red-900"
+            }`}
+          >
+            {profitability.netProfit >= 0 ? (
+              <TrendingUp className="w-3 h-3" />
+            ) : (
+              <TrendingDown className="w-3 h-3" />
+            )}
+            {profitability.profitMargin.toFixed(1)}% margin
+          </span>
+        </div>
+
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3">
+          <div className="flex justify-between items-center py-1.5 border-b border-zinc-900/80">
+            <span className="text-xs text-zinc-400">Gross Revenue (Invoiced)</span>
+            <span className="text-sm font-mono font-bold text-white">
+              {money(profitability.grossRevenue)}
+            </span>
+          </div>
+          <div className="flex justify-between items-center py-1.5 border-b border-zinc-900/80">
+            <span className="text-xs text-zinc-400">Cash Collected</span>
+            <span className="text-sm font-mono font-bold text-emerald-400">
+              {money(profitability.totalCollected)}
+            </span>
+          </div>
+          <div className="flex justify-between items-center py-1.5 border-b border-zinc-900/80">
+            <span className="text-xs text-zinc-400">Discounts Given</span>
+            <span className="text-sm font-mono font-bold text-amber-400">
+              -{money(profitability.totalDiscount)}
+            </span>
+          </div>
+          <div className="flex justify-between items-center py-1.5 border-b border-zinc-900/80">
+            <span className="text-xs text-zinc-400">Tax Collected</span>
+            <span className="text-sm font-mono font-bold text-zinc-300">
+              {money(profitability.totalTax)}
+            </span>
+          </div>
+          <div className="flex justify-between items-center py-1.5 border-b border-zinc-900/80">
+            <span className="text-xs text-zinc-400">Total Expenses</span>
+            <span className="text-sm font-mono font-bold text-rose-400">
+              -{money(profitability.totalExpenses)}
+            </span>
+          </div>
+          <div className="flex justify-between items-center py-1.5 border-b border-zinc-900/80">
+            <span className="text-xs font-bold text-white">Net Profit</span>
+            <span
+              className={`text-sm font-mono font-black ${
+                profitability.netProfit >= 0 ? "text-emerald-400" : "text-rose-400"
+              }`}
+            >
+              {money(profitability.netProfit)}
+            </span>
+          </div>
         </div>
       </div>
     </div>
