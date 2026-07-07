@@ -1,33 +1,23 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter, useParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
 import ExpenseForm from "@/components/admin/rsm/ExpenseForm";
+import { useRsmAccess } from "@/lib/useRsmAccess";
 import type { Expense } from "@/types/rsm";
 
-async function fetchMe(): Promise<{ username: string; role: "admin" | "staff" }> {
-  const res = await fetch("/api/rsm/me");
-  if (!res.ok) throw new Error("not authed");
-  return res.json();
-}
-
 export default function EditExpensePage() {
-  const router = useRouter();
   const params = useParams();
   const id = params.id as string;
 
-  const [me, setMe] = useState<{ username: string; role: "admin" | "staff" } | null>(null);
+  const me = useRsmAccess("expenses");
   const [expense, setExpense] = useState<Expense | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    fetchMe()
-      .then(setMe)
-      .catch(() => router.push("/RSM/login"));
-
     fetch(`/api/rsm/expenses/${id}`)
       .then((r) => r.json())
       .then((data) => {
@@ -36,7 +26,7 @@ export default function EditExpensePage() {
       })
       .catch((err) => setError(err.message || "Failed to load expense"))
       .finally(() => setLoading(false));
-  }, [id, router]);
+  }, [id]);
 
   if (!me) return null;
 
