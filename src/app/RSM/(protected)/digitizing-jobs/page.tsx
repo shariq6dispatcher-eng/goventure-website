@@ -1,23 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Plus, Search, Loader2, Pencil, Trash2 } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
 import RsmJobStatusBadge from "@/components/admin/rsm/RsmJobStatusBadge";
+import { useRsmAccess } from "@/lib/useRsmAccess";
 import type { DigitizingJob, DigitizingJobStatus } from "@/types/rsm";
 import { DIGITIZING_JOB_STATUSES } from "@/types/constants";
 
-async function fetchMe(): Promise<{ username: string; role: "admin" | "staff" }> {
-  const res = await fetch("/api/rsm/me");
-  if (!res.ok) throw new Error("not authed");
-  return res.json();
-}
-
 export default function DigitizingJobsPage() {
-  const router = useRouter();
-  const [me, setMe] = useState<{ username: string; role: "admin" | "staff" } | null>(null);
+  const me = useRsmAccess("digitizing");
   const [jobs, setJobs] = useState<DigitizingJob[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -26,10 +19,6 @@ export default function DigitizingJobsPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchMe()
-      .then(setMe)
-      .catch(() => router.push("/RSM/login"));
-
     fetch("/api/rsm/digitizing-jobs")
       .then((r) => r.json())
       .then((data) => {
@@ -38,7 +27,7 @@ export default function DigitizingJobsPage() {
       })
       .catch((err) => setError(err.message || "Failed to load jobs"))
       .finally(() => setLoading(false));
-  }, [router]);
+  }, []);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this digitizing job? This cannot be undone.")) return;
