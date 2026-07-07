@@ -223,30 +223,30 @@ export default function ViewDigitizingJobPage() {
             )}
             {job.folders && job.folders.length > 0 && (
               <div className="space-y-3">
-                {job.folders.map((folder, fi) => (
-                  <div
-                    key={fi}
-                    className="bg-zinc-900 border border-zinc-800 rounded-xl p-3.5"
-                  >
-                    <p className="text-xs font-bold text-white mb-2">{folder.name}</p>
-                    <div className="space-y-1.5">
-                      {folder.files.map((f, fj) => (
-                        
-                          key={fj}
-                          href={f.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="flex items-center justify-between text-xs text-zinc-400 hover:text-[#D4AF37] transition-colors"
-                        >
-                          <span className="truncate">{f.name}</span>
-                          <span className="text-zinc-600 shrink-0 ml-2">
-                            {new Date(f.uploadedAt).toLocaleDateString()}
-                          </span>
-                        </a>
-                      ))}
-                    </div>
-                  </div>
-                ))}
+               {job.folders.map((folder, fi) => (
+  <div
+    key={fi}
+    className="bg-zinc-900 border border-zinc-800 rounded-xl p-3.5"
+  >
+    <p className="text-xs font-bold text-white mb-2">{folder.name}</p>
+    <div className="space-y-1.5">
+      {folder.files.map((f, fj) => (
+        
+          key={fj}
+          href={f.url}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="flex items-center justify-between text-xs text-zinc-400 hover:text-[#D4AF37] transition-colors"
+        >
+          <span className="truncate">{f.name}</span>
+          <span className="text-zinc-600 shrink-0 ml-2">
+            {new Date(f.uploadedAt).toLocaleDateString()}
+          </span>
+        </a>
+      ))}
+    </div>
+  </div>
+))}
               </div>
             )}
           </div>
