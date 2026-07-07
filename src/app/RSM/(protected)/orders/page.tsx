@@ -1,23 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Plus, Search, Loader2, Eye, Pencil, Trash2 } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
 import RsmStatusBadge from "@/components/admin/rsm/RsmStatusBadge";
+import { useRsmAccess } from "@/lib/useRsmAccess";
 import type { Order, OrderStatus } from "@/types/rsm";
 import { ORDER_STATUSES } from "@/types/constants";
 
-async function fetchMe(): Promise<{ username: string; role: "admin" | "staff" }> {
-  const res = await fetch("/api/rsm/me");
-  if (!res.ok) throw new Error("not authed");
-  return res.json();
-}
-
 export default function OrdersPage() {
-  const router = useRouter();
-  const [me, setMe] = useState<{ username: string; role: "admin" | "staff" } | null>(null);
+  const me = useRsmAccess("orders");
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -26,19 +19,15 @@ export default function OrdersPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
-    fetchMe()
-      .then(setMe)
-      .catch(() => router.push("/RSM/login"));
-
     fetch("/api/rsm/orders")
       .then((r) => r.json())
       .then((data) => {
         if (data.error) throw new Error(data.error);
         setOrders(data.orders || []);
       })
-      .catch((err) => setError(err.message || "Failed to load orders"))
+     .catch((err) => setError(err.message || "Failed to load orders"))
       .finally(() => setLoading(false));
-  }, [router]);
+  }, []);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this order? This cannot be undone.")) return;
