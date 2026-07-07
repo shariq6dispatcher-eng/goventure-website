@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   LayoutDashboard,
   ClipboardList,
@@ -51,6 +51,26 @@ export default function RsmSidebar({ staffName, staffRole }: RsmSidebarProps) {
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
   const [loggingOut, setLoggingOut] = useState(false);
+  const [allowedModules, setAllowedModules] = useState<RsmModule[] | null>(
+    staffRole === "admin" ? null : []
+  );
+
+  useEffect(() => {
+    fetch("/api/rsm/me")
+      .then((r) => r.json())
+      .then((data) => setAllowedModules(data.allowedModules ?? []))
+      .catch(() => {});
+  }, []);
+
+  // null = admin, unrestricted. Otherwise only show items either with no
+  // module tag (always visible) or explicitly in this staff member's list.
+  // adminOnly items are hidden outright for non-admins regardless of module.
+  const visibleItems = NAV_ITEMS.filter((item) => {
+    if (item.adminOnly) return staffRole === "admin";
+    if (!item.module) return true;
+    if (allowedModules === null) return true;
+    return allowedModules.includes(item.module);
+  });
 
   const handleLogout = async () => {
     setLoggingOut(true);
@@ -76,7 +96,7 @@ export default function RsmSidebar({ staffName, staffRole }: RsmSidebarProps) {
       </div>
 
       <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
-        {NAV_ITEMS.map(({ label, href, icon: Icon, comingSoon }) => {
+       {visibleItems.map(({ label, href, icon: Icon, comingSoon }) => {
           const active = pathname === href;
 
           if (comingSoon) {
