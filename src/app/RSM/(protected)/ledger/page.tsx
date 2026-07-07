@@ -60,9 +60,9 @@ export default function LedgerPage() {
       title="Customer Ledger"
       subtitle="Running balance per customer, from invoices and payments"
     >
-      <div className="grid sm:grid-cols-[280px_1fr] gap-6">
+     <div className="grid sm:grid-cols-[280px_1fr] gap-4 sm:gap-6">
         {/* Customer picker sidebar */}
-        <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-4 h-fit">
+        <div className="bg-zinc-900/60 border border-zinc-900 rounded-xl sm:rounded-2xl p-3.5 sm:p-4 h-fit">
           <div className="relative mb-3">
             <Search
               size={14}
@@ -83,7 +83,7 @@ export default function LedgerPage() {
           )}
 
           {!loadingCustomers && (
-            <div className="space-y-1 max-h-[60vh] overflow-y-auto">
+          <div className="space-y-1 max-h-[45vh] sm:max-h-[60vh] overflow-y-auto">
               {filteredCustomers.map((c) => (
                 <button
                   key={c._id}
@@ -114,14 +114,14 @@ export default function LedgerPage() {
 
           {customerId && (
             <>
-              <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5 mb-5 flex items-center justify-between">
-                <div>
-                  <p className="text-xs text-zinc-500 mb-1">Customer</p>
-                  <p className="font-medium">{selectedCustomer?.name}</p>
+              <div className="bg-zinc-900/60 border border-zinc-900 rounded-xl sm:rounded-2xl p-3.5 sm:p-5 mb-3.5 sm:mb-5 flex items-center justify-between gap-3">
+                <div className="min-w-0">
+                  <p className="text-[11px] sm:text-xs text-zinc-500 mb-1">Customer</p>
+                  <p className="text-sm sm:text-base font-medium truncate">{selectedCustomer?.name}</p>
                 </div>
-                <div className="text-right">
-                  <p className="text-xs text-zinc-500 mb-1">Current Balance</p>
-                  <p className={`text-lg font-bold ${currentBalance > 0 ? "text-amber-400" : "text-emerald-400"}`}>
+                <div className="text-right shrink-0">
+                  <p className="text-[11px] sm:text-xs text-zinc-500 mb-1">Current Balance</p>
+                  <p className={`text-base sm:text-lg font-bold ${currentBalance > 0 ? "text-amber-400" : "text-emerald-400"}`}>
                     ${currentBalance.toFixed(2)}
                   </p>
                 </div>
@@ -147,56 +147,101 @@ export default function LedgerPage() {
               )}
 
               {!loadingEntries && !error && displayEntries.length > 0 && (
-                <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl overflow-hidden">
-                  <div className="overflow-x-auto">
-                    <table className="w-full text-sm">
-                      <thead>
-                        <tr className="border-b border-zinc-900 text-zinc-500 text-xs uppercase tracking-wide">
-                          <th className="text-left px-5 py-3 font-medium">Date</th>
-                          <th className="text-left px-5 py-3 font-medium">Type</th>
-                          <th className="text-left px-5 py-3 font-medium">Description</th>
-                          <th className="text-right px-5 py-3 font-medium">Debit</th>
-                          <th className="text-right px-5 py-3 font-medium">Credit</th>
-                          <th className="text-right px-5 py-3 font-medium">Balance</th>
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {displayEntries.map((entry) => (
-                          <tr
-                            key={entry._id}
-                            className="border-b border-zinc-900/60 last:border-0"
+                <>
+                  {/* Mobile card list */}
+                  <div className="sm:hidden space-y-2.5">
+                    {displayEntries.map((entry) => (
+                      <div
+                        key={entry._id}
+                        className="bg-zinc-900/60 border border-zinc-900 rounded-xl p-3.5"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <span
+                            className={`inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium border whitespace-nowrap ${
+                              entry.type === "Invoice"
+                                ? "bg-amber-950 text-amber-300 border-amber-900"
+                                : "bg-emerald-950 text-emerald-300 border-emerald-900"
+                            }`}
                           >
-                            <td className="px-5 py-3 text-zinc-400">{entry.date}</td>
-                            <td className="px-5 py-3">
-                              <span
-                                className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border whitespace-nowrap ${
-                                  entry.type === "Invoice"
-                                    ? "bg-amber-950 text-amber-300 border-amber-900"
-                                    : "bg-emerald-950 text-emerald-300 border-emerald-900"
-                                }`}
-                              >
-                                {entry.type}
-                              </span>
-                            </td>
-                            <td className="px-5 py-3 text-zinc-400">{entry.description}</td>
-                            <td className="px-5 py-3 text-right">
+                            {entry.type}
+                          </span>
+                          <span className="text-[11px] text-zinc-500">{entry.date}</span>
+                        </div>
+                        <p className="text-xs text-zinc-400 mt-2 truncate">{entry.description}</p>
+                        <div className="flex items-center justify-between mt-3 pt-3 border-t border-zinc-900 text-xs">
+                          <div>
+                            <span className="text-zinc-500">Debit: </span>
+                            <span className="font-mono text-white">
                               {entry.debit > 0 ? `$${entry.debit.toFixed(2)}` : "—"}
-                            </td>
-                            <td className="px-5 py-3 text-right">
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-zinc-500">Credit: </span>
+                            <span className="font-mono text-white">
                               {entry.credit > 0 ? `$${entry.credit.toFixed(2)}` : "—"}
-                            </td>
-                            <td className="px-5 py-3 text-right font-medium">
+                            </span>
+                          </div>
+                          <div>
+                            <span className="text-zinc-500">Bal: </span>
+                            <span className="font-mono font-bold text-[#D4AF37]">
                               ${entry.balance.toFixed(2)}
-                            </td>
-                          </tr>
-                        ))}
-                      </tbody>
-                    </table>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
-                </div>
+
+                  {/* Desktop table */}
+                  <div className="hidden sm:block bg-zinc-900/60 border border-zinc-900 rounded-2xl overflow-hidden">
+                    <div className="overflow-x-auto">
+                      <table className="w-full text-sm">
+                        <thead>
+                          <tr className="border-b border-zinc-900 text-zinc-500 text-xs uppercase tracking-wide">
+                            <th className="text-left px-5 py-3 font-medium">Date</th>
+                            <th className="text-left px-5 py-3 font-medium">Type</th>
+                            <th className="text-left px-5 py-3 font-medium">Description</th>
+                            <th className="text-right px-5 py-3 font-medium">Debit</th>
+                            <th className="text-right px-5 py-3 font-medium">Credit</th>
+                            <th className="text-right px-5 py-3 font-medium">Balance</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {displayEntries.map((entry) => (
+                            <tr
+                              key={entry._id}
+                              className="border-b border-zinc-900/60 last:border-0"
+                            >
+                              <td className="px-5 py-3 text-zinc-400">{entry.date}</td>
+                              <td className="px-5 py-3">
+                                <span
+                                  className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium border whitespace-nowrap ${
+                                    entry.type === "Invoice"
+                                      ? "bg-amber-950 text-amber-300 border-amber-900"
+                                      : "bg-emerald-950 text-emerald-300 border-emerald-900"
+                                  }`}
+                                >
+                                  {entry.type}
+                                </span>
+                              </td>
+                              <td className="px-5 py-3 text-zinc-400">{entry.description}</td>
+                              <td className="px-5 py-3 text-right">
+                                {entry.debit > 0 ? `$${entry.debit.toFixed(2)}` : "—"}
+                              </td>
+                              <td className="px-5 py-3 text-right">
+                                {entry.credit > 0 ? `$${entry.credit.toFixed(2)}` : "—"}
+                              </td>
+                              <td className="px-5 py-3 text-right font-medium">
+                                ${entry.balance.toFixed(2)}
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  </div>
+                </>
               )}
-            </>
-          )}
         </div>
       </div>
     </RsmShell>
