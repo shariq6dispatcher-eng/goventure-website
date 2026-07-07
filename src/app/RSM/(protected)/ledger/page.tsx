@@ -1,20 +1,13 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 import { Loader2, Search } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
+import { useRsmAccess } from "@/lib/useRsmAccess";
 import type { Customer, LedgerEntry } from "@/types/rsm";
 
-async function fetchMe(): Promise<{ username: string; role: "admin" | "staff" }> {
-  const res = await fetch("/api/rsm/me");
-  if (!res.ok) throw new Error("not authed");
-  return res.json();
-}
-
 export default function LedgerPage() {
-  const router = useRouter();
-  const [me, setMe] = useState<{ username: string; role: "admin" | "staff" } | null>(null);
+  const me = useRsmAccess("ledgers");
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [customerId, setCustomerId] = useState("");
   const [entries, setEntries] = useState<LedgerEntry[]>([]);
@@ -24,17 +17,12 @@ export default function LedgerPage() {
   const [query, setQuery] = useState("");
 
   useEffect(() => {
-    fetchMe()
-      .then(setMe)
-      .catch(() => router.push("/RSM/login"));
-
     fetch("/api/rsm/customers")
       .then((r) => r.json())
       .then((data) => setCustomers(data.customers || []))
       .catch(() => setError("Failed to load customers"))
       .finally(() => setLoadingCustomers(false));
-  }, [router]);
-
+  }, []);
   useEffect(() => {
     if (!customerId) {
       setEntries([]);
