@@ -12,7 +12,7 @@ import {
   Users,
   BarChart3,
   Sparkles,
-  FolderOpen,
+  FolderOpen, 
   UserCog,
   LogOut,
   Menu,
