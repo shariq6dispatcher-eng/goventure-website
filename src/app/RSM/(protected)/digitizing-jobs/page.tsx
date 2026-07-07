@@ -62,7 +62,7 @@ export default function DigitizingJobsPage() {
       title="Digitizing Jobs"
       subtitle={`${jobs.length} total`}
     >
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+     <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 mb-5 sm:mb-6">
         <div className="relative flex-1">
           <Search
             size={16}
@@ -71,29 +71,31 @@ export default function DigitizingJobsPage() {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by design name, customer…"
+            placeholder="Search design name, customer…"
             className="w-full bg-zinc-900/60 border border-zinc-800 rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
           />
         </div>
 
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value as DigitizingJobStatus | "All")}
-          className="bg-zinc-900/60 border border-zinc-800 rounded-xl px-4 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
-        >
-          <option value="All">All statuses</option>
-          {DIGITIZING_JOB_STATUSES.map((s) => (
-            <option key={s} value={s}>{s}</option>
-          ))}
-        </select>
+        <div className="flex gap-2.5 sm:gap-3">
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value as DigitizingJobStatus | "All")}
+            className="flex-1 sm:flex-none bg-zinc-900/60 border border-zinc-800 rounded-xl px-3 sm:px-4 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
+          >
+            <option value="All">All statuses</option>
+            {DIGITIZING_JOB_STATUSES.map((s) => (
+              <option key={s} value={s}>{s}</option>
+            ))}
+          </select>
 
-        <Link
-          href="/RSM/digitizing-jobs/new"
-          className="flex items-center justify-center gap-2 bg-[#D4AF37] text-black font-medium text-sm px-4 py-2.5 rounded-xl hover:opacity-90 transition-opacity whitespace-nowrap"
-        >
-          <Plus size={16} />
-          New Job
-        </Link>
+          <Link
+            href="/RSM/digitizing-jobs/new"
+            className="flex items-center justify-center gap-2 bg-[#D4AF37] text-black font-medium text-sm px-4 py-2.5 rounded-xl hover:opacity-90 transition-opacity whitespace-nowrap"
+          >
+            <Plus size={16} />
+            <span className="hidden sm:inline">New Job</span>
+          </Link>
+        </div>
       </div>
 
       {loading && (
@@ -117,76 +119,136 @@ export default function DigitizingJobsPage() {
         </div>
       )}
 
-      {!loading && !error && filtered.length > 0 && (
-        <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-zinc-900 text-zinc-500 text-xs uppercase tracking-wide">
-                  <th className="text-left px-5 py-3 font-medium">Design Name</th>
-                  <th className="text-left px-5 py-3 font-medium">Customer</th>
-                  <th className="text-left px-5 py-3 font-medium">Format</th>
-                  <th className="text-left px-5 py-3 font-medium">Status</th>
-                  <th className="text-right px-5 py-3 font-medium">Price</th>
-                  <th className="text-right px-5 py-3 font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((j) => (
-                  <tr
-                    key={j._id}
-                    className="border-b border-zinc-900/60 last:border-0 hover:bg-zinc-900/40"
-                  >
-                    <td className="px-5 py-3 font-medium">
-                      <Link
-                        href={`/RSM/digitizing-jobs/${j._id}`}
-                        className="hover:text-[#D4AF37] transition-colors"
-                      >
-                        {j.designName}
-                      </Link>
-                    </td>
-                    <td className="px-5 py-3 text-zinc-400">{j.customerName}</td>
-                    <td className="px-5 py-3 text-zinc-400">{j.format}</td>
-                    <td className="px-5 py-3">
+     {!loading && !error && filtered.length > 0 && (
+        <>
+          {/* Mobile card list */}
+          <div className="sm:hidden space-y-2.5">
+            {filtered.map((j) => (
+              <div
+                key={j._id}
+                className="bg-zinc-900/60 border border-zinc-900 rounded-xl p-3.5"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <Link
+                      href={`/RSM/digitizing-jobs/${j._id}`}
+                      className="text-sm font-bold text-white hover:text-[#D4AF37] transition-colors truncate block"
+                    >
+                      {j.designName}
+                    </Link>
+                    <p className="text-xs text-zinc-400 mt-0.5 truncate">{j.customerName}</p>
+                    <div className="flex items-center gap-2 mt-1.5">
                       <RsmJobStatusBadge status={j.status} />
-                    </td>
-                    <td className="px-5 py-3 text-right">${j.price.toFixed(2)}</td>
-                    <td className="px-5 py-3">
-                     <div className="flex items-center justify-end gap-2">
+                      <span className="text-[11px] text-zinc-500">{j.format}</span>
+                    </div>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <Link
+                      href={`/RSM/digitizing-jobs/${j._id}`}
+                      className="p-2 text-zinc-400 active:text-[#D4AF37] active:bg-zinc-800 rounded-lg transition-colors"
+                      aria-label="View"
+                    >
+                      <Eye size={15} />
+                    </Link>
+                    <Link
+                      href={`/RSM/digitizing-jobs/${j._id}/edit`}
+                      className="p-2 text-zinc-400 active:text-[#D4AF37] active:bg-zinc-800 rounded-lg transition-colors"
+                      aria-label="Edit"
+                    >
+                      <Pencil size={15} />
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(j._id)}
+                      disabled={deletingId === j._id}
+                      className="p-2 text-zinc-400 active:text-red-400 active:bg-red-950/30 rounded-lg transition-colors disabled:opacity-50"
+                      aria-label="Delete"
+                    >
+                      {deletingId === j._id ? (
+                        <Loader2 size={15} className="animate-spin" />
+                      ) : (
+                        <Trash2 size={15} />
+                      )}
+                    </button>
+                  </div>
+                </div>
+                <div className="flex items-center justify-end mt-3 pt-3 border-t border-zinc-900 text-xs">
+                  <span className="font-mono font-bold text-white">${j.price.toFixed(2)}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Desktop table */}
+          <div className="hidden sm:block bg-zinc-900/60 border border-zinc-900 rounded-2xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-zinc-900 text-zinc-500 text-xs uppercase tracking-wide">
+                    <th className="text-left px-5 py-3 font-medium">Design Name</th>
+                    <th className="text-left px-5 py-3 font-medium">Customer</th>
+                    <th className="text-left px-5 py-3 font-medium">Format</th>
+                    <th className="text-left px-5 py-3 font-medium">Status</th>
+                    <th className="text-right px-5 py-3 font-medium">Price</th>
+                    <th className="text-right px-5 py-3 font-medium">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((j) => (
+                    <tr
+                      key={j._id}
+                      className="border-b border-zinc-900/60 last:border-0 hover:bg-zinc-900/40"
+                    >
+                      <td className="px-5 py-3 font-medium">
                         <Link
                           href={`/RSM/digitizing-jobs/${j._id}`}
-                          className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
-                          aria-label="View"
+                          className="hover:text-[#D4AF37] transition-colors"
                         >
-                          <Eye size={15} />
+                          {j.designName}
                         </Link>
-                        <Link
-                          href={`/RSM/digitizing-jobs/${j._id}/edit`}
-                          className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
-                          aria-label="Edit"
-                        >
-                          <Pencil size={15} />
-                        </Link>
-                        <button
-                          onClick={() => handleDelete(j._id)}
-                          disabled={deletingId === j._id}
-                          className="p-2 text-zinc-400 hover:text-red-400 hover:bg-red-950/30 rounded-lg transition-colors disabled:opacity-50"
-                          aria-label="Delete"
-                        >
-                          {deletingId === j._id ? (
-                            <Loader2 size={15} className="animate-spin" />
-                          ) : (
-                            <Trash2 size={15} />
-                          )}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                      </td>
+                      <td className="px-5 py-3 text-zinc-400">{j.customerName}</td>
+                      <td className="px-5 py-3 text-zinc-400">{j.format}</td>
+                      <td className="px-5 py-3">
+                        <RsmJobStatusBadge status={j.status} />
+                      </td>
+                      <td className="px-5 py-3 text-right">${j.price.toFixed(2)}</td>
+                      <td className="px-5 py-3">
+                       <div className="flex items-center justify-end gap-2">
+                          <Link
+                            href={`/RSM/digitizing-jobs/${j._id}`}
+                            className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
+                            aria-label="View"
+                          >
+                            <Eye size={15} />
+                          </Link>
+                          <Link
+                            href={`/RSM/digitizing-jobs/${j._id}/edit`}
+                            className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
+                            aria-label="Edit"
+                          >
+                            <Pencil size={15} />
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(j._id)}
+                            disabled={deletingId === j._id}
+                            className="p-2 text-zinc-400 hover:text-red-400 hover:bg-red-950/30 rounded-lg transition-colors disabled:opacity-50"
+                            aria-label="Delete"
+                          >
+                            {deletingId === j._id ? (
+                              <Loader2 size={15} className="animate-spin" />
+                            ) : (
+                              <Trash2 size={15} />
+                            )}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+        </>
       )}
     </RsmShell>
   );
