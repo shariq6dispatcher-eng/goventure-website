@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
-import { Loader2, ArrowLeft, Pencil } from "lucide-react";
+import { Loader2, ArrowLeft, Pencil, Printer } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
 import RsmStatusBadge from "@/components/admin/rsm/RsmStatusBadge";
 import { useRsmAccess } from "@/lib/useRsmAccess";
@@ -47,12 +47,20 @@ export default function ViewOrderPage() {
         </Link>
 
         {order && (
-          <Link
-            href={`/RSM/orders/${order._id}/edit`}
-            className="flex items-center gap-1.5 bg-[#D4AF37] text-black text-sm font-medium px-4 py-2 rounded-xl hover:opacity-90 transition-opacity"
-          >
-            <Pencil size={14} /> Edit Order
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link
+              href={`/RSM/orders/${order._id}/invoice`}
+              className="flex items-center gap-1.5 bg-zinc-900 border border-zinc-800 text-zinc-200 text-sm font-medium px-4 py-2 rounded-xl hover:border-zinc-700 transition-colors"
+            >
+              <Printer size={14} /> Print Invoice
+            </Link>
+            <Link
+              href={`/RSM/orders/${order._id}/edit`}
+              className="flex items-center gap-1.5 bg-[#D4AF37] text-black text-sm font-medium px-4 py-2 rounded-xl hover:opacity-90 transition-opacity"
+            >
+              <Pencil size={14} /> Edit Order
+            </Link>
+          </div>
         )}
       </div>
 
