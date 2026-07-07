@@ -207,77 +207,77 @@ export default function RsmDashboardClient({
         </div>
       </div>
 
-      {/* KPI STATS ROW */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5 hover:border-zinc-700 transition">
-          <div className="flex justify-between items-start">
-            <span className="text-zinc-500 text-[10px] font-extrabold uppercase tracking-widest">
-              {selectedMonthName} Invoiced
+     {/* KPI STATS ROW */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
+        <div className="bg-zinc-900/60 border border-zinc-900 rounded-xl sm:rounded-2xl p-3 sm:p-5 hover:border-zinc-700 transition">
+          <div className="flex justify-between items-start gap-1">
+            <span className="text-zinc-500 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-widest leading-tight">
+              Invoiced
             </span>
-            <span className="p-2 bg-sky-500/10 text-sky-400 rounded-lg">
-              <Receipt className="w-4 h-4" />
+            <span className="p-1.5 sm:p-2 bg-sky-500/10 text-sky-400 rounded-lg shrink-0">
+              <Receipt className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </span>
           </div>
-          <h3 className="text-2xl font-black mt-3 text-white font-mono">
+          <h3 className="text-base sm:text-2xl font-black mt-2 sm:mt-3 text-white font-mono truncate">
             {money(stats.totalInvoiced)}
           </h3>
-          <p className="text-zinc-500 text-xs mt-2 font-mono">
+          <p className="text-zinc-500 text-[10px] sm:text-xs mt-1 sm:mt-2 font-mono hidden sm:block">
             Gross billed orders in {selectedMonthName}
           </p>
         </div>
 
-        <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5 hover:border-zinc-700 transition">
-          <div className="flex justify-between items-start">
-            <span className="text-zinc-500 text-[10px] font-extrabold uppercase tracking-widest">
-              {selectedMonthName} Payments
+        <div className="bg-zinc-900/60 border border-zinc-900 rounded-xl sm:rounded-2xl p-3 sm:p-5 hover:border-zinc-700 transition">
+          <div className="flex justify-between items-start gap-1">
+            <span className="text-zinc-500 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-widest leading-tight">
+              Payments
             </span>
-            <span className="p-2 bg-emerald-500/10 text-emerald-400 rounded-lg">
-              <ArrowDownRight className="w-4 h-4" />
+            <span className="p-1.5 sm:p-2 bg-emerald-500/10 text-emerald-400 rounded-lg shrink-0">
+              <ArrowDownRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </span>
           </div>
-          <h3 className="text-2xl font-black mt-3 text-emerald-400 font-mono">
+          <h3 className="text-base sm:text-2xl font-black mt-2 sm:mt-3 text-emerald-400 font-mono truncate">
             {money(stats.totalPaymentsReceived)}
           </h3>
-          <p className="text-emerald-500 text-xs mt-2 font-medium">
+          <p className="text-emerald-500 text-[10px] sm:text-xs mt-1 sm:mt-2 font-medium hidden sm:block">
             Cash collected in {selectedMonthName}
           </p>
         </div>
 
-        <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5 hover:border-zinc-700 transition">
-          <div className="flex justify-between items-start">
-            <span className="text-zinc-500 text-[10px] font-extrabold uppercase tracking-widest">
-              Receivables (Dues)
+        <div className="bg-zinc-900/60 border border-zinc-900 rounded-xl sm:rounded-2xl p-3 sm:p-5 hover:border-zinc-700 transition">
+          <div className="flex justify-between items-start gap-1">
+            <span className="text-zinc-500 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-widest leading-tight">
+              Receivables
             </span>
-            <span className="p-2 bg-amber-500/10 text-amber-400 rounded-lg">
-              <Clock className="w-4 h-4" />
+            <span className="p-1.5 sm:p-2 bg-amber-500/10 text-amber-400 rounded-lg shrink-0">
+              <Clock className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </span>
           </div>
-          <h3 className="text-2xl font-black mt-3 text-amber-400 font-mono">
+          <h3 className="text-base sm:text-2xl font-black mt-2 sm:mt-3 text-amber-400 font-mono truncate">
             {money(stats.outstandingReceivables)}
           </h3>
-          <p className="text-zinc-500 text-xs mt-2">
+          <p className="text-zinc-500 text-[10px] sm:text-xs mt-1 sm:mt-2 hidden sm:block">
             Unpaid dues up to {selectedMonthName}
           </p>
         </div>
 
-        <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5 hover:border-zinc-700 transition">
-          <div className="flex justify-between items-start">
-            <span className="text-zinc-500 text-[10px] font-extrabold uppercase tracking-widest">
-              {selectedMonthName} Expenses
+        <div className="bg-zinc-900/60 border border-zinc-900 rounded-xl sm:rounded-2xl p-3 sm:p-5 hover:border-zinc-700 transition">
+          <div className="flex justify-between items-start gap-1">
+            <span className="text-zinc-500 text-[9px] sm:text-[10px] font-extrabold uppercase tracking-widest leading-tight">
+              Expenses
             </span>
-            <span className="p-2 bg-rose-500/10 text-rose-400 rounded-lg">
-              <Scissors className="w-4 h-4" />
+            <span className="p-1.5 sm:p-2 bg-rose-500/10 text-rose-400 rounded-lg shrink-0">
+              <Scissors className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
             </span>
           </div>
-          <h3 className="text-2xl font-black mt-3 text-white font-mono">
+          <h3 className="text-base sm:text-2xl font-black mt-2 sm:mt-3 text-white font-mono truncate">
             {money(stats.totalExpensesSum)}
           </h3>
-          <div className="flex items-center justify-between gap-1 mt-2 text-xs text-zinc-400">
-            <span className="text-zinc-500">
-              Expenses logged in {selectedMonthName}
+          <div className="flex items-center justify-between gap-1 mt-1 sm:mt-2 text-xs text-zinc-400">
+            <span className="text-zinc-500 text-[10px] hidden sm:inline">
+              Logged in {selectedMonthName}
             </span>
             <span
-              className={`font-mono text-[11px] font-bold ${
+              className={`font-mono text-[10px] sm:text-[11px] font-bold ${
                 stats.netProfit >= 0 ? "text-emerald-400" : "text-rose-400"
               }`}
             >
@@ -286,7 +286,6 @@ export default function RsmDashboardClient({
           </div>
         </div>
       </div>
-
       {/* ACTIVE PRODUCTION PIPELINE */}
       <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5 space-y-4">
         <div className="flex justify-between items-center border-b border-zinc-900 pb-3">
