@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Loader2, ArrowLeft, Pencil, FileImage, Play, CheckCircle2, Truck } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
 import RsmJobStatusBadge from "@/components/admin/rsm/RsmJobStatusBadge";
+import RsmJobFolderSubmit from "@/components/admin/rsm/RsmJobFolderSubmit";
 import { useRsmAccess } from "@/lib/useRsmAccess";
 import type { DigitizingJob } from "@/types/rsm";
 
@@ -215,17 +216,48 @@ export default function ViewDigitizingJobPage() {
             </div>
           )}
 
-          {/* Submitted folders (placeholder — Part 8 will make this functional) */}
+         {/* Submitted folders */}
           <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5">
-            <h4 className="font-bold text-sm text-white mb-2">
+            <h4 className="font-bold text-sm text-white mb-3">
               Submitted Files ({job.folders?.length || 0} folder{job.folders?.length === 1 ? "" : "s"})
             </h4>
             {(!job.folders || job.folders.length === 0) && (
-              <p className="text-xs text-zinc-500">
+              <p className="text-xs text-zinc-500 mb-2">
                 No completed files submitted yet.
               </p>
             )}
+            {job.folders && job.folders.length > 0 && (
+              <div className="space-y-3">
+                {job.folders.map((folder, fi) => (
+                  <div
+                    key={fi}
+                    className="bg-zinc-900 border border-zinc-800 rounded-xl p-3.5"
+                  >
+                    <p className="text-xs font-bold text-white mb-2">{folder.name}</p>
+                    <div className="space-y-1.5">
+                      {folder.files.map((f, fj) => (
+                        
+                          key={fj}
+                          href={f.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center justify-between text-xs text-zinc-400 hover:text-[#D4AF37] transition-colors"
+                        >
+                          <span className="truncate">{f.name}</span>
+                          <span className="text-zinc-600 shrink-0 ml-2">
+                            {new Date(f.uploadedAt).toLocaleDateString()}
+                          </span>
+                        </a>
+                      ))}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
+
+          {/* Submit new files */}
+          <RsmJobFolderSubmit jobId={job._id} onSubmitted={loadJob} />
         </div>
       )}
     </RsmShell>
