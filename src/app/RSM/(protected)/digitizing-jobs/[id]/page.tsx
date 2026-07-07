@@ -231,7 +231,7 @@ export default function ViewDigitizingJobPage() {
     <p className="text-xs font-bold text-white mb-2">{folder.name}</p>
     <div className="space-y-1.5">
       {folder.files.map((f, fj) => (
-        
+        <a
           key={fj}
           href={f.url}
           target="_blank"
