@@ -151,17 +151,25 @@ export default function RsmSidebar({ staffName, staffRole }: RsmSidebarProps) {
 
   return (
     <>
-      {/* Mobile top bar */}
-      <div className="lg:hidden sticky top-0 z-40 flex items-center justify-between px-4 h-16 bg-zinc-950 border-b border-zinc-900">
-        <span className="text-sm font-semibold">
-          GoVenture <span className="text-[#D4AF37]">RSM</span>
-        </span>
+     {/* Mobile top bar */}
+      <div className="lg:hidden sticky top-0 z-40 flex items-center justify-between px-4 h-14 bg-zinc-950/95 backdrop-blur border-b border-zinc-900">
+        <div className="flex items-center gap-2">
+          <span className="w-7 h-7 rounded-lg bg-[#D4AF37]/10 border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37] text-xs font-black">
+            G
+          </span>
+          <div className="leading-tight">
+            <span className="block text-[13px] font-bold text-white">
+              GoVenture <span className="text-[#D4AF37]">RSM</span>
+            </span>
+            <span className="block text-[10px] text-zinc-500">{staffName}</span>
+          </div>
+        </div>
         <button
           onClick={() => setMobileOpen(true)}
           aria-label="Open menu"
-          className="text-zinc-300"
+          className="text-zinc-300 p-2 -mr-2 rounded-lg active:bg-zinc-900"
         >
-          <Menu size={22} />
+          <Menu size={20} />
         </button>
       </div>
 
