@@ -64,7 +64,7 @@ export default function PaymentsPage() {
       title="Payments"
       subtitle={`${payments.length} total · $${totalConfirmed.toFixed(2)} confirmed`}
     >
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
+      <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 mb-5 sm:mb-6">
         <div className="relative flex-1">
           <Search
             size={16}
@@ -73,7 +73,7 @@ export default function PaymentsPage() {
           <input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search by payment #, customer, reference…"
+            placeholder="Search payment #, customer, reference…"
             className="w-full bg-zinc-900/60 border border-zinc-800 rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
           />
         </div>
@@ -109,63 +109,117 @@ export default function PaymentsPage() {
       )}
 
       {!loading && !error && filtered.length > 0 && (
-        <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-zinc-900 text-zinc-500 text-xs uppercase tracking-wide">
-                  <th className="text-left px-5 py-3 font-medium">Payment #</th>
-                  <th className="text-left px-5 py-3 font-medium">Customer</th>
-                  <th className="text-left px-5 py-3 font-medium">Method</th>
-                  <th className="text-right px-5 py-3 font-medium">Amount</th>
-                  <th className="text-left px-5 py-3 font-medium">Date</th>
-                  <th className="text-left px-5 py-3 font-medium">Status</th>
-                  <th className="text-right px-5 py-3 font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((p) => (
-                  <tr
-                    key={p._id}
-                    className="border-b border-zinc-900/60 last:border-0 hover:bg-zinc-900/40"
-                  >
-                    <td className="px-5 py-3 font-medium">{p.paymentNo}</td>
-                    <td className="px-5 py-3 text-zinc-400">{p.customerName}</td>
-                    <td className="px-5 py-3 text-zinc-400">{p.paymentMethod}</td>
-                    <td className="px-5 py-3 text-right">${p.amount.toFixed(2)}</td>
-                    <td className="px-5 py-3 text-zinc-400">{p.date}</td>
-                    <td className="px-5 py-3">
+        <>
+          {/* Mobile card list */}
+          <div className="sm:hidden space-y-2.5">
+            {filtered.map((p) => (
+              <div
+                key={p._id}
+                className="bg-zinc-900/60 border border-zinc-900 rounded-xl p-3.5"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <span className="text-xs font-mono font-black text-[#D4AF37]">
+                        {p.paymentNo}
+                      </span>
                       <RsmConfirmBadge confirmed={p.confirmed} />
-                    </td>
-                    <td className="px-5 py-3">
-                      <div className="flex items-center justify-end gap-2">
-                        <Link
-                          href={`/RSM/payments/${p._id}/edit`}
-                          className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
-                          aria-label="Edit"
-                        >
-                          <Pencil size={15} />
-                        </Link>
-                        <button
-                          onClick={() => handleDelete(p._id)}
-                          disabled={deletingId === p._id}
-                          className="p-2 text-zinc-400 hover:text-red-400 hover:bg-red-950/30 rounded-lg transition-colors disabled:opacity-50"
-                          aria-label="Delete"
-                        >
-                          {deletingId === p._id ? (
-                            <Loader2 size={15} className="animate-spin" />
-                          ) : (
-                            <Trash2 size={15} />
-                          )}
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    </div>
+                    <p className="text-xs text-zinc-400 mt-1 truncate">{p.customerName}</p>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    <Link
+                      href={`/RSM/payments/${p._id}/edit`}
+                      className="p-2 text-zinc-400 active:text-[#D4AF37] active:bg-zinc-800 rounded-lg transition-colors"
+                      aria-label="Edit"
+                    >
+                      <Pencil size={15} />
+                    </Link>
+                    <button
+                      onClick={() => handleDelete(p._id)}
+                      disabled={deletingId === p._id}
+                      className="p-2 text-zinc-400 active:text-red-400 active:bg-red-950/30 rounded-lg transition-colors disabled:opacity-50"
+                      aria-label="Delete"
+                    >
+                      {deletingId === p._id ? (
+                        <Loader2 size={15} className="animate-spin" />
+                      ) : (
+                        <Trash2 size={15} />
+                      )}
+                    </button>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-zinc-900 text-xs">
+                  <div>
+                    <span className="text-zinc-500">Amount: </span>
+                    <span className="font-mono font-bold text-white">${p.amount.toFixed(2)}</span>
+                  </div>
+                  <div className="text-zinc-500">{p.paymentMethod}</div>
+                  <div className="text-zinc-500">{p.date}</div>
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
+
+          {/* Desktop table */}
+          <div className="hidden sm:block bg-zinc-900/60 border border-zinc-900 rounded-2xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-zinc-900 text-zinc-500 text-xs uppercase tracking-wide">
+                    <th className="text-left px-5 py-3 font-medium">Payment #</th>
+                    <th className="text-left px-5 py-3 font-medium">Customer</th>
+                    <th className="text-left px-5 py-3 font-medium">Method</th>
+                    <th className="text-right px-5 py-3 font-medium">Amount</th>
+                    <th className="text-left px-5 py-3 font-medium">Date</th>
+                    <th className="text-left px-5 py-3 font-medium">Status</th>
+                    <th className="text-right px-5 py-3 font-medium">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((p) => (
+                    <tr
+                      key={p._id}
+                      className="border-b border-zinc-900/60 last:border-0 hover:bg-zinc-900/40"
+                    >
+                      <td className="px-5 py-3 font-medium">{p.paymentNo}</td>
+                      <td className="px-5 py-3 text-zinc-400">{p.customerName}</td>
+                      <td className="px-5 py-3 text-zinc-400">{p.paymentMethod}</td>
+                      <td className="px-5 py-3 text-right">${p.amount.toFixed(2)}</td>
+                      <td className="px-5 py-3 text-zinc-400">{p.date}</td>
+                      <td className="px-5 py-3">
+                        <RsmConfirmBadge confirmed={p.confirmed} />
+                      </td>
+                      <td className="px-5 py-3">
+                        <div className="flex items-center justify-end gap-2">
+                          <Link
+                            href={`/RSM/payments/${p._id}/edit`}
+                            className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
+                            aria-label="Edit"
+                          >
+                            <Pencil size={15} />
+                          </Link>
+                          <button
+                            onClick={() => handleDelete(p._id)}
+                            disabled={deletingId === p._id}
+                            className="p-2 text-zinc-400 hover:text-red-400 hover:bg-red-950/30 rounded-lg transition-colors disabled:opacity-50"
+                            aria-label="Delete"
+                          >
+                            {deletingId === p._id ? (
+                              <Loader2 size={15} className="animate-spin" />
+                            ) : (
+                              <Trash2 size={15} />
+                            )}
+                          </button>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
       )}
     </RsmShell>
   );
