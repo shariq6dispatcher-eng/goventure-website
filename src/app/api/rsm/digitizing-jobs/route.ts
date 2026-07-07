@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import { mongo, toObjectId } from "@/lib/mongodb";
 import { RSM_COLLECTIONS } from "@/types/constants";
 import { getRsmAuth } from "@/lib/rsm-auth";
+import { notifyRsm } from "@/lib/rsm-notify";
 import type { DigitizingJob, DigitizingJobInput, Customer } from "@/types/rsm";
-
 export async function GET() {
   await getRsmAuth();
 
@@ -60,7 +60,15 @@ export async function POST(req: Request) {
       createdAt: new Date().toISOString(),
     };
 
-    const result = await mongo.insertOne(RSM_COLLECTIONS.digitizingJobs, doc);
+   const result = await mongo.insertOne(RSM_COLLECTIONS.digitizingJobs, doc);
+
+    await notifyRsm({
+      title: "New Digitizing Job",
+      message: `${doc.designName} for ${doc.customerName} was submitted for digitizing.`,
+      jobId: result.insertedId,
+      orderId: doc.orderId,
+    });
+
     return NextResponse.json({
       success: true,
       job: { _id: result.insertedId, ...doc },
