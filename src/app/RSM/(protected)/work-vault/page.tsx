@@ -155,7 +155,7 @@ export default function WorkVaultPage() {
                     </td>
                     <td className="px-5 py-3">
   <div className="flex items-center justify-end gap-2">
-    
+    <a
       href={f.fileUrl}
       target="_blank"
       rel="noopener noreferrer"
@@ -164,7 +164,7 @@ export default function WorkVaultPage() {
     >
       <ExternalLink size={15} />
     </a>
-    
+    <a
       href={f.fileUrl}
       download
       className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
