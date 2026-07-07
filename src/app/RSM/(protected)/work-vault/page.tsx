@@ -79,7 +79,7 @@ export default function WorkVaultPage() {
       title="Work Vault"
       subtitle={`${allFiles.length} submitted file${allFiles.length === 1 ? "" : "s"} across ${jobs.filter((j) => (j.folders?.length || 0) > 0).length} jobs`}
     >
-      <div className="relative mb-6">
+      <div className="relative mb-5 sm:mb-6">
         <Search
           size={16}
           className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500"
@@ -87,7 +87,7 @@ export default function WorkVaultPage() {
         <input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search by design, customer, batch, or filename…"
+          placeholder="Search design, customer, batch, filename…"
           className="w-full bg-zinc-900/60 border border-zinc-800 rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
         />
       </div>
@@ -114,71 +114,126 @@ export default function WorkVaultPage() {
         </div>
       )}
 
-      {!loading && !error && filtered.length > 0 && (
-        <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl overflow-hidden">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b border-zinc-900 text-zinc-500 text-xs uppercase tracking-wide">
-                  <th className="text-left px-5 py-3 font-medium">Design / Customer</th>
-                  <th className="text-left px-5 py-3 font-medium">Batch</th>
-                  <th className="text-left px-5 py-3 font-medium">File</th>
-                  <th className="text-left px-5 py-3 font-medium">Status</th>
-                  <th className="text-left px-5 py-3 font-medium">Submitted</th>
-                  <th className="text-right px-5 py-3 font-medium">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filtered.map((f, i) => (
-                  <tr
-                    key={`${f.jobId}-${i}`}
-                    className="border-b border-zinc-900/60 last:border-0 hover:bg-zinc-900/40"
-                  >
-                    <td className="px-5 py-3">
-                      <Link
-                        href={`/RSM/digitizing-jobs/${f.jobId}`}
-                        className="font-medium hover:text-[#D4AF37] transition-colors"
-                      >
-                        {f.designName}
-                      </Link>
-                      <p className="text-xs text-zinc-500">{f.customerName}</p>
-                    </td>
-                    <td className="px-5 py-3 text-zinc-400">{f.folderName}</td>
-                    <td className="px-5 py-3 text-zinc-400 max-w-[200px] truncate">
-                      {f.fileName}
-                    </td>
-                    <td className="px-5 py-3">
-                      <RsmJobStatusBadge status={f.status} />
-                    </td>
-                    <td className="px-5 py-3 text-zinc-500 text-xs">
-                      {new Date(f.uploadedAt).toLocaleDateString()}
-                    </td>
-                    <td className="px-5 py-3">
-  <div className="flex items-center justify-end gap-2">
-    <a
-      href={f.fileUrl}
-      target="_blank"
-      rel="noopener noreferrer"
-      className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
-      aria-label="Open"
-    >
-      <ExternalLink size={15} />
-    </a>
-    <a
-      href={f.fileUrl}
-      download
-      className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
-      aria-label="Download"
-    >
-      <Download size={15} />
-    </a>
-  </div>
-</td>                  </tr>
-                ))}
-              </tbody>
-            </table>
+     {!loading && !error && filtered.length > 0 && (
+        <>
+          {/* Mobile card list */}
+          <div className="sm:hidden space-y-2.5">
+            {filtered.map((f, i) => (
+              <div
+                key={`${f.jobId}-${i}`}
+                className="bg-zinc-900/60 border border-zinc-900 rounded-xl p-3.5"
+              >
+                <div className="flex items-start justify-between gap-2">
+                  <div className="min-w-0">
+                    <Link
+                      href={`/RSM/digitizing-jobs/${f.jobId}`}
+                      className="text-sm font-bold text-white hover:text-[#D4AF37] transition-colors truncate block"
+                    >
+                      {f.designName}
+                    </Link>
+                    <p className="text-xs text-zinc-500 truncate">{f.customerName}</p>
+                  </div>
+                  <div className="flex items-center gap-1 shrink-0">
+                    
+                      href={f.fileUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="p-2 text-zinc-400 active:text-[#D4AF37] active:bg-zinc-800 rounded-lg transition-colors"
+                      aria-label="Open"
+                    >
+                      <ExternalLink size={15} />
+                    </a>
+                    
+                      href={f.fileUrl}
+                      download
+                      className="p-2 text-zinc-400 active:text-[#D4AF37] active:bg-zinc-800 rounded-lg transition-colors"
+                      aria-label="Download"
+                    >
+                      <Download size={15} />
+                    </a>
+                  </div>
+                </div>
+                <p className="text-xs text-zinc-400 mt-2 truncate">{f.fileName}</p>
+                <div className="flex items-center justify-between mt-3 pt-3 border-t border-zinc-900 text-xs">
+                  <div className="flex items-center gap-2">
+                    <RsmJobStatusBadge status={f.status} />
+                    <span className="text-zinc-500">{f.folderName}</span>
+                  </div>
+                  <span className="text-zinc-500">
+                    {new Date(f.uploadedAt).toLocaleDateString()}
+                  </span>
+                </div>
+              </div>
+            ))}
           </div>
-        </div>
+
+          {/* Desktop table */}
+          <div className="hidden sm:block bg-zinc-900/60 border border-zinc-900 rounded-2xl overflow-hidden">
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-zinc-900 text-zinc-500 text-xs uppercase tracking-wide">
+                    <th className="text-left px-5 py-3 font-medium">Design / Customer</th>
+                    <th className="text-left px-5 py-3 font-medium">Batch</th>
+                    <th className="text-left px-5 py-3 font-medium">File</th>
+                    <th className="text-left px-5 py-3 font-medium">Status</th>
+                    <th className="text-left px-5 py-3 font-medium">Submitted</th>
+                    <th className="text-right px-5 py-3 font-medium">Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {filtered.map((f, i) => (
+                    <tr
+                      key={`${f.jobId}-${i}`}
+                      className="border-b border-zinc-900/60 last:border-0 hover:bg-zinc-900/40"
+                    >
+                      <td className="px-5 py-3">
+                        <Link
+                          href={`/RSM/digitizing-jobs/${f.jobId}`}
+                          className="font-medium hover:text-[#D4AF37] transition-colors"
+                        >
+                          {f.designName}
+                        </Link>
+                        <p className="text-xs text-zinc-500">{f.customerName}</p>
+                      </td>
+                      <td className="px-5 py-3 text-zinc-400">{f.folderName}</td>
+                      <td className="px-5 py-3 text-zinc-400 max-w-[200px] truncate">
+                        {f.fileName}
+                      </td>
+                      <td className="px-5 py-3">
+                        <RsmJobStatusBadge status={f.status} />
+                      </td>
+                      <td className="px-5 py-3 text-zinc-500 text-xs">
+                        {new Date(f.uploadedAt).toLocaleDateString()}
+                      </td>
+                      <td className="px-5 py-3">
+                        <div className="flex items-center justify-end gap-2">
+                          
+                            href={f.fileUrl}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
+                            aria-label="Open"
+                          >
+                            <ExternalLink size={15} />
+                          </a>
+                          
+                            href={f.fileUrl}
+                            download
+                            className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
+                            aria-label="Download"
+                          >
+                            <Download size={15} />
+                          </a>
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </>
       )}
     </RsmShell>
   );
