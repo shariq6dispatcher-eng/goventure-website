@@ -1,0 +1,946 @@
+[
+  {
+    "_id": "ORD-1002",
+    "orderNo": "ORD-1002",
+    "customerId": "c_593c0u",
+    "customerName": "Qaiser",
+    "items": [
+      {
+        "id": "oi_2kbf2s",
+        "category": "Embroidery Digitizing",
+        "name": "Cap/Hat Logo Digitizing",
+        "quantity": 37,
+        "price": 2.5,
+        "format": "EMB"
+      }
+    ],
+    "status": "Completed",
+    "subtotal": 92.5,
+    "discount": 0,
+    "tax": 0,
+    "total": 92.5,
+    "amountPaid": 0,
+    "balanceDue": 92.5,
+    "orderDate": "2026-06-29",
+    "dueDate": "2026-07-04",
+    "designName": "Graduation Cap",
+    "stitchCount": 15000,
+    "notes": "Graduation Caps and scarfs . ",
+    "createdAt": "2026-06-29T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-1005",
+    "orderNo": "ORD-1005",
+    "customerId": "c_g8c6b7",
+    "customerName": "Switzerland Customer (Shariq)",
+    "items": [
+      {
+        "id": "oi_nbedfz",
+        "category": "Embroidery Digitizing",
+        "name": "Left Chest Logo Digitizing",
+        "quantity": 1,
+        "price": 56,
+        "format": "DST"
+      }
+    ],
+    "status": "Completed",
+    "subtotal": 56,
+    "discount": 0,
+    "tax": 0,
+    "total": 56,
+    "amountPaid": 0,
+    "balanceDue": 56,
+    "orderDate": "2026-06-30",
+    "dueDate": "2026-07-07",
+    "designName": "7 Embroidery designs",
+    "stitchCount": 15000,
+    "notes": "7 Designs of June",
+    "createdAt": "2026-06-30T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-1898743",
+    "orderNo": "ORD-1898743",
+    "customerId": "c_lgu5j",
+    "customerName": "Ughandar",
+    "items": [
+      {
+        "id": "ITEM-1",
+        "category": "Embroidery Digitizing",
+        "name": "Star walker (DST)",
+        "quantity": 1,
+        "price": 3,
+        "format": "DST",
+        "details": "Chest Size 3.5\nEmb 2006"
+      }
+    ],
+    "status": "Completed",
+    "subtotal": 3,
+    "discount": 0,
+    "tax": 0,
+    "total": 3,
+    "amountPaid": 0,
+    "balanceDue": 3,
+    "orderDate": "2026-07-06",
+    "dueDate": "2026-07-13",
+    "designName": "Star walker",
+    "stitchCount": null,
+    "notes": "Chest Size 3.5\nEmb 2006",
+    "createdAt": "2026-07-06T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-1958607",
+    "orderNo": "ORD-1958607",
+    "customerId": "c_lgu5j",
+    "customerName": "Ughandar",
+    "items": [
+      {
+        "id": "ITEM-1",
+        "category": "Embroidery Digitizing",
+        "name": "Red Bull (DST)",
+        "quantity": 1,
+        "price": 3,
+        "format": "DST",
+        "details": "Cap size"
+      }
+    ],
+    "status": "In Progress",
+    "subtotal": 3,
+    "discount": 0,
+    "tax": 0,
+    "total": 3,
+    "amountPaid": 0,
+    "balanceDue": 3,
+    "orderDate": "2026-07-06",
+    "dueDate": "2026-07-13",
+    "designName": "Red Bull",
+    "stitchCount": null,
+    "notes": "Cap size",
+    "createdAt": "2026-07-06T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-3101779",
+    "orderNo": "ORD-3101779",
+    "customerId": "c_zkr6dh",
+    "customerName": "The V Shop",
+    "items": [
+      {
+        "id": "ITEM-1",
+        "category": "Embroidery Digitizing",
+        "name": "R logo (DST)",
+        "quantity": 1,
+        "price": 7,
+        "format": "DST",
+        "details": "5/4"
+      }
+    ],
+    "status": "Completed",
+    "subtotal": 7,
+    "discount": 0,
+    "tax": 0,
+    "total": 7,
+    "amountPaid": 7,
+    "balanceDue": 0,
+    "orderDate": "2026-06-30",
+    "dueDate": "2026-07-07",
+    "designName": "R logo",
+    "stitchCount": null,
+    "notes": "5/4",
+    "createdAt": "2026-06-30T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-3931389",
+    "orderNo": "ORD-3931389",
+    "customerId": "c_8dwgfd",
+    "customerName": "Mehreen",
+    "items": [
+      {
+        "id": "ITEM-1",
+        "category": "Embroidery Digitizing",
+        "name": "BNI (DST)",
+        "quantity": 1,
+        "price": 1,
+        "format": "DST",
+        "details": "110mm x 65mm "
+      }
+    ],
+    "status": "Pending",
+    "subtotal": 1,
+    "discount": 0,
+    "tax": 0,
+    "total": 1,
+    "amountPaid": 0,
+    "balanceDue": 1,
+    "orderDate": "2026-07-01",
+    "dueDate": "2026-07-08",
+    "designName": "BNI",
+    "stitchCount": null,
+    "notes": "110mm x 65mm ",
+    "createdAt": "2026-07-01T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-3975497",
+    "orderNo": "ORD-3975497",
+    "customerId": "c_8dwgfd",
+    "customerName": "Mehreen",
+    "items": [
+      {
+        "id": "ITEM-1",
+        "category": "Embroidery Digitizing",
+        "name": "Gold Club (DST)",
+        "quantity": 1,
+        "price": 1,
+        "format": "DST",
+        "details": "110mm"
+      }
+    ],
+    "status": "Pending",
+    "subtotal": 1,
+    "discount": 0,
+    "tax": 0,
+    "total": 1,
+    "amountPaid": 0,
+    "balanceDue": 1,
+    "orderDate": "2026-07-01",
+    "dueDate": "2026-07-08",
+    "designName": "Gold Club",
+    "stitchCount": null,
+    "notes": "110mm",
+    "createdAt": "2026-07-01T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-4009089",
+    "orderNo": "ORD-4009089",
+    "customerId": "c_8dwgfd",
+    "customerName": "Mehreen",
+    "items": [
+      {
+        "id": "ITEM-1",
+        "category": "Embroidery Digitizing",
+        "name": "Besucher (DST)",
+        "quantity": 1,
+        "price": 1,
+        "format": "DST",
+        "details": "110mm"
+      }
+    ],
+    "status": "Pending",
+    "subtotal": 1,
+    "discount": 0,
+    "tax": 0,
+    "total": 1,
+    "amountPaid": 0,
+    "balanceDue": 1,
+    "orderDate": "2026-07-01",
+    "dueDate": "2026-07-08",
+    "designName": "Besucher",
+    "stitchCount": null,
+    "notes": "110mm",
+    "createdAt": "2026-07-01T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-4042905",
+    "orderNo": "ORD-4042905",
+    "customerId": "c_8dwgfd",
+    "customerName": "Mehreen",
+    "items": [
+      {
+        "id": "ITEM-1",
+        "category": "Embroidery Digitizing",
+        "name": "Botsc (DST)",
+        "quantity": 1,
+        "price": 1,
+        "format": "DST",
+        "details": "110mm"
+      }
+    ],
+    "status": "In Progress",
+    "subtotal": 1,
+    "discount": 0,
+    "tax": 0,
+    "total": 1,
+    "amountPaid": 0,
+    "balanceDue": 1,
+    "orderDate": "2026-07-01",
+    "dueDate": "2026-07-08",
+    "designName": "Botsc",
+    "stitchCount": null,
+    "notes": "110mm",
+    "createdAt": "2026-07-01T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-4073296",
+    "orderNo": "ORD-4073296",
+    "customerId": "c_8dwgfd",
+    "customerName": "Mehreen",
+    "items": [
+      {
+        "id": "ITEM-1",
+        "category": "Embroidery Digitizing",
+        "name": "Mentor (DST)",
+        "quantity": 1,
+        "price": 1,
+        "format": "DST",
+        "details": "110mm"
+      }
+    ],
+    "status": "Completed",
+    "subtotal": 1,
+    "discount": 0,
+    "tax": 0,
+    "total": 1,
+    "amountPaid": 0,
+    "balanceDue": 1,
+    "orderDate": "2026-07-01",
+    "dueDate": "2026-07-08",
+    "designName": "Mentor",
+    "stitchCount": null,
+    "notes": "110mm",
+    "createdAt": "2026-07-01T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-4104864",
+    "orderNo": "ORD-4104864",
+    "customerId": "c_8dwgfd",
+    "customerName": "Mehreen",
+    "items": [
+      {
+        "id": "ITEM-1",
+        "category": "Embroidery Digitizing",
+        "name": "5 Jahre (DST)",
+        "quantity": 1,
+        "price": 1,
+        "format": "DST",
+        "details": "110mm"
+      }
+    ],
+    "status": "Completed",
+    "subtotal": 1,
+    "discount": 0,
+    "tax": 0,
+    "total": 1,
+    "amountPaid": 0,
+    "balanceDue": 1,
+    "orderDate": "2026-07-01",
+    "dueDate": "2026-07-08",
+    "designName": "5 Jahre",
+    "stitchCount": null,
+    "notes": "110mm",
+    "createdAt": "2026-07-01T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-5653821",
+    "orderNo": "ORD-5653821",
+    "customerId": "c_9gf9dl",
+    "customerName": "Flakky Sunshine",
+    "items": [
+      {
+        "id": "ITEM-1",
+        "category": "Embroidery Digitizing",
+        "name": "Mivar Mart (DST)",
+        "quantity": 1,
+        "price": 4,
+        "format": "DST",
+        "details": "5\". only Logo. white background nai baney ga."
+      }
+    ],
+    "status": "Pending",
+    "subtotal": 4,
+    "discount": 0,
+    "tax": 0,
+    "total": 4,
+    "amountPaid": 4,
+    "balanceDue": 0,
+    "orderDate": "2026-07-03",
+    "dueDate": "2026-07-10",
+    "designName": "Mivar Mart",
+    "stitchCount": null,
+    "notes": "5\". only Logo. white background nai baney ga.",
+    "createdAt": "2026-07-03T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-6923522",
+    "orderNo": "ORD-6923522",
+    "customerId": "c_9gf9dl",
+    "customerName": "Flakky Sunshine",
+    "items": [
+      {
+        "id": "ITEM-1",
+        "category": "Embroidery Digitizing",
+        "name": "Jeremiah (DST)",
+        "quantity": 1,
+        "price": 4,
+        "format": "DST",
+        "details": "7\" Height."
+      }
+    ],
+    "status": "Pending",
+    "subtotal": 4,
+    "discount": 0,
+    "tax": 0,
+    "total": 4,
+    "amountPaid": 4,
+    "balanceDue": 0,
+    "orderDate": "2026-07-03",
+    "dueDate": "2026-07-10",
+    "designName": "Jeremiah",
+    "stitchCount": null,
+    "notes": "7\" Height.",
+    "createdAt": "2026-07-03T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-7008018",
+    "orderNo": "ORD-7008018",
+    "customerId": "c_yqhuq8",
+    "customerName": "Taylor Pendleton ",
+    "items": [
+      {
+        "id": "ITEM-1",
+        "category": "Embroidery Digitizing",
+        "name": "American sweetheart  (DST)",
+        "quantity": 1,
+        "price": 7,
+        "format": "DST",
+        "details": "Width 3.5\" for Cap . Check center out "
+      }
+    ],
+    "status": "Completed",
+    "subtotal": 7,
+    "discount": 0,
+    "tax": 0,
+    "total": 7,
+    "amountPaid": 0,
+    "balanceDue": 7,
+    "orderDate": "2026-07-01",
+    "dueDate": "2026-07-08",
+    "designName": "American sweetheart ",
+    "stitchCount": null,
+    "notes": "Width 3.5\" for Cap . Check center out ",
+    "createdAt": "2026-07-01T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-7091149",
+    "orderNo": "ORD-7091149",
+    "customerId": "c_9gf9dl",
+    "customerName": "Flakky Sunshine",
+    "items": [
+      {
+        "id": "ITEM-1",
+        "category": "Embroidery Digitizing",
+        "name": "St. Veronica (DST)",
+        "quantity": 1,
+        "price": 8,
+        "format": "DST",
+        "details": "12 x 3.6\n8 x 2\nTwo sizes"
+      }
+    ],
+    "status": "Pending",
+    "subtotal": 8,
+    "discount": 0,
+    "tax": 0,
+    "total": 8,
+    "amountPaid": 8,
+    "balanceDue": 0,
+    "orderDate": "2026-07-03",
+    "dueDate": "2026-07-10",
+    "designName": "St. Veronica",
+    "stitchCount": null,
+    "notes": "12 x 3.6\n8 x 2\nTwo sizes",
+    "createdAt": "2026-07-03T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-7450327",
+    "orderNo": "ORD-7450327",
+    "customerId": "c_yqhuq8",
+    "customerName": "Taylor Pendleton ",
+    "items": [
+      {
+        "id": "ITEM-1",
+        "category": "Embroidery Digitizing",
+        "name": "Gulf coast (DST)",
+        "quantity": 1,
+        "price": 7,
+        "format": "DST",
+        "details": "Width 4.5\" cap . Check center out"
+      }
+    ],
+    "status": "Completed",
+    "subtotal": 7,
+    "discount": 0,
+    "tax": 0,
+    "total": 7,
+    "amountPaid": 0,
+    "balanceDue": 7,
+    "orderDate": "2026-07-01",
+    "dueDate": "2026-07-08",
+    "designName": "Gulf coast",
+    "stitchCount": null,
+    "notes": "Width 4.5\" cap . Check center out",
+    "createdAt": "2026-07-01T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-7681842",
+    "orderNo": "ORD-7681842",
+    "customerId": "c_lgu5j",
+    "customerName": "Ughandar",
+    "items": [
+      {
+        "id": "ITEM-1",
+        "category": "Embroidery Digitizing",
+        "name": "Vavista (DST)",
+        "quantity": 1,
+        "price": 3,
+        "format": "DST",
+        "details": "Left chest 3.5 . Emb 2006"
+      }
+    ],
+    "status": "Completed",
+    "subtotal": 3,
+    "discount": 0,
+    "tax": 0,
+    "total": 3,
+    "amountPaid": 0,
+    "balanceDue": 3,
+    "orderDate": "2026-07-01",
+    "dueDate": "2026-07-08",
+    "designName": "Vavista",
+    "stitchCount": null,
+    "notes": "Left chest 3.5 . Emb 2006",
+    "createdAt": "2026-07-01T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-7923415",
+    "orderNo": "ORD-7923415",
+    "customerId": "c_8dwgfd",
+    "customerName": "Mehreen",
+    "items": [
+      {
+        "id": "ITEM-1",
+        "category": "Embroidery Digitizing",
+        "name": "Left chest (DST)",
+        "quantity": 1,
+        "price": 1,
+        "format": "DST",
+        "details": "2.75 inch v9"
+      }
+    ],
+    "status": "Completed",
+    "subtotal": 1,
+    "discount": 0,
+    "tax": 0,
+    "total": 1,
+    "amountPaid": 0,
+    "balanceDue": 1,
+    "orderDate": "2026-06-30",
+    "dueDate": "2026-07-07",
+    "designName": "Left chest",
+    "stitchCount": null,
+    "notes": "2.75 inch v9",
+    "createdAt": "2026-06-30T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-7993245",
+    "orderNo": "ORD-7993245",
+    "customerId": "c_8dwgfd",
+    "customerName": "Mehreen",
+    "items": [
+      {
+        "id": "ITEM-1",
+        "category": "Embroidery Digitizing",
+        "name": "Left chest (DST)",
+        "quantity": 1,
+        "price": 1,
+        "format": "DST",
+        "details": "3.5inch v9"
+      }
+    ],
+    "status": "Completed",
+    "subtotal": 1,
+    "discount": 0,
+    "tax": 0,
+    "total": 1,
+    "amountPaid": 0,
+    "balanceDue": 1,
+    "orderDate": "2026-06-30",
+    "dueDate": "2026-07-07",
+    "designName": "Left chest",
+    "stitchCount": null,
+    "notes": "3.5inch v9",
+    "createdAt": "2026-06-30T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-9434845",
+    "orderNo": "ORD-9434845",
+    "customerId": "c_lgu5j",
+    "customerName": "Ughandar",
+    "items": [
+      {
+        "id": "ITEM-1",
+        "category": "Embroidery Digitizing",
+        "name": "Royal Interior  (EMB)",
+        "quantity": 1,
+        "price": 3,
+        "format": "EMB",
+        "details": "3.5 emb 2006"
+      }
+    ],
+    "status": "Completed",
+    "subtotal": 3,
+    "discount": 0,
+    "tax": 0,
+    "total": 3,
+    "amountPaid": 0,
+    "balanceDue": 3,
+    "orderDate": "2026-06-30",
+    "dueDate": "2026-07-07",
+    "designName": "Royal Interior ",
+    "stitchCount": null,
+    "notes": "3.5 emb 2006",
+    "createdAt": "2026-06-30T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-9434846",
+    "orderNo": "ORD-9434846",
+    "customerId": "c_xdo2z",
+    "customerName": "Silk",
+    "items": [
+      {
+        "id": "oi_s73gu6",
+        "category": "Embroidery Digitizing",
+        "name": "Digitizing ",
+        "quantity": 1,
+        "price": 207,
+        "format": "DST"
+      }
+    ],
+    "status": "Completed",
+    "subtotal": 207,
+    "discount": 0,
+    "tax": 0,
+    "total": 207,
+    "amountPaid": 0,
+    "balanceDue": 207,
+    "orderDate": "2026-06-30",
+    "dueDate": "2026-07-07",
+    "designName": "digitizing",
+    "stitchCount": 1,
+    "notes": "",
+    "createdAt": "2026-06-30T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-9434847",
+    "orderNo": "ORD-9434847",
+    "customerId": "c_w38qy",
+    "customerName": "Sharif",
+    "items": [
+      {
+        "id": "oi_seq56u",
+        "category": "Embroidery Digitizing",
+        "name": "Left Chest Logo Digitizing",
+        "quantity": 1,
+        "price": 102,
+        "format": "DST"
+      }
+    ],
+    "status": "Completed",
+    "subtotal": 102,
+    "discount": 0,
+    "tax": 0,
+    "total": 102,
+    "amountPaid": 0,
+    "balanceDue": 102,
+    "orderDate": "2026-06-02",
+    "dueDate": "2026-06-10",
+    "designName": "digitizing",
+    "stitchCount": null,
+    "notes": "",
+    "createdAt": "2026-06-02T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-9434848",
+    "orderNo": "ORD-9434848",
+    "customerId": "c_lru7vi",
+    "customerName": "KRM",
+    "items": [
+      {
+        "id": "oi_ajzh2",
+        "category": "Embroidery Digitizing",
+        "name": "Left Chest Logo Digitizing",
+        "quantity": 1,
+        "price": 8,
+        "format": "DST"
+      }
+    ],
+    "status": "Completed",
+    "subtotal": 8,
+    "discount": 0,
+    "tax": 0,
+    "total": 8,
+    "amountPaid": 0,
+    "balanceDue": 8,
+    "orderDate": "2026-06-02",
+    "dueDate": "2026-06-07",
+    "designName": "digitizing",
+    "stitchCount": null,
+    "notes": "",
+    "createdAt": "2026-06-02T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-9434849",
+    "orderNo": "ORD-9434849",
+    "customerId": "c_w38qy",
+    "customerName": "Sharif",
+    "items": [
+      {
+        "id": "oi_uj3gn8",
+        "category": "Embroidery Digitizing",
+        "name": "Left Chest Logo Digitizing",
+        "quantity": 1,
+        "price": 48,
+        "format": "DST"
+      }
+    ],
+    "status": "Completed",
+    "subtotal": 48,
+    "discount": 0,
+    "tax": 0,
+    "total": 48,
+    "amountPaid": 0,
+    "balanceDue": 48,
+    "orderDate": "2026-06-16",
+    "dueDate": "2026-06-18",
+    "designName": "digitizing",
+    "stitchCount": null,
+    "notes": "",
+    "createdAt": "2026-06-16T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-9434850",
+    "orderNo": "ORD-9434850",
+    "customerId": "c_c4s2i",
+    "customerName": "Bulrush",
+    "items": [
+      {
+        "id": "oi_jwr098",
+        "category": "Embroidery Digitizing",
+        "name": "Left Chest Logo Digitizing",
+        "quantity": 1,
+        "price": 14,
+        "format": "DST"
+      }
+    ],
+    "status": "Completed",
+    "subtotal": 14,
+    "discount": 0,
+    "tax": 0,
+    "total": 14,
+    "amountPaid": 0,
+    "balanceDue": 14,
+    "orderDate": "2026-06-13",
+    "dueDate": "2026-06-17",
+    "designName": "",
+    "stitchCount": null,
+    "notes": "",
+    "createdAt": "2026-06-13T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-9434851",
+    "orderNo": "ORD-9434851",
+    "customerId": "c_c4s2i",
+    "customerName": "Bulrush",
+    "items": [
+      {
+        "id": "oi_1lg0ah",
+        "category": "Embroidery Digitizing",
+        "name": "Left Chest Logo Digitizing",
+        "quantity": 1,
+        "price": 14,
+        "format": "DST"
+      }
+    ],
+    "status": "Completed",
+    "subtotal": 14,
+    "discount": 0,
+    "tax": 0,
+    "total": 14,
+    "amountPaid": 0,
+    "balanceDue": 14,
+    "orderDate": "2026-06-02",
+    "dueDate": "2026-06-07",
+    "designName": "digitizing",
+    "stitchCount": null,
+    "notes": "",
+    "createdAt": "2026-06-02T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-9434852",
+    "orderNo": "ORD-9434852",
+    "customerId": "c_z4y9j",
+    "customerName": "Marv",
+    "items": [
+      {
+        "id": "oi_c6wjg2",
+        "category": "T-Shirts",
+        "name": "50 pcs T Shirts",
+        "quantity": 1,
+        "price": 786
+      }
+    ],
+    "status": "Completed",
+    "subtotal": 786,
+    "discount": 0,
+    "tax": 0,
+    "total": 786,
+    "amountPaid": 0,
+    "balanceDue": 786,
+    "orderDate": "2026-06-10",
+    "dueDate": "2026-07-10",
+    "designName": "T-Shirts",
+    "stitchCount": null,
+    "notes": "",
+    "createdAt": "2026-06-10T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-9434853",
+    "orderNo": "ORD-9434853",
+    "customerId": "c_ucksc",
+    "customerName": "Grumpy",
+    "items": [
+      {
+        "id": "oi_ahfigg",
+        "category": "Custom Patches",
+        "name": "Custom Patches ",
+        "quantity": 1,
+        "price": 460
+      }
+    ],
+    "status": "Completed",
+    "subtotal": 460,
+    "discount": 0,
+    "tax": 0,
+    "total": 460,
+    "amountPaid": 0,
+    "balanceDue": 460,
+    "orderDate": "2026-06-02",
+    "dueDate": "2026-06-20",
+    "designName": "Patches",
+    "stitchCount": null,
+    "notes": "",
+    "createdAt": "2026-06-02T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-9434854",
+    "orderNo": "ORD-9434854",
+    "customerId": "c_ucksc",
+    "customerName": "Grumpy",
+    "items": [
+      {
+        "id": "oi_2naxx",
+        "category": "Custom Patches",
+        "name": "Custom Patches ",
+        "quantity": 1,
+        "price": 100
+      }
+    ],
+    "status": "Completed",
+    "subtotal": 100,
+    "discount": 0,
+    "tax": 0,
+    "total": 100,
+    "amountPaid": 0,
+    "balanceDue": 100,
+    "orderDate": "2026-06-12",
+    "dueDate": "2026-06-30",
+    "designName": "Patches",
+    "stitchCount": null,
+    "notes": "",
+    "createdAt": "2026-06-12T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-9434855",
+    "orderNo": "ORD-9434855",
+    "customerId": "c_xdo2z",
+    "customerName": "Silk",
+    "items": [
+      {
+        "id": "oi_7nib74",
+        "category": "Vector Art",
+        "name": "Left Chest Logo Digitizing",
+        "quantity": 1,
+        "price": 7,
+        "format": "PDF"
+      }
+    ],
+    "status": "Completed",
+    "subtotal": 7,
+    "discount": 0,
+    "tax": 0,
+    "total": 7,
+    "amountPaid": 0,
+    "balanceDue": 7,
+    "orderDate": "2026-07-01",
+    "dueDate": "2026-07-08",
+    "designName": "Vector dog",
+    "stitchCount": null,
+    "notes": "",
+    "createdAt": "2026-07-01T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-9434856",
+    "orderNo": "ORD-9434856",
+    "customerId": "c_xdo2z",
+    "customerName": "Silk",
+    "items": [
+      {
+        "id": "oi_ozciho",
+        "category": "Vector Art",
+        "name": "Left Chest Logo Digitizing",
+        "quantity": 1,
+        "price": 7,
+        "format": "PDF"
+      }
+    ],
+    "status": "Completed",
+    "subtotal": 7,
+    "discount": 0,
+    "tax": 0,
+    "total": 7,
+    "amountPaid": 0,
+    "balanceDue": 7,
+    "orderDate": "2026-07-01",
+    "dueDate": "2026-07-08",
+    "designName": "Devil dogs",
+    "stitchCount": null,
+    "notes": "",
+    "createdAt": "2026-07-01T00:00:00.000Z"
+  },
+  {
+    "_id": "ORD-9896636",
+    "orderNo": "ORD-9896636",
+    "customerId": "c_9gf9dl",
+    "customerName": "Flakky Sunshine",
+    "items": [
+      {
+        "id": "ITEM-1",
+        "category": "Embroidery Digitizing",
+        "name": "Mavi Mart (DST)",
+        "quantity": 1,
+        "price": 4,
+        "format": "DST",
+        "details": "5 inch"
+      }
+    ],
+    "status": "Pending",
+    "subtotal": 4,
+    "discount": 0,
+    "tax": 0,
+    "total": 4,
+    "amountPaid": 2.75,
+    "balanceDue": 1.25,
+    "orderDate": "2026-07-03",
+    "dueDate": "2026-07-10",
+    "designName": "Mavi Mart",
+    "stitchCount": null,
+    "notes": "5 inch",
+    "createdAt": "2026-07-03T00:00:00.000Z"
+  }
+]
