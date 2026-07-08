@@ -3,16 +3,17 @@ import { mongo } from "@/lib/mongodb";
 import { RSM_COLLECTIONS } from "@/types/constants";
 import RsmShell from "@/components/admin/rsm/RsmShell";
 import RsmDashboardClient from "@/components/admin/rsm/RsmDashboardClient";
-import type { Order, Payment, Customer, Expense } from "@/types/rsm";
+import type { Order, Payment, Customer, Expense, DigitizingJob } from "@/types/rsm";
 
 export default async function RsmHomePage() {
   const auth = await getRsmAuth();
 
-  const [orders, payments, customers, expenses] = await Promise.all([
+ const [orders, payments, customers, expenses, digitizingJobs] = await Promise.all([
     mongo.find<Order>(RSM_COLLECTIONS.orders),
     mongo.find<Payment>(RSM_COLLECTIONS.payments),
     mongo.find<Customer>(RSM_COLLECTIONS.customers),
     mongo.find<Expense>(RSM_COLLECTIONS.expenses),
+    mongo.find<DigitizingJob>(RSM_COLLECTIONS.digitizingJobs),
   ]);
 
   return (
@@ -27,6 +28,7 @@ export default async function RsmHomePage() {
         payments={payments}
         expenses={expenses}
         customers={customers}
+        digitizingJobs={digitizingJobs}
       />
     </RsmShell>
   );
