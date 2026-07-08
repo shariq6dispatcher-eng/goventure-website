@@ -15,6 +15,7 @@ import {
   Users,
 } from "lucide-react";
 import RsmStatusBadge from "./RsmStatusBadge";
+import { RsmLineChart, RsmDonutChart } from "./RsmCharts";
 import type { Order, Payment, Expense, Customer } from "@/types/rsm";
 
 interface Props {
@@ -129,7 +130,42 @@ export default function RsmDashboardClient({
     }),
     [orders]
   );
+// Last 6 months of revenue vs expenses, oldest to newest, for the trend chart.
+  const monthlyTrend = useMemo(() => {
+    const now = new Date();
+    const months: string[] = [];
+    for (let i = 5; i >= 0; i--) {
+      const d = new Date(now.getFullYear(), now.getMonth() - i, 1);
+      months.push(`${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`);
+    }
 
+    const revenue = months.map((m) =>
+      payments
+        .filter((p) => p.confirmed && p.date.startsWith(m))
+        .reduce((sum, p) => sum + p.amount, 0)
+    );
+    const expenseTotals = months.map((m) =>
+      expenses
+        .filter((e) => e.date.startsWith(m))
+        .reduce((sum, e) => sum + e.amount, 0)
+    );
+
+    const labels = months.map((m) =>
+      new Date(m + "-02").toLocaleString("default", { month: "short" })
+    );
+
+    return { labels, revenue, expenseTotals };
+  }, [payments, expenses]);
+
+  const orderStatusDonut = useMemo(
+    () => [
+      { label: "Pending", value: pipelineCounts.pending, color: "#fbbf24" },
+      { label: "In Progress", value: pipelineCounts.inProgress, color: "#38bdf8" },
+      { label: "Completed", value: pipelineCounts.completed, color: "#D4AF37" },
+      { label: "Delivered", value: pipelineCounts.delivered, color: "#34d399" },
+    ],
+    [pipelineCounts]
+  );
   const profitability = useMemo(() => {
     const paidOrders = orders.filter(
       (o) => o.status !== "Cancelled" && o.orderDate.startsWith(selectedMonth)
@@ -393,7 +429,34 @@ export default function RsmDashboardClient({
           )}
         </div>
       </div>
+{/* TRENDS: revenue/expense line chart + orders-by-status donut */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+        <div className="lg:col-span-2 bg-zinc-900/60 border border-zinc-900 rounded-xl sm:rounded-2xl p-3.5 sm:p-5">
+          <h4 className="font-bold text-xs sm:text-sm text-white mb-1">
+            Revenue vs Expenses
+          </h4>
+          <p className="text-[11px] sm:text-xs text-zinc-400 mb-3">
+            Last 6 months
+          </p>
+          <RsmLineChart
+            categories={monthlyTrend.labels}
+            series={[
+              { label: "Revenue", color: "#34d399", points: monthlyTrend.revenue },
+              { label: "Expenses", color: "#f87171", points: monthlyTrend.expenseTotals },
+            ]}
+          />
+        </div>
 
+        <div className="bg-zinc-900/60 border border-zinc-900 rounded-xl sm:rounded-2xl p-3.5 sm:p-5">
+          <h4 className="font-bold text-xs sm:text-sm text-white mb-1">
+            Orders by Status
+          </h4>
+          <p className="text-[11px] sm:text-xs text-zinc-400 mb-3">
+            All-time pipeline
+          </p>
+          <RsmDonutChart segments={orderStatusDonut} />
+        </div>
+      </div>
      {/* BUSINESS PROFITABILITY STATEMENT */}
       <div className="bg-zinc-900/60 border border-zinc-900 rounded-xl sm:rounded-2xl p-3.5 sm:p-5 space-y-3 sm:space-y-4">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-zinc-900 pb-3">
