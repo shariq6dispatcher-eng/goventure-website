@@ -14,6 +14,7 @@ import {
   PlusCircle,
   Users,
   AlertTriangle,
+  Activity,
 } from "lucide-react";
 import RsmStatusBadge from "./RsmStatusBadge";
 import { RsmLineChart, RsmDonutChart } from "./RsmCharts";
@@ -211,6 +212,95 @@ export default function RsmDashboardClient({
 
     return { overdueOrders, staleUnconfirmedPayments, customerBalances };
   }, [orders, payments, customers]);
+  // Unified activity feed — merges the 4 collections into one timeline by
+  // createdAt, newest first. No new data model: just re-reading data this
+  // component already has (plus digitizingJobs, added in Part 1).
+  type ActivityItem = {
+    id: string;
+    kind: "order" | "payment" | "expense" | "digitizingJob";
+    text: string;
+    amount?: number;
+    createdAt: string;
+    href: string;
+  };
+
+  const activityFeed = useMemo<ActivityItem[]>(() => {
+    const items: ActivityItem[] = [];
+
+    for (const o of orders) {
+      items.push({
+        id: o._id,
+        kind: "order",
+        text: `New order ${o.orderNo} for ${o.customerName}`,
+        amount: o.total,
+        createdAt: o.createdAt,
+        href: `/RSM/orders/${o._id}`,
+      });
+    }
+
+    for (const p of payments) {
+      items.push({
+        id: p._id,
+        kind: "payment",
+        text: `Payment ${p.confirmed ? "confirmed" : "submitted"} by ${p.customerName}`,
+        amount: p.amount,
+        createdAt: p.createdAt,
+        href: `/RSM/payments/${p._id}`,
+      });
+    }
+
+    for (const e of expenses) {
+      items.push({
+        id: e._id,
+        kind: "expense",
+        text: `Expense logged — ${e.category}`,
+        amount: e.amount,
+        createdAt: e.createdAt,
+        href: `/RSM/expenses/${e._id}`,
+      });
+    }
+
+    for (const j of digitizingJobs) {
+      items.push({
+        id: j._id,
+        kind: "digitizingJob",
+        text: `Digitizing job "${j.designName}" for ${j.customerName}`,
+        createdAt: j.createdAt,
+        href: `/RSM/digitizing-jobs/${j._id}`,
+      });
+    }
+
+    return items
+      .sort((a, b) => (a.createdAt < b.createdAt ? 1 : -1))
+      .slice(0, 8);
+  }, [orders, payments, expenses, digitizingJobs]);
+
+  // Lightweight "time ago" formatter — no date library needed.
+  function timeAgo(iso: string): string {
+    const diffMs = Date.now() - new Date(iso).getTime();
+    const mins = Math.floor(diffMs / 60000);
+    if (mins < 1) return "just now";
+    if (mins < 60) return `${mins}m ago`;
+    const hrs = Math.floor(mins / 60);
+    if (hrs < 24) return `${hrs}h ago`;
+    const days = Math.floor(hrs / 24);
+    if (days < 30) return `${days}d ago`;
+    return new Date(iso).toLocaleDateString();
+  }
+
+  const ACTIVITY_ICON: Record<ActivityItem["kind"], React.ElementType> = {
+    order: Receipt,
+    payment: ArrowDownRight,
+    expense: Scissors,
+    digitizingJob: Users,
+  };
+
+  const ACTIVITY_COLOR: Record<ActivityItem["kind"], string> = {
+    order: "text-sky-400 bg-sky-500/10",
+    payment: "text-emerald-400 bg-emerald-500/10",
+    expense: "text-rose-400 bg-rose-500/10",
+    digitizingJob: "text-[#D4AF37] bg-[#D4AF37]/10",
+  };
   const profitability = useMemo(() => {
     const paidOrders = orders.filter(
       (o) => o.status !== "Cancelled" && o.orderDate.startsWith(selectedMonth)
@@ -578,6 +668,47 @@ export default function RsmDashboardClient({
             All-time pipeline
           </p>
           <RsmDonutChart segments={orderStatusDonut} />
+        </div>
+      </div>
+      {/* ACTIVITY FEED */}
+      <div className="bg-zinc-900/60 border border-zinc-900 rounded-xl sm:rounded-2xl p-3.5 sm:p-5">
+        <h4 className="font-bold text-xs sm:text-sm text-white flex items-center gap-2 mb-3">
+          <Activity className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#D4AF37]" />
+          Recent Activity
+        </h4>
+
+        <div className="space-y-2">
+          {activityFeed.map((item) => {
+            const Icon = ACTIVITY_ICON[item.kind];
+            return (
+              <Link
+                key={`${item.kind}-${item.id}`}
+                href={item.href}
+                className="flex items-center gap-3 bg-black border border-zinc-900 hover:border-zinc-700 rounded-lg p-2.5 sm:p-3 transition"
+              >
+                <span className={`shrink-0 p-1.5 rounded-lg ${ACTIVITY_COLOR[item.kind]}`}>
+                  <Icon className="w-3.5 h-3.5" />
+                </span>
+                <div className="min-w-0 flex-1">
+                  <p className="text-[11px] sm:text-xs text-zinc-300 truncate">{item.text}</p>
+                </div>
+                <div className="text-right shrink-0">
+                  {item.amount !== undefined && (
+                    <p className="text-[11px] sm:text-xs font-mono font-bold text-white">
+                      {money(item.amount)}
+                    </p>
+                  )}
+                  <p className="text-[10px] text-zinc-500">{timeAgo(item.createdAt)}</p>
+                </div>
+              </Link>
+            );
+          })}
+
+          {activityFeed.length === 0 && (
+            <div className="text-center py-8 text-zinc-500 border border-dashed border-zinc-800 rounded-lg text-xs">
+              No activity yet.
+            </div>
+          )}
         </div>
       </div>
      {/* BUSINESS PROFITABILITY STATEMENT */}
