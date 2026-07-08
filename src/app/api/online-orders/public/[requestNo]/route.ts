@@ -51,6 +51,41 @@ export async function PATCH(req: Request, { params }: RouteParams) {
       return NextResponse.json({ success: true });
     }
 
+    if (body.action === "paymentSubmitted") {
+      if (order.status !== "Files Ready") {
+        return NextResponse.json(
+          { error: "This request isn't awaiting payment yet." },
+          { status: 400 }
+        );
+      }
+
+      const screenshotUrl = typeof body.screenshotUrl === "string" ? body.screenshotUrl : "";
+      if (!screenshotUrl) {
+        return NextResponse.json(
+          { error: "No payment screenshot was received." },
+          { status: 400 }
+        );
+      }
+
+      await mongo.updateOne(
+        RSM_COLLECTIONS.onlineOrders,
+        { _id: toObjectId(order._id) },
+        {
+          status: "Payment Submitted",
+          paymentScreenshot: screenshotUrl,
+          paymentSubmittedAt: new Date().toISOString(),
+        }
+      );
+
+      await notifyRsm({
+        title: "Payment Submitted",
+        message: `${order.customerName} submitted payment proof for ${order.requestNo}. Review and approve to unlock their downloads.`,
+        orderId: order._id,
+      });
+
+      return NextResponse.json({ success: true });
+    }
+
     return NextResponse.json({ error: "Unknown action" }, { status: 400 });
   } catch (err) {
     console.error("Public online order PATCH error:", err);
