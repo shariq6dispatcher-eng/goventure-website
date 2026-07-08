@@ -339,7 +339,7 @@ export default function RsmDashboardClient({
             {alerts.customerBalances.slice(0, 3).map(({ customer, balance }) => (
               <Link
                 key={customer._id}
-                href={`/RSM/customers/${customer._id}`}
+                href="/RSM/customers"
                 className="flex items-center justify-between gap-2 bg-black border border-zinc-900 hover:border-amber-900/60 rounded-lg p-2.5 sm:p-3 transition"
               >
                 <div className="min-w-0">
