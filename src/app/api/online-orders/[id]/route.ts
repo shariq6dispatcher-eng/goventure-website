@@ -85,6 +85,36 @@ export async function PATCH(req: Request, { params }: RouteParams) {
       return NextResponse.json({ success: true });
     }
 
+    if (body.action === "uploadFiles") {
+      const newFiles = Array.isArray(body.files) ? body.files : [];
+      if (newFiles.length === 0) {
+        return NextResponse.json(
+          { error: "No files to add" },
+          { status: 400 }
+        );
+      }
+
+      const stamped = newFiles.map((f: { name: string; url: string }) => ({
+        name: f.name,
+        url: f.url,
+        uploadedAt: new Date().toISOString(),
+      }));
+
+      const combinedFiles = [...(order.files || []), ...stamped];
+
+      await mongo.updateOne(
+        RSM_COLLECTIONS.onlineOrders,
+        { _id: toObjectId(id) },
+        {
+          files: combinedFiles,
+          status: "Files Ready",
+          filesReadyAt: order.filesReadyAt || new Date().toISOString(),
+        }
+      );
+
+      return NextResponse.json({ success: true });
+    }
+
     return NextResponse.json({ error: "Unknown action" }, { status: 400 });
   } catch (err) {
     console.error("Online order PATCH error:", err);
