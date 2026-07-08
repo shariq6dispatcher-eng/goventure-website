@@ -1,8 +1,9 @@
 import Link from "next/link";
 import { mongo } from "@/lib/mongodb";
-import { RSM_COLLECTIONS } from "@/types/constants";
+import { RSM_COLLECTIONS, PAYMENT_DETAILS } from "@/types/constants";
 import type { OnlineOrder } from "@/types/rsm";
 import ApproveQuoteButton from "@/components/ApproveQuoteButton";
+import PrintInvoiceButton from "@/components/PrintInvoiceButton";
 import { AlertTriangle } from "lucide-react";
 
 // Linear pipeline for the progress bar. "Rejected" is a side branch and
@@ -34,9 +35,9 @@ export default async function OrderStatusPage({ params }: PageProps) {
   });
 
   return (
-    <div className="min-h-screen bg-black text-white flex items-start justify-center px-4 py-10 sm:py-16">
+    <div className="min-h-screen bg-black text-white flex items-start justify-center px-4 py-10 sm:py-16 print:bg-white print:py-0 print:min-h-0">
       <div className="w-full max-w-lg">
-        <div className="text-center mb-8">
+        <div className="print:hidden text-center mb-8">
           <p className="text-xs uppercase tracking-[3px] text-[#D4AF37]">GoVenture</p>
           <h1 className="text-xl sm:text-2xl font-bold mt-1">Order Status</h1>
         </div>
@@ -73,7 +74,7 @@ export default async function OrderStatusPage({ params }: PageProps) {
                 </p>
               </div>
             ) : (
-              <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-6 sm:p-8 mb-5">
+              <div className="print:hidden bg-zinc-900/60 border border-zinc-900 rounded-2xl p-6 sm:p-8 mb-5">
                 <div className="flex items-center justify-between mb-6">
                   <div>
                     <p className="text-xs text-zinc-500">Request</p>
@@ -143,7 +144,7 @@ export default async function OrderStatusPage({ params }: PageProps) {
 
             {/* Status-specific panel */}
             {order.status === "Requested" && (
-              <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5 sm:p-6 mb-5 text-center">
+              <div className="print:hidden bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5 sm:p-6 mb-5 text-center">
                 <p className="text-sm text-zinc-300 font-semibold">
                   We&apos;re reviewing your request
                 </p>
@@ -155,7 +156,7 @@ export default async function OrderStatusPage({ params }: PageProps) {
             )}
 
             {order.status === "Quoted" && order.quoteAmount != null && (
-              <div className="bg-zinc-900/60 border border-[#D4AF37]/30 rounded-2xl p-5 sm:p-6 mb-5">
+              <div className="print:hidden bg-zinc-900/60 border border-[#D4AF37]/30 rounded-2xl p-5 sm:p-6 mb-5">
                 <h3 className="text-xs font-bold uppercase tracking-wide text-[#D4AF37] mb-3">
                   Invoice
                 </h3>
@@ -180,8 +181,91 @@ export default async function OrderStatusPage({ params }: PageProps) {
               </div>
             )}
 
+            {order.approvedAt && order.quoteAmount != null && (
+              <div className="bg-white text-black rounded-2xl p-6 sm:p-8 mb-5">
+                <div className="flex items-start justify-between mb-6 pb-6 border-b border-zinc-200">
+                  <div>
+                    <p className="font-bold text-lg">{PAYMENT_DETAILS.companyName}</p>
+                    <p className="text-xs text-zinc-500 mt-1">Invoice</p>
+                  </div>
+                  <div className="text-right">
+                    <p className="text-xs text-zinc-500">Request No.</p>
+                    <p className="font-mono font-bold">{order.requestNo}</p>
+                    <p className="text-xs text-zinc-500 mt-1">
+                      {new Date(order.approvedAt).toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid sm:grid-cols-2 gap-4 text-sm mb-6">
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-zinc-500 mb-1">
+                      Billed To
+                    </p>
+                    <p className="font-semibold">{order.customerName}</p>
+                    <p className="text-zinc-600 text-xs">{order.customerEmail}</p>
+                    {order.customerPhone && (
+                      <p className="text-zinc-600 text-xs">{order.customerPhone}</p>
+                    )}
+                  </div>
+                  <div>
+                    <p className="text-xs uppercase tracking-wide text-zinc-500 mb-1">
+                      Order Details
+                    </p>
+                    <p className="text-xs text-zinc-700">
+                      {order.category}
+                      {order.size ? ` · ${order.size}` : ""}
+                    </p>
+                    {order.formats.length > 0 && (
+                      <p className="text-xs text-zinc-700">
+                        Formats: {order.formats.join(", ")}
+                      </p>
+                    )}
+                    {order.needDate && (
+                      <p className="text-xs text-zinc-700">Needed by: {order.needDate}</p>
+                    )}
+                  </div>
+                </div>
+
+                <div className="border-t border-zinc-200 pt-4">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-zinc-700">
+                      {order.category}
+                      {order.quoteNote ? ` — ${order.quoteNote}` : ""}
+                    </span>
+                    <span className="font-mono">{money(order.quoteAmount)}</span>
+                  </div>
+                  <div className="flex items-center justify-between border-t border-zinc-200 mt-3 pt-3 font-bold text-base">
+                    <span>Total Due</span>
+                    <span className="font-mono">{money(order.quoteAmount)}</span>
+                  </div>
+                </div>
+
+                <div className="mt-6 pt-6 border-t border-zinc-200">
+                  <p className="text-xs uppercase tracking-wide text-zinc-500 mb-2">
+                    Payment Details
+                  </p>
+                  <p className="text-xs text-zinc-600 mb-3">
+                    {PAYMENT_DETAILS.instructions}
+                  </p>
+                  <div className="space-y-1.5">
+                    {PAYMENT_DETAILS.methods.map((m) => (
+                      <div key={m.label} className="flex items-center justify-between text-xs">
+                        <span className="text-zinc-500">{m.label}</span>
+                        <span className="font-mono text-zinc-800">{m.value}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="mt-6">
+                  <PrintInvoiceButton />
+                </div>
+              </div>
+            )}
+
             {order.status === "Approved" && (
-              <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5 sm:p-6 mb-5 text-center">
+              <div className="print:hidden bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5 sm:p-6 mb-5 text-center">
                 <p className="text-sm text-zinc-300 font-semibold">
                   Rate approved — work is underway
                 </p>
@@ -197,7 +281,7 @@ export default async function OrderStatusPage({ params }: PageProps) {
             )}
 
             {order.status === "Files Ready" && (
-              <div className="bg-zinc-900/60 border border-emerald-900/40 rounded-2xl p-5 sm:p-6 mb-5 text-center">
+              <div className="print:hidden bg-zinc-900/60 border border-emerald-900/40 rounded-2xl p-5 sm:p-6 mb-5 text-center">
                 <p className="text-sm text-emerald-300 font-semibold">
                   Your files are ready!
                 </p>
@@ -213,7 +297,7 @@ export default async function OrderStatusPage({ params }: PageProps) {
               </div>
             )}
 
-            <p className="text-center text-xs text-zinc-600">
+            <p className="print:hidden text-center text-xs text-zinc-600">
               Questions about this request? Contact GoVenture Embroidery &amp;
               Manufacturing directly.
             </p>
