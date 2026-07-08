@@ -2,8 +2,10 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus, Search, Loader2, Pencil, Trash2 } from "lucide-react";
+import { Plus, Search, Loader2, Pencil, Trash2, Scissors } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
+import RsmSkeleton from "@/components/admin/rsm/RsmSkeleton";
+import RsmEmptyState from "@/components/admin/rsm/RsmEmptyState";
 import { useRsmAccess } from "@/lib/useRsmAccess";
 import type { Expense, ExpenseCategory } from "@/types/rsm";
 import { EXPENSE_CATEGORIES } from "@/types/constants";
@@ -100,12 +102,7 @@ export default function ExpensesPage() {
         </div>
       </div>
 
-      {loading && (
-        <div className="flex items-center justify-center py-20 text-zinc-500">
-          <Loader2 size={20} className="animate-spin mr-2" />
-          Loading expenses…
-        </div>
-      )}
+     {loading && <RsmSkeleton rows={6} />}
 
       {!loading && error && (
         <div className="bg-red-950/30 border border-red-900/50 text-red-400 text-sm rounded-xl p-4">
@@ -113,12 +110,22 @@ export default function ExpensesPage() {
         </div>
       )}
 
-      {!loading && !error && filtered.length === 0 && (
-        <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-10 text-center text-zinc-500 text-sm">
-          {expenses.length === 0
-            ? "No expenses recorded yet."
-            : "No expenses match your search/filter."}
-        </div>
+     {!loading && !error && filtered.length === 0 && (
+        expenses.length === 0 ? (
+          <RsmEmptyState
+            icon={Scissors}
+            title="No expenses recorded yet"
+            description="Log your first expense to start tracking costs against revenue."
+            ctaLabel="Add Expense"
+            ctaHref="/RSM/expenses/new"
+          />
+        ) : (
+          <RsmEmptyState
+            icon={Search}
+            title="No matches"
+            description="No expenses match your current search or category filter."
+          />
+        )
       )}
 
      {!loading && !error && filtered.length > 0 && (
