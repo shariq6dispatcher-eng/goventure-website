@@ -115,6 +115,27 @@ export async function PATCH(req: Request, { params }: RouteParams) {
       return NextResponse.json({ success: true });
     }
 
+    if (body.action === "approvePayment") {
+      if (order.status !== "Payment Submitted") {
+        return NextResponse.json(
+          { error: "This request isn't awaiting payment review." },
+          { status: 400 }
+        );
+      }
+
+      await mongo.updateOne(
+        RSM_COLLECTIONS.onlineOrders,
+        { _id: toObjectId(id) },
+        {
+          status: "Payment Approved",
+          paymentApprovedAt: new Date().toISOString(),
+          paymentApprovedBy: auth.username,
+        }
+      );
+
+      return NextResponse.json({ success: true });
+    }
+
     return NextResponse.json({ error: "Unknown action" }, { status: 400 });
   } catch (err) {
     console.error("Online order PATCH error:", err);
