@@ -42,7 +42,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Customer Ledger", href: "/RSM/ledger", icon: BookOpen, module: "ledgers" },
   { label: "Expenses", href: "/RSM/expenses", icon: Receipt, module: "expenses" },
   { label: "Customers", href: "/RSM/customers", icon: Users, module: "customers" },
-  { label: "Reports", href: "/RSM/reports", icon: BarChart3, comingSoon: true, module: "reports" },
+  { label: "Reports", href: "/RSM/reports", icon: BarChart3, module: "reports" },
   { label: "Digitizing Jobs", href: "/RSM/digitizing-jobs", icon: Sparkles, module: "digitizing" },
   { label: "Work Vault", href: "/RSM/work-vault", icon: FolderOpen, module: "digitizing_work" },
   { label: "Users", href: "/RSM/users", icon: UserCog, adminOnly: true },
