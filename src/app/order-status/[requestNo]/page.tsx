@@ -196,6 +196,23 @@ export default async function OrderStatusPage({ params }: PageProps) {
               </div>
             )}
 
+            {order.status === "Files Ready" && (
+              <div className="bg-zinc-900/60 border border-emerald-900/40 rounded-2xl p-5 sm:p-6 mb-5 text-center">
+                <p className="text-sm text-emerald-300 font-semibold">
+                  Your files are ready!
+                </p>
+                <p className="text-xs text-zinc-400 mt-1.5">
+                  Please attach a screenshot of your payment to unlock your
+                  downloads.
+                </p>
+                {order.quoteAmount != null && (
+                  <p className="text-xs text-zinc-600 mt-3">
+                    Amount due: <span className="text-[#D4AF37] font-semibold">{money(order.quoteAmount)}</span>
+                  </p>
+                )}
+              </div>
+            )}
+
             <p className="text-center text-xs text-zinc-600">
               Questions about this request? Contact GoVenture Embroidery &amp;
               Manufacturing directly.
