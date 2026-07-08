@@ -135,9 +135,8 @@ export const PAYMENT_DETAILS = {
   instructions:
     "Please send payment using one of the methods below, then upload a screenshot of your payment on this page once your files are ready.",
   methods: [
-    { label: "Bank Transfer", value: "Bank Name — Account Title — Account # — IBAN" },
-    { label: "PayPal", value: "your-paypal@example.com" },
-    { label: "Payoneer", value: "your-payoneer@example.com" },
+    { label: "PayPal", value: "globaloutsourceventures@gmail.com" },
+    { label: "Zelle", value: "globaloutsourceventures@gmail.com" },
   ],
 } as const;
 
