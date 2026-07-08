@@ -44,3 +44,8 @@ export async function getNextExpenseNo(): Promise<string> {
   const n = await getNextSequence("expenseNo", 2001);
   return `EXP-${n}`;
 }
+
+export async function getNextRequestNo(): Promise<string> {
+  const n = await getNextSequence("requestNo", 1001);
+  return `REQ-${n}`;
+}
