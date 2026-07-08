@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
 import RsmOnlineOrderStatusBadge from "@/components/admin/rsm/RsmOnlineOrderStatusBadge";
+import OnlineOrderFileUpload from "@/components/admin/rsm/OnlineOrderFileUpload";
 import { useRsmAccess } from "@/lib/useRsmAccess";
 import type { OnlineOrder } from "@/types/rsm";
 
@@ -317,6 +318,31 @@ export default function OnlineOrderDetailPage() {
                     Waiting on the customer to approve this rate.
                   </p>
                 )}
+              </div>
+            )}
+
+            {(order.status === "Approved" || order.status === "Files Ready") && (
+              <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5 sm:p-6">
+                <h3 className="text-sm font-bold mb-1">Completed Files</h3>
+                <p className="text-xs text-zinc-500 mb-4">
+                  Uploading here notifies the customer to attach a payment
+                  screenshot before they can download.
+                </p>
+
+                {order.files.length > 0 && (
+                  <div className="space-y-1.5 mb-4">
+                    {order.files.map((f) => (
+                      <div
+                        key={f.url}
+                        className="flex items-center justify-between gap-2 bg-zinc-900 border border-zinc-800 rounded-lg px-3 py-2 text-xs text-zinc-300"
+                      >
+                        <span className="truncate">{f.name}</span>
+                      </div>
+                    ))}
+                  </div>
+                )}
+
+                <OnlineOrderFileUpload orderId={order._id} onSubmitted={loadOrder} />
               </div>
             )}
 
