@@ -91,9 +91,14 @@ async function callDataApi<T = unknown>(
   return (await res.json()) as T;
 }
 
-export function toObjectId(id: string): { $oid: string } {
-  return { $oid: id };
-}
+export function toObjectId(id: string): { $oid: string } | string {
+     // Real MongoDB ObjectIds are exactly 24 hex characters. Imported
+     // records (from Firebase) kept their original string ids (e.g.
+     // "c_1hjf7o", "ORD-1002") as _id, so wrapping those in { $oid }
+     // makes the Atlas Data API reject the request. Only wrap ids that
+     // actually look like ObjectIds; pass everything else through as-is.
+     return /^[0-9a-fA-F]{24}$/.test(id) ? { $oid: id } : id;
+   }
 
 /**
  * The Data API (and our proxy) returns documents in MongoDB Extended
