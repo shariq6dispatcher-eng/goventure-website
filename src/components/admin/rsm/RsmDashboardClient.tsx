@@ -285,85 +285,6 @@ export default function RsmDashboardClient({
           </select>
         </div>
       </div>
-{/* NEEDS ATTENTION */}
-      {(alerts.overdueOrders.length > 0 ||
-        alerts.staleUnconfirmedPayments.length > 0 ||
-        alerts.customerBalances.length > 0) && (
-        <div className="bg-zinc-900/60 border border-amber-900/40 rounded-xl sm:rounded-2xl p-3.5 sm:p-5">
-          <h4 className="font-bold text-xs sm:text-sm text-white flex items-center gap-2 mb-3">
-            <AlertTriangle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
-            Needs Attention
-          </h4>
-
-          <div className="space-y-2">
-            {alerts.overdueOrders.slice(0, 3).map((o) => (
-              <Link
-                key={o._id}
-                href={`/RSM/orders/${o._id}`}
-                className="flex items-center justify-between gap-2 bg-black border border-zinc-900 hover:border-amber-900/60 rounded-lg p-2.5 sm:p-3 transition"
-              >
-                <div className="min-w-0">
-                  <span className="text-[11px] sm:text-xs font-mono font-black text-[#D4AF37]">
-                    {o.orderNo}
-                  </span>
-                  <span className="text-[11px] sm:text-xs text-zinc-300 ml-2 truncate">
-                    {o.customerName}
-                  </span>
-                </div>
-                <span className="text-[10px] sm:text-[11px] text-rose-400 font-semibold shrink-0">
-                  Overdue since {o.dueDate}
-                </span>
-              </Link>
-            ))}
-
-            {alerts.staleUnconfirmedPayments.slice(0, 3).map((p) => (
-              <Link
-                key={p._id}
-                href={`/RSM/payments/${p._id}`}
-                className="flex items-center justify-between gap-2 bg-black border border-zinc-900 hover:border-amber-900/60 rounded-lg p-2.5 sm:p-3 transition"
-              >
-                <div className="min-w-0">
-                  <span className="text-[11px] sm:text-xs font-mono font-black text-[#D4AF37]">
-                    {p.paymentNo}
-                  </span>
-                  <span className="text-[11px] sm:text-xs text-zinc-300 ml-2 truncate">
-                    {p.customerName}
-                  </span>
-                </div>
-                <span className="text-[10px] sm:text-[11px] text-amber-400 font-semibold shrink-0">
-                  Unconfirmed since {p.date}
-                </span>
-              </Link>
-            ))}
-
-            {alerts.customerBalances.slice(0, 3).map(({ customer, balance }) => (
-              <Link
-                key={customer._id}
-                href="/RSM/customers"
-                className="flex items-center justify-between gap-2 bg-black border border-zinc-900 hover:border-amber-900/60 rounded-lg p-2.5 sm:p-3 transition"
-              >
-                <div className="min-w-0">
-                  <span className="text-[11px] sm:text-xs text-zinc-300 truncate">
-                    {customer.name}
-                  </span>
-                </div>
-                <span className="text-[10px] sm:text-[11px] text-amber-400 font-semibold shrink-0 font-mono">
-                  Owes {money(balance)}
-                </span>
-              </Link>
-            ))}
-          </div>
-
-          {(alerts.overdueOrders.length > 3 ||
-            alerts.staleUnconfirmedPayments.length > 3 ||
-            alerts.customerBalances.length > 3) && (
-            <p className="text-[10px] sm:text-[11px] text-zinc-500 mt-2.5">
-              Showing top 3 per category — check Orders, Payments, and
-              Customers tabs for the full lists.
-            </p>
-          )}
-        </div>
-      )}
      {/* KPI STATS ROW */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 sm:gap-4">
         <div className="bg-zinc-900/60 border border-zinc-900 rounded-xl sm:rounded-2xl p-3 sm:p-5 hover:border-zinc-700 transition">
@@ -550,6 +471,85 @@ export default function RsmDashboardClient({
           )}
         </div>
       </div>
+      {/* NEEDS ATTENTION */}
+      {(alerts.overdueOrders.length > 0 ||
+        alerts.staleUnconfirmedPayments.length > 0 ||
+        alerts.customerBalances.length > 0) && (
+        <div className="bg-zinc-900/60 border border-amber-900/40 rounded-xl sm:rounded-2xl p-3.5 sm:p-5">
+          <h4 className="font-bold text-xs sm:text-sm text-white flex items-center gap-2 mb-3">
+            <AlertTriangle className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-amber-400" />
+            Needs Attention
+          </h4>
+
+          <div className="space-y-2">
+            {alerts.overdueOrders.slice(0, 3).map((o) => (
+              <Link
+                key={o._id}
+                href={`/RSM/orders/${o._id}`}
+                className="flex items-center justify-between gap-2 bg-black border border-zinc-900 hover:border-amber-900/60 rounded-lg p-2.5 sm:p-3 transition"
+              >
+                <div className="min-w-0">
+                  <span className="text-[11px] sm:text-xs font-mono font-black text-[#D4AF37]">
+                    {o.orderNo}
+                  </span>
+                  <span className="text-[11px] sm:text-xs text-zinc-300 ml-2 truncate">
+                    {o.customerName}
+                  </span>
+                </div>
+                <span className="text-[10px] sm:text-[11px] text-rose-400 font-semibold shrink-0">
+                  Overdue since {o.dueDate}
+                </span>
+              </Link>
+            ))}
+
+            {alerts.staleUnconfirmedPayments.slice(0, 3).map((p) => (
+              <Link
+                key={p._id}
+                href={`/RSM/payments/${p._id}`}
+                className="flex items-center justify-between gap-2 bg-black border border-zinc-900 hover:border-amber-900/60 rounded-lg p-2.5 sm:p-3 transition"
+              >
+                <div className="min-w-0">
+                  <span className="text-[11px] sm:text-xs font-mono font-black text-[#D4AF37]">
+                    {p.paymentNo}
+                  </span>
+                  <span className="text-[11px] sm:text-xs text-zinc-300 ml-2 truncate">
+                    {p.customerName}
+                  </span>
+                </div>
+                <span className="text-[10px] sm:text-[11px] text-amber-400 font-semibold shrink-0">
+                  Unconfirmed since {p.date}
+                </span>
+              </Link>
+            ))}
+
+            {alerts.customerBalances.slice(0, 3).map(({ customer, balance }) => (
+              <Link
+                key={customer._id}
+                href="/RSM/customers"
+                className="flex items-center justify-between gap-2 bg-black border border-zinc-900 hover:border-amber-900/60 rounded-lg p-2.5 sm:p-3 transition"
+              >
+                <div className="min-w-0">
+                  <span className="text-[11px] sm:text-xs text-zinc-300 truncate">
+                    {customer.name}
+                  </span>
+                </div>
+                <span className="text-[10px] sm:text-[11px] text-amber-400 font-semibold shrink-0 font-mono">
+                  Owes {money(balance)}
+                </span>
+              </Link>
+            ))}
+          </div>
+
+          {(alerts.overdueOrders.length > 3 ||
+            alerts.staleUnconfirmedPayments.length > 3 ||
+            alerts.customerBalances.length > 3) && (
+            <p className="text-[10px] sm:text-[11px] text-zinc-500 mt-2.5">
+              Showing top 3 per category — check Orders, Payments, and
+              Customers tabs for the full lists.
+            </p>
+          )}
+        </div>
+      )}
 {/* TRENDS: revenue/expense line chart + orders-by-status donut */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
         <div className="lg:col-span-2 bg-zinc-900/60 border border-zinc-900 rounded-xl sm:rounded-2xl p-3.5 sm:p-5">
