@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus, Search, Loader2, Pencil, Trash2 } from "lucide-react";
+import { Plus, Search, Loader2, Pencil, Trash2, Wallet } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
 import RsmConfirmBadge from "@/components/admin/rsm/RsmConfirmBadge";
+import RsmSkeleton from "@/components/admin/rsm/RsmSkeleton";
+import RsmEmptyState from "@/components/admin/rsm/RsmEmptyState";
 import { useRsmAccess } from "@/lib/useRsmAccess";
 import type { Payment } from "@/types/rsm";
 
@@ -87,12 +89,7 @@ export default function PaymentsPage() {
         </Link>
       </div>
 
-      {loading && (
-        <div className="flex items-center justify-center py-20 text-zinc-500">
-          <Loader2 size={20} className="animate-spin mr-2" />
-          Loading payments…
-        </div>
-      )}
+     {loading && <RsmSkeleton rows={6} />}
 
       {!loading && error && (
         <div className="bg-red-950/30 border border-red-900/50 text-red-400 text-sm rounded-xl p-4">
@@ -100,12 +97,22 @@ export default function PaymentsPage() {
         </div>
       )}
 
-      {!loading && !error && filtered.length === 0 && (
-        <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-10 text-center text-zinc-500 text-sm">
-          {payments.length === 0
-            ? "No payments recorded yet."
-            : "No payments match your search."}
-        </div>
+     {!loading && !error && filtered.length === 0 && (
+        payments.length === 0 ? (
+          <RsmEmptyState
+            icon={Wallet}
+            title="No payments recorded yet"
+            description="Record your first payment to start tracking cash collected against orders."
+            ctaLabel="Record Payment"
+            ctaHref="/RSM/payments/new"
+          />
+        ) : (
+          <RsmEmptyState
+            icon={Search}
+            title="No matches"
+            description="No payments match your current search. Try a different term."
+          />
+        )
       )}
 
       {!loading && !error && filtered.length > 0 && (
