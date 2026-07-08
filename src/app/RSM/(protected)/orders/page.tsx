@@ -2,9 +2,11 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus, Search, Loader2, Eye, Pencil, Trash2 } from "lucide-react";
+import { Plus, Search, Loader2, Eye, Pencil, Trash2, ClipboardList } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
 import RsmStatusBadge from "@/components/admin/rsm/RsmStatusBadge";
+import RsmSkeleton from "@/components/admin/rsm/RsmSkeleton";
+import RsmEmptyState from "@/components/admin/rsm/RsmEmptyState";
 import { useRsmAccess } from "@/lib/useRsmAccess";
 import type { Order, OrderStatus } from "@/types/rsm";
 import { ORDER_STATUSES } from "@/types/constants";
@@ -100,12 +102,7 @@ export default function OrdersPage() {
           </Link>
         </div>
       </div>
-      {loading && (
-        <div className="flex items-center justify-center py-20 text-zinc-500">
-          <Loader2 size={20} className="animate-spin mr-2" />
-          Loading orders…
-        </div>
-      )}
+      {loading && <RsmSkeleton rows={6} />}
 
       {!loading && error && (
         <div className="bg-red-950/30 border border-red-900/50 text-red-400 text-sm rounded-xl p-4">
@@ -114,11 +111,21 @@ export default function OrdersPage() {
       )}
 
       {!loading && !error && filtered.length === 0 && (
-        <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-10 text-center text-zinc-500 text-sm">
-          {orders.length === 0
-            ? "No orders yet. Create your first one above."
-            : "No orders match your search/filter."}
-        </div>
+        orders.length === 0 ? (
+          <RsmEmptyState
+            icon={ClipboardList}
+            title="No orders yet"
+            description="Create your first order to start tracking production, payments, and delivery."
+            ctaLabel="Create Order"
+            ctaHref="/RSM/orders/new"
+          />
+        ) : (
+          <RsmEmptyState
+            icon={Search}
+            title="No matches"
+            description="No orders match your current search or status filter. Try adjusting them."
+          />
+        )
       )}
 
       {!loading && !error && filtered.length > 0 && (
