@@ -313,6 +313,32 @@ export default async function OrderStatusPage({ params }: PageProps) {
               </div>
             )}
 
+            {(order.status === "Payment Approved" || order.status === "Completed") && (
+              <div className="print:hidden bg-zinc-900/60 border border-emerald-900/40 rounded-2xl p-5 sm:p-6 mb-5">
+                <p className="text-sm text-emerald-300 font-semibold text-center">
+                  Payment approved — your files are unlocked!
+                </p>
+                <p className="text-xs text-zinc-400 mt-1.5 text-center">
+                  Tap a file below to download.
+                </p>
+
+                <div className="space-y-2 mt-4">
+                  {order.files.map((f) => (
+                    <a
+                      key={f.url}
+                      href={`/api/online-orders/public/${order.requestNo}/download?file=${encodeURIComponent(
+                        f.url
+                      )}`}
+                      className="flex items-center justify-between gap-2 bg-black/40 border border-zinc-800 rounded-lg px-3 py-2.5 text-xs text-zinc-200 hover:border-[#D4AF37]/60 transition"
+                    >
+                      <span className="truncate">{f.name}</span>
+                      <span className="text-[#D4AF37] font-semibold shrink-0">Download</span>
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <p className="print:hidden text-center text-xs text-zinc-600">
               Questions about this request? Contact GoVenture Embroidery &amp;
               Manufacturing directly.
