@@ -4,6 +4,7 @@ import { RSM_COLLECTIONS, PAYMENT_DETAILS } from "@/types/constants";
 import type { OnlineOrder } from "@/types/rsm";
 import ApproveQuoteButton from "@/components/ApproveQuoteButton";
 import PrintInvoiceButton from "@/components/PrintInvoiceButton";
+import PaymentScreenshotUpload from "@/components/PaymentScreenshotUpload";
 import { AlertTriangle } from "lucide-react";
 
 // Linear pipeline for the progress bar. "Rejected" is a side branch and
@@ -155,24 +156,7 @@ export default async function OrderStatusPage({ params }: PageProps) {
               </div>
             )}
 
-           
-            {order.status === "Files Ready" && (
-              <div className="print:hidden bg-zinc-900/60 border border-emerald-900/40 rounded-2xl p-5 sm:p-6 mb-5 text-center">
-                <p className="text-sm text-emerald-300 font-semibold">
-                  Your files are ready!
-                </p>
-                <p className="text-xs text-zinc-400 mt-1.5">
-                  Please attach a screenshot of your payment to unlock your
-                  downloads.
-                </p>
-                {order.quoteAmount != null && (
-                  <p className="text-xs text-zinc-600 mt-3">
-                    Amount due: <span className="text-[#D4AF37] font-semibold">{money(order.quoteAmount)}</span>
-                  </p>
-                )}
-              </div>
-            )}
- {order.status === "Quoted" && order.quoteAmount != null && (
+            {order.status === "Quoted" && order.quoteAmount != null && (
               <div className="print:hidden bg-zinc-900/60 border border-[#D4AF37]/30 rounded-2xl p-5 sm:p-6 mb-5">
                 <h3 className="text-xs font-bold uppercase tracking-wide text-[#D4AF37] mb-3">
                   Invoice
@@ -294,6 +278,38 @@ export default async function OrderStatusPage({ params }: PageProps) {
                     Agreed rate: <span className="text-[#D4AF37] font-semibold">{money(order.quoteAmount)}</span>
                   </p>
                 )}
+              </div>
+            )}
+
+            {order.status === "Files Ready" && (
+              <div className="print:hidden bg-zinc-900/60 border border-emerald-900/40 rounded-2xl p-5 sm:p-6 mb-5 text-center">
+                <p className="text-sm text-emerald-300 font-semibold">
+                  Your files are ready!
+                </p>
+                <p className="text-xs text-zinc-400 mt-1.5">
+                  Please attach a screenshot of your payment to unlock your
+                  downloads.
+                </p>
+                {order.quoteAmount != null && (
+                  <p className="text-xs text-zinc-600 mt-3">
+                    Amount due: <span className="text-[#D4AF37] font-semibold">{money(order.quoteAmount)}</span>
+                  </p>
+                )}
+                <div className="text-left">
+                  <PaymentScreenshotUpload requestNo={order.requestNo} />
+                </div>
+              </div>
+            )}
+
+            {order.status === "Payment Submitted" && (
+              <div className="print:hidden bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5 sm:p-6 mb-5 text-center">
+                <p className="text-sm text-zinc-300 font-semibold">
+                  Payment proof received — under review
+                </p>
+                <p className="text-xs text-zinc-500 mt-1.5">
+                  We&apos;ll unlock your downloads as soon as it&apos;s
+                  confirmed, usually within a few hours.
+                </p>
               </div>
             )}
 
