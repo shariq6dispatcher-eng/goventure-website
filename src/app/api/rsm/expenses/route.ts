@@ -24,7 +24,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  await getRsmAuth();
+  const auth = await getRsmAuth();
   const body = (await req.json()) as ExpenseInput;
 
   if (!body.category || !body.description?.trim() || !body.amount || body.amount <= 0 || !body.date) {
@@ -45,6 +45,7 @@ export async function POST(req: Request) {
       date: body.date,
       refNo: body.refNo || "",
       screenshot: body.screenshot || "",
+      loggedBy: auth.username,
       createdAt: new Date().toISOString(),
     };
 
