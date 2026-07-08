@@ -84,6 +84,7 @@ export type RsmModule =
   | "reports"
   | "digitizing"
   | "digitizing_work"
+  | "online_orders"
   | "users";
 
 // ---------------------------------------------------------------------------
@@ -290,3 +291,71 @@ export interface RsmNotification {
   orderId?: string;
   createdAt: string;
 }
+
+// ---------------------------------------------------------------------------
+// Online Orders  (collection: rsm_online_orders)
+// The public-facing "Place an Order" pipeline: a customer with no login
+// submits a request (design image, size, formats, need-by date/urgent
+// note) from /order. Admin reviews it in the RSM "Online Orders" tab,
+// quotes a rate, the customer approves + pays, admin uploads the
+// finished files, customer confirms payment with a screenshot, admin
+// approves the screenshot, then the customer can download the files
+// (individually or as a ZIP) from the same public link. Every step that
+// needs the other side's attention fires an RsmNotification / is visible
+// on the public status page — no email/login system required.
+// ---------------------------------------------------------------------------
+export type OnlineOrderStatus =
+  | "Requested" // customer submitted the request, awaiting admin quote
+  | "Quoted" // admin set a rate, awaiting customer approval
+  | "Approved" // customer approved the rate, work can begin
+  | "Files Ready" // admin uploaded finished files, awaiting payment proof
+  | "Payment Submitted" // customer attached a payment screenshot, awaiting admin approval
+  | "Payment Approved" // admin approved payment, files unlocked for download
+  | "Completed" // customer has downloaded the files
+  | "Rejected"; // admin declined the request
+
+export interface OnlineOrderFile {
+  name: string;
+  url: string; // Cloudinary URL (raw resource type)
+  uploadedAt: string;
+}
+
+export interface OnlineOrder {
+  _id: string;
+  requestNo: string; // human-facing id, e.g. "REQ-1001" — doubles as the public tracking code
+  customerName: string;
+  customerEmail: string;
+  customerPhone?: string;
+  category: ServiceCategory;
+  designImageUrl?: string; // Cloudinary URL of the reference design the customer uploaded
+  size?: string; // e.g. "4x4 in", "Left Chest", "10cm"
+  formats: FileFormat[]; // file formats the customer needs delivered
+  needDate?: string; // YYYY-MM-DD, when they need it by
+  urgent: boolean; // "Urgent — need by today" flag
+  notes?: string; // free-text note from the customer
+  status: OnlineOrderStatus;
+  quoteAmount?: number; // rate admin sets for this request
+  quoteNote?: string; // optional note attached to the quote (e.g. what's included)
+  quotedAt?: string;
+  approvedAt?: string; // when the customer approved the quote
+  rejectedReason?: string;
+  files: OnlineOrderFile[]; // finished files, uploaded by admin once work is done
+  filesReadyAt?: string;
+  paymentScreenshot?: string; // Cloudinary URL of the customer's payment proof
+  paymentSubmittedAt?: string;
+  paymentApprovedAt?: string;
+  paymentApprovedBy?: string; // RsmStaff.username who approved the payment
+  downloadedAt?: string; // set the first time the customer downloads files, flips status to Completed
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export type OnlineOrderInput = Omit<
+  OnlineOrder,
+  | "_id"
+  | "requestNo"
+  | "status"
+  | "files"
+  | "createdAt"
+  | "updatedAt"
+>;
