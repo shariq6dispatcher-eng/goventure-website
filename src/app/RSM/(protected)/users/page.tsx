@@ -3,8 +3,10 @@
 import { useEffect, useState } from "react"; 
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Plus, Loader2, Pencil, Trash2 } from "lucide-react";
+import { Plus, Loader2, Pencil, Trash2, UserCog } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
+import RsmSkeleton from "@/components/admin/rsm/RsmSkeleton";
+import RsmEmptyState from "@/components/admin/rsm/RsmEmptyState";
 import type { RsmStaff } from "@/types/rsm";
 
 async function fetchMe(): Promise<{ username: string; role: "admin" | "staff" }> {
@@ -80,12 +82,7 @@ export default function UsersPage() {
         </Link>
       </div>
 
-      {loading && (
-        <div className="flex items-center justify-center py-20 text-zinc-500">
-          <Loader2 size={20} className="animate-spin mr-2" />
-          Loading users…
-        </div>
-      )}
+     {loading && <RsmSkeleton rows={4} />}
 
       {!loading && error && (
         <div className="bg-red-950/30 border border-red-900/50 text-red-400 text-sm rounded-xl p-4">
@@ -94,11 +91,14 @@ export default function UsersPage() {
       )}
 
       {!loading && !error && staff.length === 0 && (
-        <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-10 text-center text-zinc-500 text-sm">
-          No staff accounts yet besides your own.
-        </div>
+        <RsmEmptyState
+          icon={UserCog}
+          title="No other staff accounts yet"
+          description="Add a staff account to give teammates access to specific RSM modules."
+          ctaLabel="Add Staff Account"
+          ctaHref="/RSM/users/new"
+        />
       )}
-
      {!loading && !error && staff.length > 0 && (
         <>
           {/* Mobile card list */}
