@@ -170,7 +170,7 @@ export interface Payment {
   createdAt: string;
 }
 
-export type PaymentInput = Omit
+export type PaymentInput = Omit <
   Payment,
   "_id" | "paymentNo" | "customerName" | "confirmed" | "confirmedBy" | "loggedBy" | "createdAt"
 >;
@@ -191,7 +191,7 @@ export interface Expense {
   createdAt: string;
 }
 
-export type ExpenseInput = Omit
+export type ExpenseInput = Omit <
   Expense,
   "_id" | "expenseNo" | "loggedBy" | "createdAt"
 >;
