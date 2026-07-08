@@ -238,14 +238,16 @@ export default function RsmDashboardClient({
       });
     }
 
-    for (const p of payments) {
+   for (const p of payments) {
+      const statusWord = p.confirmed ? "confirmed" : "submitted";
+      const byStaff = p.confirmed && p.confirmedBy ? ` by ${p.confirmedBy}` : "";
       items.push({
         id: p._id,
         kind: "payment",
-        text: `Payment ${p.confirmed ? "confirmed" : "submitted"} by ${p.customerName}`,
+        text: `Payment ${statusWord} for ${p.customerName}${byStaff}`,
         amount: p.amount,
         createdAt: p.createdAt,
-        href: `/RSM/payments/${p._id}`,
+        href: `/RSM/payments/${p._id}/edit`,
       });
     }
 
@@ -256,7 +258,7 @@ export default function RsmDashboardClient({
         text: `Expense logged — ${e.category}`,
         amount: e.amount,
         createdAt: e.createdAt,
-        href: `/RSM/expenses/${e._id}`,
+        href: `/RSM/expenses/${e._id}/edit`,
       });
     }
 
