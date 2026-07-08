@@ -7,6 +7,7 @@ interface RsmEmptyStateProps {
   description?: string;
   ctaLabel?: string;
   ctaHref?: string;
+  onCtaClick?: () => void;
 }
 
 /**
@@ -20,6 +21,7 @@ export default function RsmEmptyState({
   description,
   ctaLabel,
   ctaHref,
+  onCtaClick,
 }: RsmEmptyStateProps) {
   return (
     <div className="bg-zinc-900/60 border border-dashed border-zinc-800 rounded-2xl p-10 sm:p-14 text-center">
@@ -39,6 +41,14 @@ export default function RsmEmptyState({
         >
           {ctaLabel}
         </Link>
+      )}
+      {ctaLabel && onCtaClick && !ctaHref && (
+        <button
+          onClick={onCtaClick}
+          className="inline-flex items-center gap-2 mt-5 px-4 py-2.5 rounded-xl bg-[#D4AF37] text-black text-xs sm:text-sm font-bold hover:opacity-90 transition-opacity"
+        >
+          {ctaLabel}
+        </button>
       )}
     </div>
   );
