@@ -17,6 +17,7 @@ import {
   LogOut,
   Menu,
   X,
+  ShoppingBag,
 } from "lucide-react";
 
 interface RsmSidebarProps {
@@ -45,6 +46,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Reports", href: "/RSM/reports", icon: BarChart3, module: "reports" },
   { label: "Digitizing Jobs", href: "/RSM/digitizing-jobs", icon: Sparkles, module: "digitizing" },
   { label: "Work Vault", href: "/RSM/work-vault", icon: FolderOpen, module: "digitizing_work" },
+  { label: "Online Orders", href: "/RSM/online-orders", icon: ShoppingBag, module: "online_orders" },
   { label: "Users", href: "/RSM/users", icon: UserCog, adminOnly: true },
 ];
 
