@@ -238,9 +238,9 @@ export default function RsmDashboardClient({
       });
     }
 
-   for (const p of payments) {
+  for (const p of payments) {
       const statusWord = p.confirmed ? "confirmed" : "submitted";
-      const byStaff = p.confirmed && p.confirmedBy ? ` by ${p.confirmedBy}` : "";
+      const byStaff = p.loggedBy ? ` by ${p.loggedBy}` : "";
       items.push({
         id: p._id,
         kind: "payment",
@@ -250,18 +250,17 @@ export default function RsmDashboardClient({
         href: `/RSM/payments/${p._id}/edit`,
       });
     }
-
     for (const e of expenses) {
+      const byStaff = e.loggedBy ? ` by ${e.loggedBy}` : "";
       items.push({
         id: e._id,
         kind: "expense",
-        text: `Expense logged — ${e.category}`,
+        text: `Expense logged — ${e.category}${byStaff}`,
         amount: e.amount,
         createdAt: e.createdAt,
         href: `/RSM/expenses/${e._id}/edit`,
       });
     }
-
     for (const j of digitizingJobs) {
       items.push({
         id: j._id,
