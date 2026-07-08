@@ -166,6 +166,48 @@ export default function RsmDashboardClient({
     ],
     [pipelineCounts]
   );
+  // "Needs Attention" — things that genuinely need a human to look at them
+  // today, not just a status count. Kept lightweight: computed from data
+  // already passed into this component, no extra API calls.
+  const alerts = useMemo(() => {
+    const todayStr = new Date().toISOString().slice(0, 10);
+
+    const overdueOrders = orders
+      .filter(
+        (o) =>
+          o.status !== "Delivered" &&
+          o.status !== "Cancelled" &&
+          o.dueDate &&
+          o.dueDate < todayStr
+      )
+      .sort((a, b) => (a.dueDate < b.dueDate ? -1 : 1));
+
+    // Unconfirmed payments older than 3 days — a fresh submission isn't
+    // urgent, but one sitting unconfirmed for a while probably is.
+    const threeDaysAgo = new Date();
+    threeDaysAgo.setDate(threeDaysAgo.getDate() - 3);
+    const staleUnconfirmedPayments = payments.filter(
+      (p) => !p.confirmed && new Date(p.date) < threeDaysAgo
+    );
+
+    // Customers with a meaningful outstanding balance (uses the same
+    // invoiced-minus-paid logic as the Receivables KPI above, but per
+    // customer and all-time rather than scoped to selectedMonth).
+    const customerBalances = customers
+      .map((c) => {
+        const invoiced = orders
+          .filter((o) => o.customerId === c._id && o.status !== "Cancelled")
+          .reduce((s, o) => s + o.total, 0);
+        const paid = payments
+          .filter((p) => p.customerId === c._id && p.confirmed)
+          .reduce((s, p) => s + p.amount, 0);
+        return { customer: c, balance: invoiced - paid };
+      })
+      .filter((x) => x.balance >= 100)
+      .sort((a, b) => b.balance - a.balance);
+
+    return { overdueOrders, staleUnconfirmedPayments, customerBalances };
+  }, [orders, payments, customers]);
   const profitability = useMemo(() => {
     const paidOrders = orders.filter(
       (o) => o.status !== "Cancelled" && o.orderDate.startsWith(selectedMonth)
