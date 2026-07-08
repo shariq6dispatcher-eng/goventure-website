@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Loader2, Search } from "lucide-react";
+import { Loader2, Search, BookOpen, FileQuestion } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
+import RsmEmptyState from "@/components/admin/rsm/RsmEmptyState";
 import { useRsmAccess } from "@/lib/useRsmAccess";
 import type { Customer, LedgerEntry } from "@/types/rsm";
 
@@ -107,9 +108,11 @@ export default function LedgerPage() {
         {/* Ledger detail */}
         <div>
           {!customerId && (
-            <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-10 text-center text-zinc-500 text-sm">
-              Select a customer on the left to view their ledger.
-            </div>
+            <RsmEmptyState
+              icon={BookOpen}
+              title="No customer selected"
+              description="Choose a customer from the list on the left to view their invoice and payment history."
+            />
           )}
 
           {customerId && (
@@ -141,9 +144,11 @@ export default function LedgerPage() {
               )}
 
               {!loadingEntries && !error && displayEntries.length === 0 && (
-                <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-10 text-center text-zinc-500 text-sm">
-                  No invoices or payments recorded for this customer yet.
-                </div>
+                <RsmEmptyState
+                  icon={FileQuestion}
+                  title="No ledger activity yet"
+                  description={`No invoices or payments recorded for ${selectedCustomer?.name || "this customer"} yet.`}
+                />
               )}
 
               {!loadingEntries && !error && displayEntries.length > 0 && (
