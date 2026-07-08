@@ -126,6 +126,21 @@ export const SERVICE_PRESETS: {
 
 // Site theme tokens, reused everywhere in the RSM panels so they look like
 // a native part of the admin, not a bolted-on Firebase app.
+// Shown on the customer-facing invoice (Part 6 of Online Orders) once
+// they approve a rate, so they know exactly where to send payment before
+// attaching a screenshot. Edit these directly — there's no settings page
+// for this yet, it's just plain constants like RSM_THEME below.
+export const PAYMENT_DETAILS = {
+  companyName: "GoVenture Embroidery & Manufacturing",
+  instructions:
+    "Please send payment using one of the methods below, then upload a screenshot of your payment on this page once your files are ready.",
+  methods: [
+    { label: "Bank Transfer", value: "Bank Name — Account Title — Account # — IBAN" },
+    { label: "PayPal", value: "your-paypal@example.com" },
+    { label: "Payoneer", value: "your-payoneer@example.com" },
+  ],
+} as const;
+
 export const RSM_THEME = {
   gold: "#D4AF37",
   bg: "bg-zinc-950",
