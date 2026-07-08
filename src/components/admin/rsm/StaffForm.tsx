@@ -19,6 +19,7 @@ const MODULE_OPTIONS: { value: RsmModule; label: string }[] = [
   { value: "reports", label: "Reports" },
   { value: "digitizing", label: "Digitizing Jobs" },
   { value: "digitizing_work", label: "Work Vault" },
+  { value: "online_orders", label: "Online Orders" },
 ];
 
 export default function StaffForm({ staff }: StaffFormProps) {
