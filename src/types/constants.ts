@@ -5,6 +5,7 @@ import type {
   PaymentMethod,
   ExpenseCategory,
   DigitizingJobStatus,
+  OnlineOrderStatus,
 } from "@/types/rsm";
 
 // Mongo collection names — single source of truth so API routes and any
@@ -18,6 +19,7 @@ export const RSM_COLLECTIONS = {
   digitizingJobs: "rsm_digitizing_jobs",
   staff: "rsm_staff",
   notifications: "rsm_notifications",
+  onlineOrders: "rsm_online_orders",
 } as const;
 
 export const SERVICE_CATEGORIES: ServiceCategory[] = [
@@ -81,6 +83,21 @@ export const DIGITIZING_JOB_STATUSES: DigitizingJobStatus[] = [
   "Start Digitizing",
   "Completed",
   "Delivered",
+];
+
+// Left-to-right order matches the pipeline described in the Online
+// Orders feature: request -> quote -> approval -> files -> payment
+// proof -> payment approval -> completed. "Rejected" is a side branch,
+// not part of the linear flow, so it's listed last.
+export const ONLINE_ORDER_STATUSES: OnlineOrderStatus[] = [
+  "Requested",
+  "Quoted",
+  "Approved",
+  "Files Ready",
+  "Payment Submitted",
+  "Payment Approved",
+  "Completed",
+  "Rejected",
 ];
 
 // Reusable service/price presets so the Order form can quick-fill a line
