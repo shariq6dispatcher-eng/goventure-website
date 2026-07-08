@@ -17,13 +17,14 @@ import {
 } from "lucide-react";
 import RsmStatusBadge from "./RsmStatusBadge";
 import { RsmLineChart, RsmDonutChart } from "./RsmCharts";
-import type { Order, Payment, Expense, Customer } from "@/types/rsm";
+import type { Order, Payment, Expense, Customer, DigitizingJob } from "@/types/rsm";
 
 interface Props {
   orders: Order[];
   payments: Payment[];
   expenses: Expense[];
   customers: Customer[];
+  digitizingJobs: DigitizingJob[];
 }
 
 export default function RsmDashboardClient({
@@ -31,6 +32,7 @@ export default function RsmDashboardClient({
   payments,
   expenses,
   customers,
+  digitizingJobs,
 }: Props) {
   const availableMonths = useMemo(() => {
     const monthsSet = new Set<string>();
