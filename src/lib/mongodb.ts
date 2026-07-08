@@ -199,7 +199,17 @@ export const mongo = {
     );
     return data;
   },
-
+ async deleteMany(
+    collection: string,
+    filter: JsonRecord
+  ): Promise<{ deletedCount: number }> {
+    const data = await callDataApi<{ deletedCount: number }>(
+      "deleteMany",
+      collection,
+      { filter }
+    );
+    return data;
+  },
   async updateOne(
     collection: string,
     filter: JsonRecord,
