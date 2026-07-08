@@ -166,12 +166,13 @@ export interface Payment {
   notes?: string;
   confirmed: boolean;
   confirmedBy?: string;
+  loggedBy?: string; // RsmStaff.username who created this record — set server-side
   createdAt: string;
 }
 
-export type PaymentInput = Omit<
+export type PaymentInput = Omit
   Payment,
-  "_id" | "paymentNo" | "customerName" | "confirmed" | "confirmedBy" | "createdAt"
+  "_id" | "paymentNo" | "customerName" | "confirmed" | "confirmedBy" | "loggedBy" | "createdAt"
 >;
 
 // ---------------------------------------------------------------------------
@@ -186,12 +187,13 @@ export interface Expense {
   date: string; // YYYY-MM-DD
   refNo?: string;
   screenshot?: string; // Cloudinary URL
+  loggedBy?: string; // RsmStaff.username who created this record — set server-side
   createdAt: string;
 }
 
-export type ExpenseInput = Omit<
+export type ExpenseInput = Omit
   Expense,
-  "_id" | "expenseNo" | "createdAt"
+  "_id" | "expenseNo" | "loggedBy" | "createdAt"
 >;
 
 // ---------------------------------------------------------------------------
