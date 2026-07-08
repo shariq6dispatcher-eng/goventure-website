@@ -125,7 +125,78 @@ function BreakdownRow({
 interface RsmReportsClientProps {
   onExport?: (data: ReportData) => void;
 }
+function csvEscape(val: any): string {
+  const s = String(val ?? "");
+  if (s.includes(",") || s.includes('"') || s.includes("\n")) {
+    return `"${s.replace(/"/g, '""')}"`;
+  }
+  return s;
+}
 
+function rowsToCsv(rows: (string | number)[][]): string {
+  return rows.map((r) => r.map(csvEscape).join(",")).join("\n");
+}
+
+function downloadCsv(filename: string, csv: string) {
+  const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+function buildReportCsv(data: ReportData): string {
+  const rows: (string | number)[][] = [];
+
+  rows.push([`GoVenture RSM Report - ${monthLabel(data.month)}`]);
+  rows.push([]);
+
+  rows.push(["SUMMARY"]);
+  rows.push(["Metric", "Value"]);
+  rows.push(["Orders Count", data.orders.count]);
+  rows.push(["Orders Gross", data.orders.gross.toFixed(2)]);
+  rows.push(["Payments Collected", data.payments.cashCollected.toFixed(2)]);
+  rows.push(["Payments Pending Count", data.payments.pendingCount]);
+  rows.push(["Total Receivables", data.receivables.total.toFixed(2)]);
+  rows.push(["Expenses Total", data.expenses.total.toFixed(2)]);
+  rows.push(["Digitizing Jobs Count", data.digitizingJobs.count]);
+  rows.push(["Net Profit", data.profitability.netProfit.toFixed(2)]);
+  rows.push(["Margin %", data.profitability.margin.toFixed(1)]);
+  rows.push([]);
+
+  rows.push(["ORDERS DETAIL"]);
+  rows.push(["Order No", "Customer", "Status", "Order Date", "Due Date", "Subtotal", "Discount", "Tax", "Total", "Paid", "Balance Due"]);
+  for (const o of data.orders.list) {
+    rows.push([o.orderNo, o.customerName, o.status, o.orderDate, o.dueDate, o.subtotal.toFixed(2), o.discount.toFixed(2), o.tax.toFixed(2), o.total.toFixed(2), o.amountPaid.toFixed(2), o.balanceDue.toFixed(2)]);
+  }
+  rows.push([]);
+
+  rows.push(["PAYMENTS DETAIL"]);
+  rows.push(["Payment No", "Customer", "Amount", "Method", "Date", "Confirmed", "Reference"]);
+  for (const p of data.payments.list) {
+    rows.push([p.paymentNo, p.customerName, p.amount.toFixed(2), p.paymentMethod, p.date, p.confirmed ? "Yes" : "No", p.reference || ""]);
+  }
+  rows.push([]);
+
+  rows.push(["EXPENSES DETAIL"]);
+  rows.push(["Expense No", "Category", "Description", "Amount", "Date", "Ref No"]);
+  for (const e of data.expenses.list) {
+    rows.push([e.expenseNo, e.category, e.description, e.amount.toFixed(2), e.date, e.refNo || ""]);
+  }
+  rows.push([]);
+
+  rows.push(["DIGITIZING JOBS DETAIL"]);
+  rows.push(["Design Name", "Customer", "Status", "Format", "Price", "Created At"]);
+  for (const j of data.digitizingJobs.list) {
+    rows.push([j.designName, j.customerName, j.status, j.format, (j.price ?? 0).toFixed(2), j.createdAt]);
+  }
+
+  return rowsToCsv(rows);
+}
 export default function RsmReportsClient({ onExport }: RsmReportsClientProps) {
   const [month, setMonth] = useState(() => new Date().toISOString().slice(0, 7));
   const [data, setData] = useState<ReportData | null>(null);
@@ -152,7 +223,11 @@ export default function RsmReportsClient({ onExport }: RsmReportsClientProps) {
   }, [month, load]);
 
   const isCurrentMonth = month === new Date().toISOString().slice(0, 7);
-
+const handleExport = () => {
+  if (!data) return;
+  const csv = buildReportCsv(data);
+  downloadCsv(`goventure-report-${data.month}.csv`, csv);
+};
   return (
     <div className="space-y-4 sm:space-y-6">
       {/* Month switcher + export */}
@@ -178,11 +253,11 @@ export default function RsmReportsClient({ onExport }: RsmReportsClientProps) {
           </button>
         </div>
 
-        <button
-          onClick={() => data && onExport?.(data)}
-          disabled={!data}
-          className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl bg-[#D4AF37] text-black text-xs sm:text-sm font-bold disabled:opacity-40"
-        >
+       <button
+  onClick={handleExport}
+  disabled={!data}
+  className="flex items-center gap-2 px-3 sm:px-4 py-2 rounded-xl bg-[#D4AF37] text-black text-xs sm:text-sm font-bold disabled:opacity-40"
+>
           <Download size={15} />
           Export Report
         </button>
