@@ -1,9 +1,11 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Plus, Search, Pencil, Trash2, Loader2 } from "lucide-react";
+import { Plus, Search, Pencil, Trash2, Loader2, Users } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
 import CustomerModal from "@/components/admin/rsm/CustomerModal";
+import RsmSkeleton from "@/components/admin/rsm/RsmSkeleton";
+import RsmEmptyState from "@/components/admin/rsm/RsmEmptyState";
 import { useRsmAccess } from "@/lib/useRsmAccess";
 import type { Customer } from "@/types/rsm";
 
@@ -104,12 +106,7 @@ export default function CustomersPage() {
         </button>
       </div>
 
-      {loading && (
-        <div className="flex items-center justify-center py-20 text-zinc-500">
-          <Loader2 size={20} className="animate-spin mr-2" />
-          Loading customers…
-        </div>
-      )}
+      {loading && <RsmSkeleton rows={6} />}
 
       {!loading && error && (
         <div className="bg-red-950/30 border border-red-900/50 text-red-400 text-sm rounded-xl p-4">
@@ -117,12 +114,22 @@ export default function CustomersPage() {
         </div>
       )}
 
-      {!loading && !error && filtered.length === 0 && (
-        <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-10 text-center text-zinc-500 text-sm">
-          {customers.length === 0
-            ? "No customers yet. Add your first one above."
-            : "No customers match your search."}
-        </div>
+     {!loading && !error && filtered.length === 0 && (
+        customers.length === 0 ? (
+          <RsmEmptyState
+            icon={Users}
+            title="No customers yet"
+            description="Add your first customer to start creating orders and tracking payments."
+            ctaLabel="Add Customer"
+            onCtaClick={openAddModal}
+          />
+        ) : (
+          <RsmEmptyState
+            icon={Search}
+            title="No matches"
+            description="No customers match your current search."
+          />
+        )
       )}
 
       {!loading && !error && filtered.length > 0 && (
