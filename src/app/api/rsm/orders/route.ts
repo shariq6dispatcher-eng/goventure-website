@@ -36,8 +36,9 @@ export async function POST(req: Request) {
   }
 
   try {
-    const customer = await mongo.findOne<Customer>(RSM_COLLECTIONS.customers, {
-      _id: { $oid: body.customerId },
+   const isObjectId = /^[0-9a-fA-F]{24}$/.test(body.customerId);
+const customer = await mongo.findOne<Customer>(RSM_COLLECTIONS.customers, {
+  _id: isObjectId ? { $oid: body.customerId } : body.customerId,
     });
 
     if (!customer) {
