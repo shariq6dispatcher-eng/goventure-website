@@ -99,6 +99,26 @@ export default function OnlineOrderDetailPage() {
     }
   };
 
+  const approvePayment = async () => {
+    if (!order) return;
+    if (!confirm("Approve this payment? The customer's downloads will unlock immediately.")) return;
+    setSaving(true);
+    try {
+      const res = await fetch(`/api/online-orders/${order._id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "approvePayment" }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to approve payment");
+      loadOrder();
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to approve payment");
+    } finally {
+      setSaving(false);
+    }
+  };
+
   if (!me) return null;
 
   return (
@@ -345,6 +365,41 @@ export default function OnlineOrderDetailPage() {
                 <OnlineOrderFileUpload orderId={order._id} onSubmitted={loadOrder} />
               </div>
             )}
+
+            {(order.status === "Payment Submitted" || order.status === "Payment Approved") &&
+              order.paymentScreenshot && (
+                <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5 sm:p-6">
+                  <h3 className="text-sm font-bold mb-1">Payment Proof</h3>
+                  <p className="text-xs text-zinc-500 mb-4">
+                    {order.status === "Payment Approved"
+                      ? "Approved — the customer's downloads are unlocked."
+                      : "Review the screenshot below, then approve to unlock the customer's downloads."}
+                  </p>
+
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={order.paymentScreenshot}
+                    alt="Customer payment screenshot"
+                    className="w-full rounded-xl border border-zinc-800 mb-4"
+                  />
+
+                  {order.status === "Payment Submitted" ? (
+                    <button
+                      onClick={approvePayment}
+                      disabled={saving}
+                      className="w-full bg-[#D4AF37] text-black font-bold py-2.5 rounded-xl text-sm flex items-center justify-center gap-2 disabled:opacity-50"
+                    >
+                      {saving && <Loader2 size={15} className="animate-spin" />}
+                      Approve Payment &amp; Unlock Downloads
+                    </button>
+                  ) : (
+                    <p className="text-xs text-emerald-400 bg-emerald-950/30 border border-emerald-900/40 rounded-lg p-2.5">
+                      Approved {order.paymentApprovedAt ? new Date(order.paymentApprovedAt).toLocaleString() : ""}
+                      {order.paymentApprovedBy ? ` by ${order.paymentApprovedBy}` : ""}
+                    </p>
+                  )}
+                </div>
+              )}
 
             <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5 sm:p-6">
               <h3 className="text-sm font-bold mb-2">Public Status Link</h3>
