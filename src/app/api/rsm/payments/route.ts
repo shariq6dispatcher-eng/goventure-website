@@ -64,7 +64,7 @@ export async function POST(req: Request) {
     const paymentNo = await getNextPaymentNo();
     const confirmed = body.confirmed ?? true;
 
-    const doc = {
+   const doc = {
       paymentNo,
       customerId: body.customerId,
       customerName: customer.name,
@@ -77,6 +77,7 @@ export async function POST(req: Request) {
       notes: body.notes || "",
       confirmed,
       confirmedBy: confirmed ? auth.username : undefined,
+      loggedBy: auth.username,
       createdAt: new Date().toISOString(),
     };
 
