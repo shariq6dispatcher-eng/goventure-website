@@ -17,7 +17,8 @@ interface RouteParams {
 export async function GET(req: Request, { params }: RouteParams) {
   const { requestNo } = await params;
   const { searchParams } = new URL(req.url);
-  const fileUrl = searchParams.get("file");
+  const idxParam = searchParams.get("idx");
+  const legacyFileUrl = searchParams.get("file"); // kept for any old links already shared/bookmarked
 
   try {
     const order = await mongo.findOne<OnlineOrder>(RSM_COLLECTIONS.onlineOrders, {
@@ -35,7 +36,14 @@ export async function GET(req: Request, { params }: RouteParams) {
       );
     }
 
-    const matchedFile = order.files.find((f) => f.url === fileUrl);
+    let matchedFile = null;
+    if (idxParam !== null) {
+      const idx = Number(idxParam);
+      matchedFile = Number.isInteger(idx) ? order.files[idx] ?? null : null;
+    } else if (legacyFileUrl) {
+      matchedFile = order.files.find((f) => f.url === legacyFileUrl) ?? null;
+    }
+
     if (!matchedFile) {
       return NextResponse.json({ error: "File not found on this request." }, { status: 400 });
     }
