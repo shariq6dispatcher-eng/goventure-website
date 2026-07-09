@@ -1,11 +1,14 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
+import { useParams } from "next/navigation";
 import Link from "next/link";
-import { mongo } from "@/lib/mongodb";
-import { RSM_COLLECTIONS, PAYMENT_DETAILS } from "@/types/constants";
+import { PAYMENT_DETAILS } from "@/types/constants";
 import type { OnlineOrder } from "@/types/rsm";
 import ApproveQuoteButton from "@/components/ApproveQuoteButton";
 import PrintInvoiceButton from "@/components/PrintInvoiceButton";
 import PaymentScreenshotUpload from "@/components/PaymentScreenshotUpload";
-import { AlertTriangle } from "lucide-react";
+import { AlertTriangle, Loader2 } from "lucide-react";
 
 // Linear pipeline for the progress bar. "Rejected" is a side branch and
 // intentionally left out — it gets its own red-tinted message instead,
@@ -20,20 +23,69 @@ const STEPS: OnlineOrder["status"][] = [
   "Completed",
 ];
 
+// How often the customer's page checks for updates. Cheap enough on a
+// single-document lookup, frequent enough that a quote or approval feels
+// instant without the customer touching the page.
+const POLL_MS = 4000;
+
 function money(n: number) {
   return `$${n.toFixed(2)}`;
 }
 
-interface PageProps {
-  params: Promise<{ requestNo: string }>;
-}
+export default function OrderStatusPage() {
+  const params = useParams();
+  const requestNo = (params.requestNo as string) || "";
 
-export default async function OrderStatusPage({ params }: PageProps) {
-  const { requestNo } = await params;
+  const [order, setOrder] = useState<OnlineOrder | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [notFound, setNotFound] = useState(false);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
-  const order = await mongo.findOne<OnlineOrder>(RSM_COLLECTIONS.onlineOrders, {
-    requestNo: requestNo.toUpperCase(),
-  });
+  useEffect(() => {
+    if (!requestNo) return;
+
+    let cancelled = false;
+
+    const load = async () => {
+      try {
+        const res = await fetch(`/api/online-orders/public/${requestNo}`, {
+          cache: "no-store",
+        });
+        const data = await res.json();
+        if (cancelled) return;
+
+        if (!res.ok) {
+          setNotFound(true);
+          setOrder(null);
+        } else {
+          setNotFound(false);
+          setOrder(data.order);
+        }
+      } catch {
+        // A transient network hiccup shouldn't blank the page or show
+        // "not found" — just keep whatever we last had and try again on
+        // the next tick.
+      } finally {
+        if (!cancelled) setLoading(false);
+      }
+    };
+
+    load();
+    timerRef.current = setInterval(load, POLL_MS);
+
+    return () => {
+      cancelled = true;
+      if (timerRef.current) clearInterval(timerRef.current);
+    };
+  }, [requestNo]);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-black text-white flex items-center justify-center">
+        <Loader2 size={22} className="animate-spin text-zinc-500" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-black text-white flex items-start justify-center px-4 py-10 sm:py-16 print:bg-white print:py-0 print:min-h-0">
@@ -43,7 +95,7 @@ export default async function OrderStatusPage({ params }: PageProps) {
           <h1 className="text-xl sm:text-2xl font-bold mt-1">Order Status</h1>
         </div>
 
-        {!order ? (
+        {notFound || !order ? (
           <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-8 text-center">
             <p className="text-sm text-zinc-300 font-semibold">
               We couldn&apos;t find a request matching{" "}
