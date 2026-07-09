@@ -11,6 +11,13 @@ import { useRsmAccess } from "@/lib/useRsmAccess";
 import type { Order, OrderStatus } from "@/types/rsm";
 import { ORDER_STATUSES } from "@/types/constants";
 
+// Current month, e.g. "2026-07" — used so the page opens showing this
+// month's data by default instead of everything.
+function currentMonthKey() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+}
+
 export default function OrdersPage() {
   const me = useRsmAccess("orders");
   const [orders, setOrders] = useState<Order[]>([]);
@@ -18,7 +25,7 @@ export default function OrdersPage() {
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "All">("All");
-  const [selectedMonth, setSelectedMonth] = useState("all");
+  const [selectedMonth, setSelectedMonth] = useState(currentMonthKey);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
