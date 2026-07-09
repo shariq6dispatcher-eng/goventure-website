@@ -38,6 +38,7 @@ interface Props {
   customers: Customer[];
   digitizingJobs: DigitizingJob[];
   onlineOrders: OnlineOrder[];
+  currentUser: string;
 }
 
 export default function RsmDashboardClient({
@@ -47,6 +48,7 @@ export default function RsmDashboardClient({
   customers,
   digitizingJobs,
   onlineOrders,
+  currentUser,
 }: Props) {
   const [orders, setOrders] = useState(initialOrders);
   const [payments, setPayments] = useState(initialPayments);
@@ -107,7 +109,11 @@ export default function RsmDashboardClient({
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Confirm failed");
       setPayments((prev) =>
-        prev.map((row) => (row._id === p._id ? { ...row, confirmed: true } : row))
+        prev.map((row) =>
+          row._id === p._id
+            ? { ...row, confirmed: true, confirmedBy: row.confirmedBy || currentUser }
+            : row
+        )
       );
     } catch (err) {
       alert(err instanceof Error ? err.message : "Failed to confirm payment");
