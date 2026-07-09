@@ -27,17 +27,17 @@ export async function POST(req: Request) {
 
   const body = (await req.json()) as CustomerInput;
 
-  if (!body.name || !body.email || !body.phone) {
+  if (!body.name) {
     return NextResponse.json(
-      { error: "Name, email, and phone are required" },
+      { error: "Name is required" },
       { status: 400 }
     );
   }
 
   const doc = {
     name: body.name.trim(),
-    email: body.email.trim(),
-    phone: body.phone.trim(),
+    email: body.email?.trim() || "",
+    phone: body.phone?.trim() || "",
     company: body.company?.trim() || "",
     address: body.address?.trim() || "",
     country: body.country?.trim() || "",
