@@ -135,7 +135,7 @@ export default function ProductPage() {
                 </a>
 
                 <a
-                  href="/quote"
+                  href="/order"
                   className="
                     border
                     border-[#D4AF37]
@@ -149,7 +149,7 @@ export default function ProductPage() {
                     transition
                   "
                 >
-                  Request Quote
+                  Order Now!
                 </a>
 
               </div>
@@ -296,7 +296,7 @@ export default function ProductPage() {
           </p>
 
           <a
-            href="/quote"
+            href="/order"
             className="
               inline-block
               bg-[#D4AF37]
@@ -309,7 +309,7 @@ export default function ProductPage() {
               transition
             "
           >
-            Request A Quote
+            Order Now!
           </a>
 
         </div>
