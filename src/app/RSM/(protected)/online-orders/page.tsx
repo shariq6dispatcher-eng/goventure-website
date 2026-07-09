@@ -9,6 +9,8 @@ import { useRsmAccess } from "@/lib/useRsmAccess";
 import type { OnlineOrder, OnlineOrderStatus } from "@/types/rsm";
 import { ONLINE_ORDER_STATUSES } from "@/types/constants";
 
+const POLL_MS = 5000;
+
 export default function OnlineOrdersPage() {
   const me = useRsmAccess("online_orders");
   const [orders, setOrders] = useState<OnlineOrder[]>([]);
@@ -18,14 +20,30 @@ export default function OnlineOrdersPage() {
   const [statusFilter, setStatusFilter] = useState<OnlineOrderStatus | "All">("All");
 
   useEffect(() => {
-    fetch("/api/online-orders")
-      .then((r) => r.json())
-      .then((data) => {
-        if (data.error) throw new Error(data.error);
-        setOrders(data.orders || []);
-      })
-      .catch((err) => setError(err.message || "Failed to load online orders"))
-      .finally(() => setLoading(false));
+    let hasLoadedOnce = false;
+
+    const load = () => {
+      fetch("/api/online-orders", { cache: "no-store" })
+        .then((r) => r.json())
+        .then((data) => {
+          if (data.error) throw new Error(data.error);
+          setOrders(data.orders || []);
+          setError("");
+        })
+        .catch((err) => {
+          // Only surface an error on the very first load — a background
+          // poll hiccup shouldn't wipe an already-loaded list.
+          if (!hasLoadedOnce) setError(err.message || "Failed to load online orders");
+        })
+        .finally(() => {
+          hasLoadedOnce = true;
+          setLoading(false);
+        });
+    };
+
+    load();
+    const timer = setInterval(load, POLL_MS);
+    return () => clearInterval(timer);
   }, []);
 
   const filtered = orders.filter((o) => {
