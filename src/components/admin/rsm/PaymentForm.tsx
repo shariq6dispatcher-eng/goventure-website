@@ -193,6 +193,11 @@ export default function PaymentForm({ payment }: PaymentFormProps) {
             Confirmed payments immediately update the linked order's balance and the customer ledger.
             Uncheck this if you're still waiting to verify the payment.
           </p>
+          {payment?.confirmed && payment?.confirmedBy && (
+            <p className="text-xs text-[#D4AF37] mt-2 font-medium">
+              Confirmed by {payment.confirmedBy}
+            </p>
+          )}
         </div>
         <button
           type="button"
