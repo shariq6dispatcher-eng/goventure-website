@@ -69,7 +69,12 @@ export default function PaymentsPage() {
       setPayments((prev) =>
         prev.map((row) =>
           row._id === p._id
-            ? { ...row, confirmed: true, confirmedBy: row.confirmedBy || me?.username }
+            ? {
+                ...row,
+                confirmed: true,
+                confirmedBy: row.confirmedBy || me?.username,
+                confirmedAt: row.confirmedAt || new Date().toISOString(),
+              }
             : row
         )
       );
