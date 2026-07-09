@@ -51,8 +51,8 @@ export default function CustomerModal({
     e.preventDefault();
     setError("");
 
-    if (!form.name.trim() || !form.email.trim() || !form.phone.trim()) {
-      setError("Name, email, and phone are required.");
+    if (!form.name.trim()) {
+      setError("Name is required.");
       return;
     }
 
@@ -118,25 +118,25 @@ export default function CustomerModal({
           <div className="grid grid-cols-2 gap-3">
             <div>
               <label className="block text-xs text-zinc-500 mb-1.5">
-                Email *
+                Email
               </label>
               <input
                 type="email"
                 value={form.email}
                 onChange={(e) => handleChange("email", e.target.value)}
                 className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
-                placeholder="email@example.com"
+                placeholder="Optional"
               />
             </div>
             <div>
               <label className="block text-xs text-zinc-500 mb-1.5">
-                Phone *
+                Phone
               </label>
               <input
                 value={form.phone}
                 onChange={(e) => handleChange("phone", e.target.value)}
                 className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
-                placeholder="+1 555 000 0000"
+                placeholder="Optional"
               />
             </div>
           </div>
