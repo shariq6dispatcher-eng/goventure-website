@@ -10,6 +10,13 @@ import { useRsmAccess } from "@/lib/useRsmAccess";
 import type { Expense, ExpenseCategory } from "@/types/rsm";
 import { EXPENSE_CATEGORIES } from "@/types/constants";
 
+// Current month, e.g. "2026-07" — used so the page opens showing this
+// month's data by default instead of everything.
+function currentMonthKey() {
+  const now = new Date();
+  return `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`;
+}
+
 export default function ExpensesPage() {
   const me = useRsmAccess("expenses");
   const [expenses, setExpenses] = useState<Expense[]>([]);
@@ -17,7 +24,7 @@ export default function ExpensesPage() {
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<ExpenseCategory | "All">("All");
-  const [selectedMonth, setSelectedMonth] = useState("all");
+  const [selectedMonth, setSelectedMonth] = useState(currentMonthKey);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
