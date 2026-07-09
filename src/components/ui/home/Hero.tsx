@@ -198,10 +198,10 @@ export default function Hero() {
           >
 
             <Link
-              href="/quote"
+              href="/order"
               className="group relative overflow-hidden bg-[#D4AF37] text-black px-8 py-4 rounded-full font-semibold text-center hover:scale-105 hover:shadow-[0_0_35px_rgba(212,175,55,0.45)] transition-all duration-300 inline-flex items-center justify-center gap-2"
             >
-              <span className="relative z-10">Get Quote</span>
+              <span className="relative z-10">Order Now!</span>
               <ArrowRight className="relative z-10 w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
               <span className="pointer-events-none absolute inset-0 -translate-x-full bg-white/30 skew-x-[-20deg] transition-transform duration-700 group-hover:translate-x-full" />
             </Link>
