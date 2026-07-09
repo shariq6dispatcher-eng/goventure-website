@@ -16,10 +16,20 @@ import {
   AlertTriangle,
   Activity,
   Globe,
+  Check,
+  Loader2,
 } from "lucide-react";
 import RsmStatusBadge from "./RsmStatusBadge";
 import { RsmLineChart, RsmDonutChart } from "./RsmCharts";
-import type { Order, Payment, Expense, Customer, DigitizingJob, OnlineOrder } from "@/types/rsm";
+import type { Order, Payment, Expense, Customer, DigitizingJob, OnlineOrder, OrderStatus } from "@/types/rsm";
+
+const ORDER_STATUSES: OrderStatus[] = [
+  "Pending",
+  "In Progress",
+  "Completed",
+  "Delivered",
+  "Cancelled",
+];
 
 interface Props {
   orders: Order[];
@@ -31,13 +41,81 @@ interface Props {
 }
 
 export default function RsmDashboardClient({
-  orders,
-  payments,
+  orders: initialOrders,
+  payments: initialPayments,
   expenses,
   customers,
   digitizingJobs,
   onlineOrders,
 }: Props) {
+  const [orders, setOrders] = useState(initialOrders);
+  const [payments, setPayments] = useState(initialPayments);
+  const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
+  const [confirmingPaymentId, setConfirmingPaymentId] = useState<string | null>(null);
+
+  const handleOrderStatusChange = async (order: Order, status: OrderStatus) => {
+    setUpdatingOrderId(order._id);
+    try {
+      const res = await fetch(`/api/rsm/orders/${order._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerId: order.customerId,
+          items: order.items,
+          status,
+          subtotal: order.subtotal,
+          discount: order.discount,
+          tax: order.tax,
+          total: order.total,
+          orderDate: order.orderDate,
+          dueDate: order.dueDate,
+          designName: order.designName,
+          stitchCount: order.stitchCount,
+          notes: order.notes,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Update failed");
+      setOrders((prev) =>
+        prev.map((o) => (o._id === order._id ? { ...o, status } : o))
+      );
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to update order status");
+    } finally {
+      setUpdatingOrderId(null);
+    }
+  };
+
+  const handleConfirmPayment = async (p: Payment) => {
+    setConfirmingPaymentId(p._id);
+    try {
+      const res = await fetch(`/api/rsm/payments/${p._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerId: p.customerId,
+          orderId: p.orderId,
+          amount: p.amount,
+          paymentMethod: p.paymentMethod,
+          date: p.date,
+          reference: p.reference,
+          screenshot: p.screenshot,
+          notes: p.notes,
+          confirmed: true,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Confirm failed");
+      setPayments((prev) =>
+        prev.map((row) => (row._id === p._id ? { ...row, confirmed: true } : row))
+      );
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Failed to confirm payment");
+    } finally {
+      setConfirmingPaymentId(null);
+    }
+  };
+
   const availableMonths = useMemo(() => {
     const monthsSet = new Set<string>();
 
@@ -658,43 +736,76 @@ export default function RsmDashboardClient({
 
           <div className="space-y-2">
             {alerts.overdueOrders.slice(0, 3).map((o) => (
-              <Link
+              <div
                 key={o._id}
-                href={`/RSM/orders/${o._id}`}
                 className="flex items-center justify-between gap-2 bg-black border border-zinc-900 hover:border-amber-900/60 rounded-lg p-2.5 sm:p-3 transition"
               >
-                <div className="min-w-0">
+                <Link href={`/RSM/orders/${o._id}`} className="min-w-0 flex-1">
                   <span className="text-[11px] sm:text-xs font-mono font-black text-[#D4AF37]">
                     {o.orderNo}
                   </span>
                   <span className="text-[11px] sm:text-xs text-zinc-300 ml-2 truncate">
                     {o.customerName}
                   </span>
+                </Link>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-[10px] sm:text-[11px] text-rose-400 font-semibold hidden sm:inline">
+                    Overdue since {o.dueDate}
+                  </span>
+                  <div className="relative">
+                    <select
+                      value={o.status}
+                      disabled={updatingOrderId === o._id}
+                      onChange={(e) =>
+                        handleOrderStatusChange(o, e.target.value as OrderStatus)
+                      }
+                      className="bg-zinc-900 border border-zinc-800 text-[10px] sm:text-[11px] rounded-md pl-1.5 pr-5 py-1 text-zinc-300 focus:outline-none focus:border-amber-600 disabled:opacity-50 appearance-none"
+                    >
+                      {ORDER_STATUSES.map((s) => (
+                        <option key={s} value={s}>
+                          {s}
+                        </option>
+                      ))}
+                    </select>
+                    {updatingOrderId === o._id && (
+                      <Loader2 className="w-3 h-3 animate-spin text-zinc-500 absolute right-1.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                    )}
+                  </div>
                 </div>
-                <span className="text-[10px] sm:text-[11px] text-rose-400 font-semibold shrink-0">
-                  Overdue since {o.dueDate}
-                </span>
-              </Link>
+              </div>
             ))}
 
             {alerts.staleUnconfirmedPayments.slice(0, 3).map((p) => (
-              <Link
+              <div
                 key={p._id}
-                href={`/RSM/payments/${p._id}/edit`}
                 className="flex items-center justify-between gap-2 bg-black border border-zinc-900 hover:border-amber-900/60 rounded-lg p-2.5 sm:p-3 transition"
               >
-                <div className="min-w-0">
+                <Link href={`/RSM/payments/${p._id}/edit`} className="min-w-0 flex-1">
                   <span className="text-[11px] sm:text-xs font-mono font-black text-[#D4AF37]">
                     {p.paymentNo}
                   </span>
                   <span className="text-[11px] sm:text-xs text-zinc-300 ml-2 truncate">
                     {p.customerName}
                   </span>
+                </Link>
+                <div className="flex items-center gap-2 shrink-0">
+                  <span className="text-[10px] sm:text-[11px] text-amber-400 font-semibold hidden sm:inline">
+                    Unconfirmed since {p.date}
+                  </span>
+                  <button
+                    onClick={() => handleConfirmPayment(p)}
+                    disabled={confirmingPaymentId === p._id}
+                    className="flex items-center gap-1 bg-emerald-950/40 hover:bg-emerald-950/70 border border-emerald-900/60 text-emerald-400 text-[10px] sm:text-[11px] font-semibold rounded-md px-2 py-1 transition-colors disabled:opacity-50"
+                  >
+                    {confirmingPaymentId === p._id ? (
+                      <Loader2 size={12} className="animate-spin" />
+                    ) : (
+                      <Check size={12} />
+                    )}
+                    Confirm
+                  </button>
                 </div>
-                <span className="text-[10px] sm:text-[11px] text-amber-400 font-semibold shrink-0">
-                  Unconfirmed since {p.date}
-                </span>
-              </Link>
+              </div>
             ))}
 
             {alerts.customerBalances.slice(0, 3).map(({ customer, balance }) => (
