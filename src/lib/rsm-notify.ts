@@ -33,7 +33,9 @@ export async function notifyRsm(input: CreateNotificationInput): Promise<void> {
     console.error("Failed to create RSM notification:", err);
   }
 
-  // Fire-and-forget — don't await/block on email sending, and never let
-  // it throw back up into the caller.
-  sendAdminEmail(input.title, input.message).catch(() => {});
+// Must be awaited — Cloudflare Workers can terminate the request as
+  // soon as the response is sent, killing any un-awaited background
+  // fetch calls. sendAdminEmail never throws, so this can't break the
+  // calling action even if the email fails.
+  await sendAdminEmail(input.title, input.message);
 }
