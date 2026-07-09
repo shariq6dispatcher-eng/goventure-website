@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import {
@@ -23,6 +23,10 @@ import type { OnlineOrder } from "@/types/rsm";
 const money = (n: number) =>
   new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n || 0);
 
+// How often this page silently re-checks the request for changes made
+// elsewhere (e.g. the customer approving a quote or submitting payment).
+const POLL_MS = 4000;
+
 export default function OnlineOrderDetailPage() {
   const params = useParams();
   const id = params.id as string;
@@ -36,22 +40,37 @@ export default function OnlineOrderDetailPage() {
   const [quoteNote, setQuoteNote] = useState("");
   const [rejectReason, setRejectReason] = useState("");
   const [showReject, setShowReject] = useState(false);
+  const hasLoadedOnce = useRef(false);
 
-  const loadOrder = () => {
-    fetch(`/api/online-orders/${id}`)
+  // isBackground=true is used by the polling timer: it refreshes the
+  // order data but never overwrites the quote form fields, so it can't
+  // wipe out something the admin is mid-typing.
+  const loadOrder = (isBackground = false) => {
+    fetch(`/api/online-orders/${id}`, { cache: "no-store" })
       .then((r) => r.json())
       .then((data) => {
         if (data.error) throw new Error(data.error);
         setOrder(data.order);
-        if (data.order?.quoteAmount) setQuoteAmount(String(data.order.quoteAmount));
-        if (data.order?.quoteNote) setQuoteNote(data.order.quoteNote);
+        if (!isBackground) {
+          if (data.order?.quoteAmount) setQuoteAmount(String(data.order.quoteAmount));
+          if (data.order?.quoteNote) setQuoteNote(data.order.quoteNote);
+        }
       })
-      .catch((err) => setError(err.message || "Failed to load request"))
-      .finally(() => setLoading(false));
+      .catch((err) => {
+        if (!hasLoadedOnce.current) {
+          setError(err.message || "Failed to load request");
+        }
+      })
+      .finally(() => {
+        hasLoadedOnce.current = true;
+        setLoading(false);
+      });
   };
 
   useEffect(() => {
-    loadOrder();
+    loadOrder(false);
+    const timer = setInterval(() => loadOrder(true), POLL_MS);
+    return () => clearInterval(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
 
