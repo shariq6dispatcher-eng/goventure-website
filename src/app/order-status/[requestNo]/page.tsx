@@ -323,12 +323,10 @@ export default async function OrderStatusPage({ params }: PageProps) {
                 </p>
 
                 <div className="space-y-2 mt-4">
-                  {order.files.map((f) => (
+                  {order.files.map((f, i) => (
                     <a
                       key={f.url}
-                      href={`/api/online-orders/public/${order.requestNo}/download?file=${encodeURIComponent(
-                        f.url
-                      )}`}
+                      href={`/api/online-orders/public/${order.requestNo}/download?idx=${i}`}
                       className="flex items-center justify-between gap-2 bg-black/40 border border-zinc-800 rounded-lg px-3 py-2.5 text-xs text-zinc-200 hover:border-[#D4AF37]/60 transition"
                     >
                       <span className="truncate">{f.name}</span>
