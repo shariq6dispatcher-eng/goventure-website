@@ -66,7 +66,11 @@ export default function PaymentsPage() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Confirm failed");
       setPayments((prev) =>
-        prev.map((row) => (row._id === p._id ? { ...row, confirmed: true } : row))
+        prev.map((row) =>
+          row._id === p._id
+            ? { ...row, confirmed: true, confirmedBy: row.confirmedBy || me?.username }
+            : row
+        )
       );
     } catch (err) {
       alert(err instanceof Error ? err.message : "Confirm failed");
@@ -163,6 +167,11 @@ export default function PaymentsPage() {
                       </span>
                       <RsmConfirmBadge confirmed={p.confirmed} />
                     </div>
+                    {p.confirmed && p.confirmedBy && (
+                      <p className="text-[10px] text-zinc-500 mt-0.5">
+                        Confirmed by {p.confirmedBy}
+                      </p>
+                    )}
                     <p className="text-xs text-zinc-400 mt-1 truncate">{p.customerName}</p>
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
@@ -241,6 +250,9 @@ export default function PaymentsPage() {
                       <td className="px-5 py-3 text-zinc-400">{p.date}</td>
                       <td className="px-5 py-3">
                         <RsmConfirmBadge confirmed={p.confirmed} />
+                        {p.confirmed && p.confirmedBy && (
+                          <p className="text-[10px] text-zinc-500 mt-1">by {p.confirmedBy}</p>
+                        )}
                       </td>
                       <td className="px-5 py-3">
                         <div className="flex items-center justify-end gap-2">
