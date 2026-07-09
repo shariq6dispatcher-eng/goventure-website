@@ -97,6 +97,18 @@ export async function PUT(
       await applyOrderEffect(newOrderId, body.amount);
     }
 
+    // confirmedAt drives which month's "cash collected" figures a payment
+    // counts toward — it's set to the moment confirmation happens (not the
+    // original payment/order date), and re-set if a payment is unconfirmed
+    // and later reconfirmed. This also sidesteps any inconsistent/legacy
+    // `date` formatting on records imported from the old Firebase database.
+    let newConfirmedAt = existing.confirmedAt;
+    if (newConfirmed && !existing.confirmed) {
+      newConfirmedAt = new Date().toISOString();
+    } else if (!newConfirmed) {
+      newConfirmedAt = undefined;
+    }
+
     const update = {
       customerId: body.customerId ?? existing.customerId,
       orderId: newOrderId,
@@ -108,6 +120,7 @@ export async function PUT(
       notes: body.notes ?? existing.notes ?? "",
       confirmed: newConfirmed,
       confirmedBy: newConfirmed ? (existing.confirmedBy || auth.username) : undefined,
+      confirmedAt: newConfirmedAt,
     };
 
     const result = await mongo.updateOne(
