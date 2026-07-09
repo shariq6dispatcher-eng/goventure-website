@@ -31,6 +31,7 @@ export default async function RsmHomePage() {
         customers={customers}
         digitizingJobs={digitizingJobs}
         onlineOrders={onlineOrders}
+        currentUser={auth.username}
       />
     </RsmShell>
   );
