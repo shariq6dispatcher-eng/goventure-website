@@ -56,10 +56,10 @@ export default function Navbar() {
 
         {/* Desktop Button */}
         <Link
-          href="/quote"
+          href="/order"
           className="hidden lg:block bg-[#D4AF37] text-black px-5 py-2 rounded-full font-semibold hover:scale-105 hover:shadow-[0_0_20px_rgba(212,175,55,0.35)] transition-all duration-300"
         >
-          Get Quote
+          Order Now!
         </Link>
 
         {/* Mobile Hamburger */}
@@ -108,11 +108,11 @@ export default function Navbar() {
           </Link>
 
           <Link
-            href="/quote"
+            href="/order"
             onClick={() => setOpen(false)}
             className="mt-4 bg-[#D4AF37] text-black rounded-full py-3 text-center font-semibold"
           >
-            Get Quote
+            Order Now!
           </Link>
 
         </div>
