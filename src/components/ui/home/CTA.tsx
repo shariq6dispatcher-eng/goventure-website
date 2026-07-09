@@ -100,10 +100,10 @@ export default function CTA() {
                 className="flex flex-col sm:flex-row justify-center gap-4 mt-8 sm:mt-10"
               >
                 <MagneticLink
-                  href="/quote"
+                  href="/order"
                   className="bg-[#D4AF37] text-black px-8 py-4 rounded-full font-semibold text-center hover:shadow-[0_0_30px_rgba(212,175,55,0.35)] transition-shadow duration-300 inline-block"
                 >
-                  Request Quote
+                  Order Now!
                 </MagneticLink>
 
                 <MagneticLink
