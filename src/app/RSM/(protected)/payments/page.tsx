@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Plus, Search, Loader2, Pencil, Trash2, Wallet, Check } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
@@ -16,6 +16,7 @@ export default function PaymentsPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("all");
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
 
@@ -79,7 +80,24 @@ export default function PaymentsPage() {
     }
   };
 
-  const filtered = payments.filter((p) => {
+  const availableMonths = useMemo(() => {
+    const monthsSet = new Set<string>();
+    const now = new Date();
+    monthsSet.add(
+      `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`
+    );
+    payments.forEach((p) => {
+      if (p.date && p.date.length >= 7) monthsSet.add(p.date.substring(0, 7));
+    });
+    return Array.from(monthsSet).sort((a, b) => b.localeCompare(a));
+  }, [payments]);
+
+  const monthFiltered =
+    selectedMonth === "all"
+      ? payments
+      : payments.filter((p) => p.date.startsWith(selectedMonth));
+
+  const filtered = monthFiltered.filter((p) => {
     const q = query.toLowerCase();
     return (
       p.paymentNo.toLowerCase().includes(q) ||
@@ -88,7 +106,7 @@ export default function PaymentsPage() {
     );
   });
 
-  const totalConfirmed = payments
+  const totalConfirmed = monthFiltered
     .filter((p) => p.confirmed)
     .reduce((sum, p) => sum + p.amount, 0);
 
@@ -99,7 +117,7 @@ export default function PaymentsPage() {
       staffName={me.username}
       staffRole={me.role}
       title="Payments"
-      subtitle={`${payments.length} total · $${totalConfirmed.toFixed(2)} confirmed`}
+      subtitle={`${monthFiltered.length} total · $${totalConfirmed.toFixed(2)} confirmed`}
     >
       <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 mb-5 sm:mb-6">
         <div className="relative flex-1">
@@ -114,6 +132,25 @@ export default function PaymentsPage() {
             className="w-full bg-zinc-900/60 border border-zinc-800 rounded-xl pl-9 pr-4 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
           />
         </div>
+
+        <select
+          value={selectedMonth}
+          onChange={(e) => setSelectedMonth(e.target.value)}
+          className="bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700 rounded-xl px-3.5 py-2.5 text-sm text-zinc-200 focus:outline-none focus:border-[#D4AF37] transition font-mono"
+        >
+          <option value="all">All Months</option>
+          {availableMonths.map((month) => {
+            const monthName = new Date(month + "-02").toLocaleString("default", {
+              month: "long",
+              year: "numeric",
+            });
+            return (
+              <option key={month} value={month}>
+                {monthName}
+              </option>
+            );
+          })}
+        </select>
 
         <Link
           href="/RSM/payments/new"
@@ -145,7 +182,11 @@ export default function PaymentsPage() {
           <RsmEmptyState
             icon={Search}
             title="No matches"
-            description="No payments match your current search. Try a different term."
+            description={
+              selectedMonth === "all"
+                ? "No payments match your current search. Try a different term."
+                : "No payments match this month/search. Try a different month or search term."
+            }
           />
         )
       )}
