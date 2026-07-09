@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Plus, Search, Loader2, Eye, Pencil, Trash2, ClipboardList } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
@@ -18,6 +18,7 @@ export default function OrdersPage() {
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<OrderStatus | "All">("All");
+  const [selectedMonth, setSelectedMonth] = useState("all");
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -46,7 +47,24 @@ export default function OrdersPage() {
     }
   };
 
-  const filtered = orders.filter((o) => {
+  const availableMonths = useMemo(() => {
+    const monthsSet = new Set<string>();
+    const now = new Date();
+    monthsSet.add(
+      `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`
+    );
+    orders.forEach((o) => {
+      if (o.orderDate && o.orderDate.length >= 7) monthsSet.add(o.orderDate.substring(0, 7));
+    });
+    return Array.from(monthsSet).sort((a, b) => b.localeCompare(a));
+  }, [orders]);
+
+  const monthFiltered =
+    selectedMonth === "all"
+      ? orders
+      : orders.filter((o) => o.orderDate.startsWith(selectedMonth));
+
+  const filtered = monthFiltered.filter((o) => {
     const q = query.toLowerCase();
     const matchesQuery =
       o.orderNo.toLowerCase().includes(q) ||
@@ -63,7 +81,7 @@ export default function OrdersPage() {
       staffName={me.username}
       staffRole={me.role}
       title="Orders"
-      subtitle={`${orders.length} total`}
+      subtitle={`${monthFiltered.length} total`}
     >
       <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 mb-5 sm:mb-6">
         <div className="relative flex-1">
@@ -80,6 +98,25 @@ export default function OrdersPage() {
         </div>
 
         <div className="flex gap-2.5 sm:gap-3">
+          <select
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+            className="flex-1 sm:flex-none bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700 rounded-xl px-3 sm:px-4 py-2.5 text-sm text-zinc-200 focus:outline-none focus:border-[#D4AF37] transition font-mono"
+          >
+            <option value="all">All Months</option>
+            {availableMonths.map((month) => {
+              const monthName = new Date(month + "-02").toLocaleString("default", {
+                month: "long",
+                year: "numeric",
+              });
+              return (
+                <option key={month} value={month}>
+                  {monthName}
+                </option>
+              );
+            })}
+          </select>
+
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value as OrderStatus | "All")}
@@ -123,7 +160,7 @@ export default function OrdersPage() {
           <RsmEmptyState
             icon={Search}
             title="No matches"
-            description="No orders match your current search or status filter. Try adjusting them."
+            description="No orders match your current search, month, or status filter. Try adjusting them."
           />
         )
       )}
