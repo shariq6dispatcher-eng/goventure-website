@@ -167,13 +167,14 @@ export interface Payment {
   notes?: string;
   confirmed: boolean;
   confirmedBy?: string;
+  confirmedAt?: string; // ISO datetime, set when marked confirmed — used for cash-collection month bucketing
   loggedBy?: string; // RsmStaff.username who created this record — set server-side
   createdAt: string;
 }
 
 export type PaymentInput = Omit <
   Payment,
-  "_id" | "paymentNo" | "customerName" | "confirmed" | "confirmedBy" | "loggedBy" | "createdAt"
+  "_id" | "paymentNo" | "customerName" | "confirmed" | "confirmedBy" | "confirmedAt" | "loggedBy" | "createdAt"
 >;
 
 // ---------------------------------------------------------------------------
