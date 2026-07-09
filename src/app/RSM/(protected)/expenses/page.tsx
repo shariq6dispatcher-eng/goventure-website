@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { Plus, Search, Loader2, Pencil, Trash2, Scissors } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
@@ -17,6 +17,7 @@ export default function ExpensesPage() {
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [categoryFilter, setCategoryFilter] = useState<ExpenseCategory | "All">("All");
+  const [selectedMonth, setSelectedMonth] = useState("all");
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -45,7 +46,24 @@ export default function ExpensesPage() {
     }
   };
 
-  const filtered = expenses.filter((e) => {
+  const availableMonths = useMemo(() => {
+    const monthsSet = new Set<string>();
+    const now = new Date();
+    monthsSet.add(
+      `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`
+    );
+    expenses.forEach((e) => {
+      if (e.date && e.date.length >= 7) monthsSet.add(e.date.substring(0, 7));
+    });
+    return Array.from(monthsSet).sort((a, b) => b.localeCompare(a));
+  }, [expenses]);
+
+  const monthFiltered =
+    selectedMonth === "all"
+      ? expenses
+      : expenses.filter((e) => e.date.startsWith(selectedMonth));
+
+  const filtered = monthFiltered.filter((e) => {
     const q = query.toLowerCase();
     const matchesQuery =
       e.expenseNo.toLowerCase().includes(q) ||
@@ -55,7 +73,7 @@ export default function ExpensesPage() {
     return matchesQuery && matchesCategory;
   });
 
-  const totalAmount = expenses.reduce((sum, e) => sum + e.amount, 0);
+  const totalAmount = monthFiltered.reduce((sum, e) => sum + e.amount, 0);
 
   if (!me) return null;
 
@@ -64,7 +82,7 @@ export default function ExpensesPage() {
       staffName={me.username}
       staffRole={me.role}
       title="Expenses"
-      subtitle={`${expenses.length} total · $${totalAmount.toFixed(2)} spent`}
+      subtitle={`${monthFiltered.length} total · $${totalAmount.toFixed(2)} spent`}
     >
       <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 mb-5 sm:mb-6">
         <div className="relative flex-1">
@@ -81,6 +99,25 @@ export default function ExpensesPage() {
         </div>
 
         <div className="flex gap-2.5 sm:gap-3">
+          <select
+            value={selectedMonth}
+            onChange={(e) => setSelectedMonth(e.target.value)}
+            className="flex-1 sm:flex-none bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700 rounded-xl px-3 sm:px-4 py-2.5 text-sm text-zinc-200 focus:outline-none focus:border-[#D4AF37] transition font-mono"
+          >
+            <option value="all">All Months</option>
+            {availableMonths.map((month) => {
+              const monthName = new Date(month + "-02").toLocaleString("default", {
+                month: "long",
+                year: "numeric",
+              });
+              return (
+                <option key={month} value={month}>
+                  {monthName}
+                </option>
+              );
+            })}
+          </select>
+
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value as ExpenseCategory | "All")}
@@ -123,7 +160,7 @@ export default function ExpensesPage() {
           <RsmEmptyState
             icon={Search}
             title="No matches"
-            description="No expenses match your current search or category filter."
+            description="No expenses match your current search, month, or category filter. Try adjusting them."
           />
         )
       )}
