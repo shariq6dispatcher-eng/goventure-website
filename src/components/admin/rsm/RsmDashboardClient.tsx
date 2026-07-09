@@ -15,10 +15,11 @@ import {
   Users,
   AlertTriangle,
   Activity,
+  Globe,
 } from "lucide-react";
 import RsmStatusBadge from "./RsmStatusBadge";
 import { RsmLineChart, RsmDonutChart } from "./RsmCharts";
-import type { Order, Payment, Expense, Customer, DigitizingJob } from "@/types/rsm";
+import type { Order, Payment, Expense, Customer, DigitizingJob, OnlineOrder } from "@/types/rsm";
 
 interface Props {
   orders: Order[];
@@ -26,6 +27,7 @@ interface Props {
   expenses: Expense[];
   customers: Customer[];
   digitizingJobs: DigitizingJob[];
+  onlineOrders: OnlineOrder[];
 }
 
 export default function RsmDashboardClient({
@@ -34,6 +36,7 @@ export default function RsmDashboardClient({
   expenses,
   customers,
   digitizingJobs,
+  onlineOrders,
 }: Props) {
   const availableMonths = useMemo(() => {
     const monthsSet = new Set<string>();
@@ -134,6 +137,30 @@ export default function RsmDashboardClient({
     }),
     [orders]
   );
+
+  // Online Orders (the public /order request → approve → pay → download
+  // pipeline). "Pending" here means anything still moving through that
+  // pipeline (not yet Completed and not Rejected); "Completed" is once
+  // the customer has downloaded their files. Total amount only counts
+  // requests that actually got a quote, since a bare "Requested" has no
+  // amount yet.
+  const onlineOrderStats = useMemo(() => {
+    const totalAmount = onlineOrders.reduce(
+      (sum, o) => sum + (o.quoteAmount || 0),
+      0
+    );
+    const completed = onlineOrders.filter((o) => o.status === "Completed").length;
+    const pending = onlineOrders.filter(
+      (o) => o.status !== "Completed" && o.status !== "Rejected"
+    ).length;
+
+    return {
+      total: onlineOrders.length,
+      totalAmount,
+      pending,
+      completed,
+    };
+  }, [onlineOrders]);
 // Last 6 months of revenue vs expenses, oldest to newest, for the trend chart.
   const monthlyTrend = useMemo(() => {
     const now = new Date();
@@ -562,6 +589,61 @@ export default function RsmDashboardClient({
               No active orders in production. Create some in the Orders tab!
             </div>
           )}
+        </div>
+      </div>
+      {/* ONLINE ORDERS SUMMARY */}
+      <div className="bg-zinc-900/60 border border-zinc-900 rounded-xl sm:rounded-2xl p-3.5 sm:p-5 space-y-3 sm:space-y-4">
+        <div className="flex justify-between items-center border-b border-zinc-900 pb-3 gap-2">
+          <div className="min-w-0">
+            <h4 className="font-bold text-xs sm:text-sm text-white flex items-center gap-2">
+              <Globe className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-[#D4AF37]" />
+              Online Orders
+            </h4>
+            <p className="text-[11px] sm:text-xs text-zinc-400 hidden sm:block">
+              Requests submitted through the public order form
+            </p>
+          </div>
+          <Link
+            href="/RSM/online-orders"
+            className="text-[11px] sm:text-xs text-[#D4AF37] hover:text-[#e5c458] font-bold whitespace-nowrap shrink-0"
+          >
+            Manage All →
+          </Link>
+        </div>
+
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-4">
+          <div className="bg-black border border-zinc-800 p-2.5 sm:p-3.5 rounded-lg text-center">
+            <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-zinc-500 block leading-tight">
+              Total Orders
+            </span>
+            <span className="text-lg sm:text-2xl font-mono font-bold text-white block mt-1">
+              {onlineOrderStats.total}
+            </span>
+          </div>
+          <div className="bg-black border border-zinc-800 p-2.5 sm:p-3.5 rounded-lg text-center">
+            <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-zinc-500 block leading-tight">
+              Total Amount
+            </span>
+            <span className="text-base sm:text-2xl font-mono font-bold text-[#D4AF37] block mt-1 truncate">
+              {money(onlineOrderStats.totalAmount)}
+            </span>
+          </div>
+          <div className="bg-black border border-zinc-800 p-2.5 sm:p-3.5 rounded-lg text-center">
+            <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-zinc-500 block leading-tight">
+              Pending
+            </span>
+            <span className="text-lg sm:text-2xl font-mono font-bold text-amber-400 block mt-1">
+              {onlineOrderStats.pending}
+            </span>
+          </div>
+          <div className="bg-black border border-zinc-800 p-2.5 sm:p-3.5 rounded-lg text-center">
+            <span className="text-[9px] sm:text-[10px] font-bold uppercase tracking-wider text-zinc-500 block leading-tight">
+              Completed
+            </span>
+            <span className="text-lg sm:text-2xl font-mono font-bold text-emerald-400 block mt-1">
+              {onlineOrderStats.completed}
+            </span>
+          </div>
         </div>
       </div>
       {/* NEEDS ATTENTION */}
