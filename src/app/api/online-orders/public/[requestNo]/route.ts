@@ -8,6 +8,29 @@ interface RouteParams {
   params: Promise<{ requestNo: string }>;
 }
 
+// PUBLIC — fetch the current state of a request by requestNo. Used both
+// for the initial page load and by the polling on the customer's
+// order-status page, so it can pick up changes (a new quote, files ready,
+// payment approved, etc.) without the customer manually refreshing.
+export async function GET(_req: Request, { params }: RouteParams) {
+  const { requestNo } = await params;
+
+  try {
+    const order = await mongo.findOne<OnlineOrder>(RSM_COLLECTIONS.onlineOrders, {
+      requestNo: requestNo.toUpperCase(),
+    });
+
+    if (!order) {
+      return NextResponse.json({ error: "Request not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ order });
+  } catch (err) {
+    console.error("Public online order GET error:", err);
+    return NextResponse.json({ error: "Failed to load request" }, { status: 500 });
+  }
+}
+
 // PUBLIC — the customer's side of the pipeline. Keyed by requestNo (not
 // _id) since that's the only identifier the customer's URL carries, same
 // as /track/[orderNo]. Every action here re-checks the record's current
