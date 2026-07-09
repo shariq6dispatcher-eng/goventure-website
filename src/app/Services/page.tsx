@@ -316,7 +316,7 @@ export default function ServicesPage() {
     </p>
 
     <a
-  href="/quote"
+  href="/order"
   className="
     inline-block
     bg-[#D4AF37]
@@ -331,7 +331,7 @@ export default function ServicesPage() {
     hover:shadow-[0_0_35px_rgba(212,175,55,0.4)]
   "
 >
-      Request Quote
+      Order Now!
     </a>
 
   </div>
