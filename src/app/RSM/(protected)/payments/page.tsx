@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Plus, Search, Loader2, Pencil, Trash2, Wallet } from "lucide-react";
+import { Plus, Search, Loader2, Pencil, Trash2, Wallet, Check } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
 import RsmConfirmBadge from "@/components/admin/rsm/RsmConfirmBadge";
 import RsmSkeleton from "@/components/admin/rsm/RsmSkeleton";
@@ -17,6 +17,7 @@ export default function PaymentsPage() {
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmingId, setConfirmingId] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/rsm/payments")
@@ -41,6 +42,36 @@ export default function PaymentsPage() {
       alert(err instanceof Error ? err.message : "Delete failed");
     } finally {
       setDeletingId(null);
+    }
+  };
+
+  const handleConfirm = async (p: Payment) => {
+    setConfirmingId(p._id);
+    try {
+      const res = await fetch(`/api/rsm/payments/${p._id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerId: p.customerId,
+          orderId: p.orderId,
+          amount: p.amount,
+          paymentMethod: p.paymentMethod,
+          date: p.date,
+          reference: p.reference,
+          screenshot: p.screenshot,
+          notes: p.notes,
+          confirmed: true,
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Confirm failed");
+      setPayments((prev) =>
+        prev.map((row) => (row._id === p._id ? { ...row, confirmed: true } : row))
+      );
+    } catch (err) {
+      alert(err instanceof Error ? err.message : "Confirm failed");
+    } finally {
+      setConfirmingId(null);
     }
   };
 
@@ -135,6 +166,20 @@ export default function PaymentsPage() {
                     <p className="text-xs text-zinc-400 mt-1 truncate">{p.customerName}</p>
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
+                    {!p.confirmed && (
+                      <button
+                        onClick={() => handleConfirm(p)}
+                        disabled={confirmingId === p._id}
+                        className="p-2 text-emerald-400 active:text-emerald-300 active:bg-emerald-950/30 rounded-lg transition-colors disabled:opacity-50"
+                        aria-label="Confirm"
+                      >
+                        {confirmingId === p._id ? (
+                          <Loader2 size={15} className="animate-spin" />
+                        ) : (
+                          <Check size={15} />
+                        )}
+                      </button>
+                    )}
                     <Link
                       href={`/RSM/payments/${p._id}/edit`}
                       className="p-2 text-zinc-400 active:text-[#D4AF37] active:bg-zinc-800 rounded-lg transition-colors"
@@ -199,6 +244,20 @@ export default function PaymentsPage() {
                       </td>
                       <td className="px-5 py-3">
                         <div className="flex items-center justify-end gap-2">
+                          {!p.confirmed && (
+                            <button
+                              onClick={() => handleConfirm(p)}
+                              disabled={confirmingId === p._id}
+                              className="p-2 text-emerald-400 hover:text-emerald-300 hover:bg-emerald-950/30 rounded-lg transition-colors disabled:opacity-50"
+                              aria-label="Confirm"
+                            >
+                              {confirmingId === p._id ? (
+                                <Loader2 size={15} className="animate-spin" />
+                              ) : (
+                                <Check size={15} />
+                              )}
+                            </button>
+                          )}
                           <Link
                             href={`/RSM/payments/${p._id}/edit`}
                             className="p-2 text-zinc-400 hover:text-[#D4AF37] hover:bg-zinc-800 rounded-lg transition-colors"
