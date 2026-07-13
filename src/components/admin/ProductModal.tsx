@@ -13,7 +13,7 @@ export interface Product {
   image: string;
 }
 
-const CATEGORIES = ["Patch", "Digitizing", "Sportswear", "Jersey"];
+const CATEGORIES = ["Patch", "Digitizing", "Sportswear", "Jersey","Character Digitizing"];
 
 interface ProductModalProps {
   open: boolean;
