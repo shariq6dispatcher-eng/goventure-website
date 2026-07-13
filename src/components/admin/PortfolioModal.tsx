@@ -11,7 +11,7 @@ export interface PortfolioItem {
   image: string;
 }
 
-const CATEGORIES = ["Digitizing", "Patches", "Jerseys", "Sportswear"];
+const CATEGORIES = ["Digitizing", "Patches", "Jerseys", "Sportswear","Character Digitizing"];
 
 interface PortfolioModalProps {
   open: boolean;
