@@ -34,6 +34,7 @@ export default function StaffForm({ staff }: StaffFormProps) {
     staff?.allowedModules || []
   );
   const [active, setActive] = useState(staff?.active ?? true);
+  const [hideFinancials, setHideFinancials] = useState(staff?.hideFinancials ?? false);
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -67,6 +68,7 @@ export default function StaffForm({ staff }: StaffFormProps) {
         role,
         allowedModules,
         active,
+        hideFinancials,
       };
 
       const url = staff ? `/api/rsm/staff/${staff._id}` : "/api/rsm/staff";
@@ -193,6 +195,35 @@ export default function StaffForm({ staff }: StaffFormProps) {
                 {mod.label}
               </label>
             ))}
+          </div>
+        </div>
+      )}
+
+      {role === "staff" && (
+        <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5">
+          <h3 className="text-sm font-semibold mb-1">Restrict Financial &amp; Client Data</h3>
+          <p className="text-xs text-zinc-500 mb-4">
+            When enabled, this account (e.g. a digitizer) won't see order amounts, prices, or
+            customer contact details anywhere in the panel — including in Digitizing Jobs. Job
+            names, formats, and statuses still show normally.
+          </p>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setHideFinancials((v) => !v)}
+              className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 ${
+                hideFinancials ? "bg-[#D4AF37]" : "bg-zinc-700"
+              }`}
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
+                  hideFinancials ? "translate-x-5" : "translate-x-0"
+                }`}
+              />
+            </button>
+            <span className="text-sm">
+              {hideFinancials ? "Financials & client details hidden" : "Full access to financials & client details"}
+            </span>
           </div>
         </div>
       )}
