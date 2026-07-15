@@ -28,7 +28,7 @@ export default function PaymentsPage() {
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
 
   useEffect(() => {
-    fetch("/api/rsm/payments")
+    fetch("/api/rsm/payments", { cache: "no-store" })
       .then((r) => r.json())
       .then((data) => {
         if (data.error) throw new Error(data.error);
