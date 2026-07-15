@@ -3,6 +3,7 @@ import { mongo, toObjectId } from "@/lib/mongodb";
 import { RSM_COLLECTIONS } from "@/types/constants";
 import { getRsmAuth } from "@/lib/rsm-auth";
 import { notifyRsm } from "@/lib/rsm-notify";
+import { shouldHideFinancials } from "@/lib/rsm-perms";
 import type { DigitizingJob, DigitizingJobInput, Customer } from "@/types/rsm";
 
 export async function GET(
@@ -10,6 +11,7 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   await getRsmAuth();
+  const hideFinancials = await shouldHideFinancials();
   const { id } = await params;
 
   try {
@@ -20,6 +22,16 @@ export async function GET(
 
     if (!job) {
       return NextResponse.json({ error: "Job not found" }, { status: 404 });
+    }
+
+    if (hideFinancials) {
+      const redacted = {
+        ...job,
+        price: 0,
+        customerId: "",
+        customerName: "Hidden",
+      };
+      return NextResponse.json({ job: redacted, financialsHidden: true });
     }
 
     return NextResponse.json({ job });
@@ -36,6 +48,7 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   await getRsmAuth();
+  const hideFinancials = await shouldHideFinancials();
   const { id } = await params;
   const body = (await req.json()) as Partial<DigitizingJobInput>;
 
@@ -56,7 +69,7 @@ export async function PUT(
     }
 
     let customerName = existing.customerName;
-    if (body.customerId && body.customerId !== existing.customerId) {
+    if (!hideFinancials && body.customerId && body.customerId !== existing.customerId) {
       const customer = await mongo.findOne<Customer>(
         RSM_COLLECTIONS.customers,
         { _id: toObjectId(body.customerId) }
@@ -71,14 +84,14 @@ export async function PUT(
     }
 
     const update = {
-      customerId: body.customerId ?? existing.customerId,
+      customerId: hideFinancials ? existing.customerId : body.customerId ?? existing.customerId,
       customerName,
       designName: body.designName.trim(),
       imageUrl: body.imageUrl ?? existing.imageUrl ?? "",
       status: body.status ?? existing.status,
       orderId: body.orderId ?? existing.orderId,
       folders: body.folders ?? existing.folders ?? [],
-      price: body.price ?? existing.price,
+      price: hideFinancials ? existing.price : body.price ?? existing.price,
       format: body.format,
       notes: body.notes ?? existing.notes ?? "",
       updatedAt: new Date().toISOString(),
