@@ -3,9 +3,11 @@ import { mongo, toObjectId } from "@/lib/mongodb";
 import { RSM_COLLECTIONS } from "@/types/constants";
 import { getRsmAuth } from "@/lib/rsm-auth";
 import { notifyRsm } from "@/lib/rsm-notify";
+import { shouldHideFinancials } from "@/lib/rsm-perms";
 import type { DigitizingJob, DigitizingJobInput, Customer } from "@/types/rsm";
 export async function GET() {
   await getRsmAuth();
+  const hideFinancials = await shouldHideFinancials();
 
   try {
     const jobs = await mongo.find<DigitizingJob>(
@@ -13,6 +15,17 @@ export async function GET() {
       {},
       { createdAt: -1 }
     );
+
+    if (hideFinancials) {
+      const redacted = jobs.map((j) => ({
+        ...j,
+        price: 0,
+        customerId: "",
+        customerName: "Hidden",
+      }));
+      return NextResponse.json({ jobs: redacted, financialsHidden: true });
+    }
+
     return NextResponse.json({ jobs });
   } catch (err) {
     return NextResponse.json(
