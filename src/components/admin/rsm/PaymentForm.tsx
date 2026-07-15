@@ -26,7 +26,15 @@ export default function PaymentForm({ payment }: PaymentFormProps) {
   const [confirmed, setConfirmed] = useState(payment?.confirmed ?? true);
   const [notes, setNotes] = useState(payment?.notes || "");
   const [bookedMonth, setBookedMonth] = useState(payment?.bookedMonth || "");
-  const [screenshot, setScreenshot] = useState(payment?.screenshot || "");
+  // Old imported records (migrated from Firebase) sometimes have a
+  // `screenshot` value that isn't a real Cloudinary URL — it was never
+  // actually uploaded there, so it 404s. Only trust it if it's genuinely
+  // hosted on Cloudinary; otherwise treat this payment as having no
+  // screenshot yet and just show the normal upload button.
+  const isCloudinaryUrl = (url: string) => /res\.cloudinary\.com/.test(url);
+  const [screenshot, setScreenshot] = useState(
+    payment?.screenshot && isCloudinaryUrl(payment.screenshot) ? payment.screenshot : ""
+  );
   const [uploadingScreenshot, setUploadingScreenshot] = useState(false);
   const [screenshotError, setScreenshotError] = useState("");
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -265,6 +273,7 @@ export default function PaymentForm({ payment }: PaymentFormProps) {
                   src={screenshot}
                   alt="Payment screenshot"
                   className="w-full h-full object-cover"
+                  onError={() => setScreenshot("")}
                 />
               </a>
               <div className="flex flex-col gap-1.5">
