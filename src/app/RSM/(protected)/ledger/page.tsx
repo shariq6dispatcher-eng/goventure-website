@@ -10,6 +10,7 @@ import type { Customer, LedgerEntry } from "@/types/rsm";
 export default function LedgerPage() {
   const me = useRsmAccess("ledgers");
   const [customers, setCustomers] = useState<Customer[]>([]);
+  const [balances, setBalances] = useState<Record<string, number>>({});
   const [customerId, setCustomerId] = useState("");
   const [entries, setEntries] = useState<LedgerEntry[]>([]);
   const [loadingCustomers, setLoadingCustomers] = useState(true);
@@ -23,6 +24,13 @@ export default function LedgerPage() {
       .then((data) => setCustomers(data.customers || []))
       .catch(() => setError("Failed to load customers"))
       .finally(() => setLoadingCustomers(false));
+
+    fetch("/api/rsm/ledger/summary")
+      .then((r) => r.json())
+      .then((data) => setBalances(data.balances || {}))
+      .catch(() => {
+        /* balances are a nice-to-have next to each name; ignore failure */
+      });
   }, []);
   useEffect(() => {
     if (!customerId) {
@@ -85,19 +93,33 @@ export default function LedgerPage() {
 
           {!loadingCustomers && (
           <div className="space-y-1 max-h-[45vh] sm:max-h-[60vh] overflow-y-auto">
-              {filteredCustomers.map((c) => (
-                <button
-                  key={c._id}
-                  onClick={() => setCustomerId(c._id)}
-                  className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
-                    customerId === c._id
-                      ? "bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/30"
-                      : "text-zinc-300 hover:bg-zinc-800 border border-transparent"
-                  }`}
-                >
-                  {c.name}
-                </button>
-              ))}
+              {filteredCustomers.map((c) => {
+                const bal = balances[c._id] ?? 0;
+                return (
+                  <button
+                    key={c._id}
+                    onClick={() => setCustomerId(c._id)}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center justify-between gap-2 ${
+                      customerId === c._id
+                        ? "bg-[#D4AF37]/10 text-[#D4AF37] border border-[#D4AF37]/30"
+                        : "text-zinc-300 hover:bg-zinc-800 border border-transparent"
+                    }`}
+                  >
+                    <span className="truncate">{c.name}</span>
+                    <span
+                      className={`shrink-0 text-[11px] font-mono ${
+                        bal > 0
+                          ? "text-amber-400"
+                          : bal < 0
+                          ? "text-emerald-400"
+                          : "text-zinc-500"
+                      }`}
+                    >
+                      ${bal.toFixed(2)}
+                    </span>
+                  </button>
+                );
+              })}
               {filteredCustomers.length === 0 && (
                 <p className="text-xs text-zinc-500 px-3 py-2">No customers found.</p>
               )}
