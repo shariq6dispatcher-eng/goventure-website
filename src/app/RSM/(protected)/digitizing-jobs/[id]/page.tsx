@@ -70,6 +70,8 @@ export default function ViewDigitizingJobPage() {
 
   if (!me) return null;
 
+  const hideFinancials = !!me.hideFinancials;
+
   const money = (n: number) =>
     new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n || 0);
 
@@ -122,23 +124,27 @@ export default function ViewDigitizingJobPage() {
               <p className="text-xs text-zinc-500 mb-1">Status</p>
               <RsmJobStatusBadge status={job.status} />
             </div>
-            <div>
-              <p className="text-xs text-zinc-500 mb-1">Customer</p>
-              <p className="font-medium">{job.customerName}</p>
-            </div>
+            {!hideFinancials && (
+              <div>
+                <p className="text-xs text-zinc-500 mb-1">Customer</p>
+                <p className="font-medium">{job.customerName}</p>
+              </div>
+            )}
             <div>
               <p className="text-xs text-zinc-500 mb-1">Format</p>
               <p className="font-medium">{job.format}</p>
             </div>
-            <div>
-              <p className="text-xs text-zinc-500 mb-1">Price</p>
-              <p className="font-medium">{money(job.price)}</p>
-            </div>
+            {!hideFinancials && (
+              <div>
+                <p className="text-xs text-zinc-500 mb-1">Price</p>
+                <p className="font-medium">{money(job.price)}</p>
+              </div>
+            )}
             <div>
               <p className="text-xs text-zinc-500 mb-1">Submitted By</p>
               <p className="font-medium">{job.uploadedBy}</p>
             </div>
-            {job.orderId && (
+            {job.orderId && !hideFinancials && (
               <div>
                 <p className="text-xs text-zinc-500 mb-1">Linked Order</p>
                 <Link
