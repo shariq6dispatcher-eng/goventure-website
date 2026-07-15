@@ -20,6 +20,7 @@ import {
   Loader2,
 } from "lucide-react";
 import RsmStatusBadge from "./RsmStatusBadge";
+import RsmOnlineUsers from "./RsmOnlineUsers";
 import { RsmLineChart, RsmDonutChart } from "./RsmCharts";
 import type { Order, Payment, Expense, Customer, DigitizingJob, OnlineOrder, OrderStatus } from "@/types/rsm";
 
@@ -484,6 +485,7 @@ export default function RsmDashboardClient({
 
   return (
     <div className="space-y-6">
+    <RsmOnlineUsers />
     {/* MONTH FILTER */}
       <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-3.5 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 sm:gap-4">
         <div className="min-w-0">
