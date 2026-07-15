@@ -8,6 +8,7 @@ interface RsmMe {
   username: string;
   role: "admin" | "staff";
   allowedModules: RsmModule[] | null;
+  hideFinancials?: boolean;
 }
 
 /**
