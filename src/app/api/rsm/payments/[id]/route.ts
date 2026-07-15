@@ -89,6 +89,7 @@ async function addLedgerEntryForPayment(payment: {
   orderNo?: string;
   amount: number;
   date: string;
+  bookedMonth?: string;
   paymentNo: string;
 }) {
   const lastEntry = await mongo.find<LedgerEntry>(
@@ -101,7 +102,7 @@ async function addLedgerEntryForPayment(payment: {
   await mongo.insertOne(RSM_COLLECTIONS.ledger, {
     customerId: payment.customerId,
     customerName: payment.customerName,
-    date: payment.date,
+    date: payment.bookedMonth ? `${payment.bookedMonth}-01` : payment.date,
     type: "Payment" as const,
     referenceId: toObjectId(payment._id),
     referenceNo: payment.paymentNo,
@@ -172,6 +173,7 @@ export async function PUT(
       reference: body.reference ?? existing.reference ?? "",
       screenshot: body.screenshot ?? existing.screenshot ?? "",
       notes: body.notes ?? existing.notes ?? "",
+      bookedMonth: body.bookedMonth ?? existing.bookedMonth ?? undefined,
       confirmed: newConfirmed,
       confirmedBy: newConfirmed ? (existing.confirmedBy || auth.username) : undefined,
       confirmedAt: newConfirmedAt,
@@ -211,6 +213,7 @@ export async function PUT(
           orderNo,
           amount: body.amount,
           date: body.date,
+          bookedMonth: update.bookedMonth,
           paymentNo: existing.paymentNo,
         });
       }
@@ -218,6 +221,19 @@ export async function PUT(
       // Went confirmed -> pending: remove its ledger entry, since a pending
       // payment hasn't actually landed yet.
       await removeLedgerEntryForPayment(id);
+    } else if (newConfirmed && existing.confirmed && update.bookedMonth !== existing.bookedMonth) {
+      // Stayed confirmed but the booked-month override changed (e.g.
+      // correcting which month an already-confirmed payment should count
+      // toward) — update the existing ledger entry's date to match instead
+      // of leaving it stuck on the old month.
+      const ledgerEntry = await findLedgerEntryForPayment(id);
+      if (ledgerEntry) {
+        await mongo.updateOne(
+          RSM_COLLECTIONS.ledger,
+          { _id: toObjectId(ledgerEntry._id) },
+          { date: update.bookedMonth ? `${update.bookedMonth}-01` : body.date }
+        );
+      }
     }
 
     return NextResponse.json({ success: true });
