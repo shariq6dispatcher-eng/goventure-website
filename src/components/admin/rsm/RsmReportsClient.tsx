@@ -207,7 +207,7 @@ export default function RsmReportsClient({ onExport }: RsmReportsClientProps) {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(`/api/rsm/reports?month=${m}`);
+      const res = await fetch(`/api/rsm/reports?month=${m}`, { cache: "no-store" });
       if (!res.ok) throw new Error("Failed to load report");
       const json = await res.json();
       setData(json);
