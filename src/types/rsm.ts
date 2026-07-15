@@ -273,6 +273,7 @@ export interface RsmStaff {
   email?: string;
   role: RsmRole;
   allowedModules: RsmModule[]; // ignored when role === "admin" (sees all)
+  hideFinancials?: boolean; // when true, this staff member's UI/API responses redact order amounts, prices, and customer contact details (used for digitizer accounts). Ignored when role === "admin".
   active: boolean;
   lastActive?: string;
   createdAt: string;
