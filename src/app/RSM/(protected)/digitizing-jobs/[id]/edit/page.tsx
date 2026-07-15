@@ -49,7 +49,9 @@ export default function EditDigitizingJobPage() {
         </div>
       )}
 
-      {!loading && !error && job && <DigitizingJobForm job={job} />}
+      {!loading && !error && job && (
+        <DigitizingJobForm job={job} hideFinancials={!!me.hideFinancials} />
+      )}
     </RsmShell>
   );
 }
