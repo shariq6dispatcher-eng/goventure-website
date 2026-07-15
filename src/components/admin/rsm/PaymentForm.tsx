@@ -89,7 +89,7 @@ export default function PaymentForm({ payment }: PaymentFormProps) {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Save failed");
 
-      router.push("/RSM/payments");
+      router.replace("/RSM/payments");
       router.refresh();
     } catch (err) {
       setError(err instanceof Error ? err.message : "Save failed");
@@ -188,10 +188,14 @@ export default function PaymentForm({ payment }: PaymentFormProps) {
 
       <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5 flex items-center justify-between">
         <div>
-          <p className="text-sm font-medium">Mark as Confirmed</p>
+          <p className="text-sm font-medium">
+            Status: <span className={confirmed ? "text-[#D4AF37]" : "text-zinc-400"}>
+              {confirmed ? "Confirmed" : "Pending"}
+            </span>
+          </p>
           <p className="text-xs text-zinc-500 mt-0.5">
             Confirmed payments immediately update the linked order's balance and the customer ledger.
-            Uncheck this if you're still waiting to verify the payment.
+            Switch this to Pending if you're still waiting to verify the payment, or if you confirmed it by mistake.
           </p>
           {payment?.confirmed && payment?.confirmedBy && (
             <p className="text-xs text-[#D4AF37] mt-2 font-medium">
@@ -202,6 +206,7 @@ export default function PaymentForm({ payment }: PaymentFormProps) {
         <button
           type="button"
           onClick={() => setConfirmed((v) => !v)}
+          aria-label={confirmed ? "Switch to Pending" : "Switch to Confirmed"}
           className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 ${
             confirmed ? "bg-[#D4AF37]" : "bg-zinc-700"
           }`}
