@@ -63,6 +63,7 @@ export async function POST(req: Request) {
       email: body.email || "",
       role: body.role || "staff",
       allowedModules: body.allowedModules || [],
+      hideFinancials: body.hideFinancials ?? false,
       active: body.active ?? true,
       createdAt: new Date().toISOString(),
     };
