@@ -16,7 +16,7 @@ export default function NewDigitizingJobPage() {
       title="New Digitizing Job"
       subtitle="Create a new digitizing job for a customer"
     >
-      <DigitizingJobForm job={null} />
+      <DigitizingJobForm job={null} hideFinancials={!!me.hideFinancials} />
     </RsmShell>
   );
 }
