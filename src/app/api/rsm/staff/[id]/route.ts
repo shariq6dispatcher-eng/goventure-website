@@ -77,6 +77,7 @@ export async function PUT(
       email: body.email ?? existing.email ?? "",
       role: body.role ?? existing.role,
       allowedModules: body.allowedModules ?? existing.allowedModules ?? [],
+      hideFinancials: body.hideFinancials ?? existing.hideFinancials ?? false,
       active: body.active ?? existing.active,
     };
 
