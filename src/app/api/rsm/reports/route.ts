@@ -11,6 +11,16 @@ function inMonth(dateStr: string | undefined, month: string): boolean {
   return dateStr.slice(0, 7) === month;
 }
 
+// Helper: which "YYYY-MM" bucket a payment belongs in — bookedMonth takes
+// precedence when the payment was deliberately backdated to a previous
+// month (e.g. confirming a missed June payment in July but wanting it to
+// still count as June's cash collected), otherwise falls back to the
+// payment's actual date.
+function paymentInMonth(payment: Payment, month: string): boolean {
+  const bucket = payment.bookedMonth || payment.date?.slice(0, 7);
+  return bucket === month;
+}
+
 export async function GET(request: Request) {
   await getRsmAuth();
 
@@ -29,7 +39,7 @@ export async function GET(request: Request) {
 
     // ---- Filter each collection to the selected month ----
     const orders = allOrders.filter((o) => inMonth(o.orderDate, month));
-    const payments = allPayments.filter((p) => inMonth(p.date, month));
+    const payments = allPayments.filter((p) => paymentInMonth(p, month));
     const expenses = allExpenses.filter((e) => inMonth(e.date, month));
     const jobs = allJobs.filter((j) => inMonth(j.createdAt, month));
 
