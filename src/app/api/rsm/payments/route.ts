@@ -75,6 +75,7 @@ export async function POST(req: Request) {
       reference: body.reference || "",
       screenshot: body.screenshot || "",
       notes: body.notes || "",
+      bookedMonth: body.bookedMonth || undefined,
       confirmed,
       confirmedBy: confirmed ? auth.username : undefined,
       loggedBy: auth.username,
@@ -108,7 +109,7 @@ export async function POST(req: Request) {
       const ledgerDoc = {
         customerId: body.customerId,
         customerName: customer.name,
-        date: body.date,
+        date: body.bookedMonth ? `${body.bookedMonth}-01` : body.date,
         type: "Payment" as const,
         referenceId: result.insertedId,
         referenceNo: paymentNo,
