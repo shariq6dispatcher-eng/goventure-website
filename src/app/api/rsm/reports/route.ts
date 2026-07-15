@@ -4,6 +4,13 @@ import { RSM_COLLECTIONS } from "@/types/constants";
 import { getRsmAuth } from "@/lib/rsm-auth";
 import type { Order, Payment, Expense, DigitizingJob, Customer } from "@/types/rsm";
 
+// Force this route to be evaluated fresh on every request instead of
+// letting Cloudflare's edge cache (or the browser) serve a stale response
+// for a previously-visited "?month=" URL — e.g. after editing a payment's
+// bookedMonth, GET /reports?month=2026-07 must reflect the change
+// immediately, not whatever was cached the last time that URL was hit.
+export const dynamic = "force-dynamic";
+
 // Helper: is this ISO-ish date string ("YYYY-MM-DD" or full ISO) inside
 // the given "YYYY-MM" month?
 function inMonth(dateStr: string | undefined, month: string): boolean {
@@ -99,7 +106,7 @@ export async function GET(request: Request) {
       .sort((a, b) => b.amount - a.amount)
       .slice(0, 5);
 
-    return NextResponse.json({
+    const responseBody = {
       month,
       orders: {
         count: orders.length,
@@ -138,6 +145,16 @@ export async function GET(request: Request) {
       },
       topCustomers,
       totalActiveCustomers: allCustomers.length,
+    };
+
+    // Explicit no-store headers so Cloudflare's edge cache and the
+    // browser never serve a stale report for a given "?month=" URL —
+    // report figures must always reflect the latest confirmed/bookedMonth
+    // state of payments, not whatever was cached on a previous visit.
+    return NextResponse.json(responseBody, {
+      headers: {
+        "Cache-Control": "no-store, no-cache, must-revalidate",
+      },
     });
   } catch (err) {
     return NextResponse.json(
