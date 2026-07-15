@@ -58,19 +58,26 @@ export default function RsmSidebar({ staffName, staffRole }: RsmSidebarProps) {
   const [allowedModules, setAllowedModules] = useState<RsmModule[] | null>(
     staffRole === "admin" ? null : []
   );
+  const [hideFinancials, setHideFinancials] = useState(false);
 
   useEffect(() => {
     fetch("/api/rsm/me")
       .then((r) => r.json())
-      .then((data) => setAllowedModules(data.allowedModules))
+      .then((data) => {
+        setAllowedModules(data.allowedModules);
+        setHideFinancials(!!data.hideFinancials);
+      })
       .catch(() => {});
   }, []);
 
   // null = admin, unrestricted. Otherwise only show items either with no
   // module tag (always visible) or explicitly in this staff member's list.
   // adminOnly items are hidden outright for non-admins regardless of module.
+  // Dashboard is financial end-to-end, so it's hidden for hideFinancials
+  // accounts even though it has no `module` tag of its own.
   const visibleItems = NAV_ITEMS.filter((item) => {
     if (item.adminOnly) return staffRole === "admin";
+    if (item.href === "/RSM" && hideFinancials) return false;
     if (!item.module) return true;
     if (allowedModules === null) return true;
     return allowedModules.includes(item.module);
