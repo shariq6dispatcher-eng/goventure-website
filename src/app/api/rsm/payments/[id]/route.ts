@@ -59,6 +59,60 @@ async function applyOrderEffect(orderId: string, amount: number) {
   );
 }
 
+// Helper: does a ledger entry already exist for this payment?
+async function findLedgerEntryForPayment(paymentId: string) {
+  const entries = await mongo.find<LedgerEntry>(RSM_COLLECTIONS.ledger, {
+    referenceId: toObjectId(paymentId),
+  });
+  return entries[0] || null;
+}
+
+// Helper: drop a ledger entry for a payment (used when a payment is
+// un-confirmed or deleted, so the ledger doesn't show money that isn't
+// actually confirmed anymore).
+async function removeLedgerEntryForPayment(paymentId: string) {
+  await mongo.deleteOne(RSM_COLLECTIONS.ledger, {
+    referenceId: toObjectId(paymentId),
+  });
+}
+
+// Helper: create a ledger entry for a payment that just became confirmed
+// (mirrors the logic in POST /api/rsm/payments). This covers the case
+// where a payment was recorded as "pending" and only confirmed later via
+// edit or the quick-confirm button, which previously left the ledger
+// completely blank for that payment.
+async function addLedgerEntryForPayment(payment: {
+  _id: string;
+  customerId: string;
+  customerName: string;
+  orderId?: string;
+  orderNo?: string;
+  amount: number;
+  date: string;
+  paymentNo: string;
+}) {
+  const lastEntry = await mongo.find<LedgerEntry>(
+    RSM_COLLECTIONS.ledger,
+    { customerId: payment.customerId },
+    { createdAt: -1 }
+  );
+  const previousBalance = lastEntry[0]?.balance ?? 0;
+
+  await mongo.insertOne(RSM_COLLECTIONS.ledger, {
+    customerId: payment.customerId,
+    customerName: payment.customerName,
+    date: payment.date,
+    type: "Payment" as const,
+    referenceId: toObjectId(payment._id),
+    referenceNo: payment.paymentNo,
+    description: payment.orderNo ? `Payment for ${payment.orderNo}` : "Payment on account",
+    debit: 0,
+    credit: payment.amount,
+    balance: previousBalance - payment.amount,
+    createdAt: new Date().toISOString(),
+  });
+}
+
 export async function PUT(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
@@ -133,6 +187,39 @@ export async function PUT(
       return NextResponse.json({ error: "Payment not found" }, { status: 404 });
     }
 
+    // Keep the customer ledger in sync with the confirmed status, the same
+    // way order balances are kept in sync above. Previously the ledger was
+    // only ever touched when a payment was first created — editing or
+    // quick-confirming a payment afterwards silently left the ledger stale.
+    if (newConfirmed && !existing.confirmed) {
+      // Went pending -> confirmed: add the ledger entry if one doesn't
+      // already exist for this payment.
+      const already = await findLedgerEntryForPayment(id);
+      if (!already) {
+        let orderNo: string | undefined;
+        if (newOrderId) {
+          const linkedOrder = await mongo.findOne<Order>(RSM_COLLECTIONS.orders, {
+            _id: toObjectId(newOrderId),
+          });
+          orderNo = linkedOrder?.orderNo;
+        }
+        await addLedgerEntryForPayment({
+          _id: id,
+          customerId: update.customerId,
+          customerName: existing.customerName,
+          orderId: newOrderId,
+          orderNo,
+          amount: body.amount,
+          date: body.date,
+          paymentNo: existing.paymentNo,
+        });
+      }
+    } else if (!newConfirmed && existing.confirmed) {
+      // Went confirmed -> pending: remove its ledger entry, since a pending
+      // payment hasn't actually landed yet.
+      await removeLedgerEntryForPayment(id);
+    }
+
     return NextResponse.json({ success: true });
   } catch (err) {
     return NextResponse.json(
@@ -160,6 +247,12 @@ export async function DELETE(
     // Undo this payment's effect on the order balance before deleting it.
     if (existing.confirmed && existing.orderId) {
       await reverseOrderEffect(existing.orderId, existing.amount);
+    }
+
+    // Also remove any ledger entry tied to this payment, so a deleted
+    // payment doesn't keep showing up on the customer's ledger.
+    if (existing.confirmed) {
+      await removeLedgerEntryForPayment(id);
     }
 
     const result = await mongo.deleteOne(RSM_COLLECTIONS.payments, {
