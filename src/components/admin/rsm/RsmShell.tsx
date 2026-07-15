@@ -1,6 +1,6 @@
 "use client";
 
-import { ReactNode } from "react";
+import { ReactNode, useEffect } from "react";
 import RsmSidebar from "./RsmSidebar";
 import RsmNotificationBell from "./RsmNotificationBell";
 import RsmGlobalSearch from "./RsmGlobalSearch";
@@ -19,6 +19,15 @@ export default function RsmShell({
   subtitle,
   children,
 }: RsmShellProps) {
+  useEffect(() => {
+    const ping = () => {
+      fetch("/api/rsm/heartbeat", { method: "POST" }).catch(() => {});
+    };
+    ping(); // immediately on mount/navigation, not just after the first interval
+    const id = setInterval(ping, 30_000);
+    return () => clearInterval(id);
+  }, []);
+
   return (
    <div className="min-h-screen bg-black text-white flex flex-col lg:flex-row">
       <RsmSidebar staffName={staffName} staffRole={staffRole} />
