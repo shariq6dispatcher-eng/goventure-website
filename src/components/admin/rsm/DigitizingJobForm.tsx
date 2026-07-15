@@ -8,9 +8,10 @@ import { DIGITIZING_JOB_STATUSES, FILE_FORMATS } from "@/types/constants";
 
 interface DigitizingJobFormProps {
   job: DigitizingJob | null; // null = creating new
+  hideFinancials?: boolean; // restricted (digitizer) accounts: hide customer/price/linked-order
 }
 
-export default function DigitizingJobForm({ job }: DigitizingJobFormProps) {
+export default function DigitizingJobForm({ job, hideFinancials = false }: DigitizingJobFormProps) {
   const router = useRouter();
   const [customers, setCustomers] = useState<Customer[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
@@ -49,6 +50,8 @@ export default function DigitizingJobForm({ job }: DigitizingJobFormProps) {
   };
 
   useEffect(() => {
+    if (hideFinancials) return; // restricted accounts never load customer/order data
+
     fetch("/api/rsm/customers")
       .then((r) => r.json())
       .then((data) => setCustomers(data.customers || []))
@@ -58,7 +61,7 @@ export default function DigitizingJobForm({ job }: DigitizingJobFormProps) {
       .then((r) => r.json())
       .then((data) => setOrders(data.orders || []))
       .catch(() => {});
-  }, []);
+  }, [hideFinancials]);
 
   const customerOrders = orders.filter((o) => o.customerId === customerId);
 
@@ -66,7 +69,7 @@ export default function DigitizingJobForm({ job }: DigitizingJobFormProps) {
     e.preventDefault();
     setError("");
 
-    if (!customerId) {
+    if (!hideFinancials && !customerId) {
       setError("Please select a customer.");
       return;
     }
@@ -159,43 +162,53 @@ export default function DigitizingJobForm({ job }: DigitizingJobFormProps) {
           )}
         </div>
 
-        <div>
-          <label className="block text-xs text-zinc-500 mb-1.5">Customer *</label>
-          <select
-            value={customerId}
-            onChange={(e) => {
-              setCustomerId(e.target.value);
-              setOrderId("");
-            }}
-            className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
-          >
-            <option value="">Select a customer…</option>
-            {customers.map((c) => (
-              <option key={c._id} value={c._id}>
-                {c.name} {c.company ? `(${c.company})` : ""}
-              </option>
-            ))}
-          </select>
-        </div>
+        {!hideFinancials && (
+          <div>
+            <label className="block text-xs text-zinc-500 mb-1.5">Customer *</label>
+            <select
+              value={customerId}
+              onChange={(e) => {
+                setCustomerId(e.target.value);
+                setOrderId("");
+              }}
+              className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
+            >
+              <option value="">Select a customer…</option>
+              {customers.map((c) => (
+                <option key={c._id} value={c._id}>
+                  {c.name} {c.company ? `(${c.company})` : ""}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
-        <div>
-          <label className="block text-xs text-zinc-500 mb-1.5">
-            Linked Order (optional)
-          </label>
-          <select
-            value={orderId}
-            onChange={(e) => setOrderId(e.target.value)}
-            disabled={!customerId}
-            className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37] disabled:opacity-50"
-          >
-            <option value="">No linked order</option>
-            {customerOrders.map((o) => (
-              <option key={o._id} value={o._id}>
-                {o.orderNo}
-              </option>
-            ))}
-          </select>
-        </div>
+        {!hideFinancials && (
+          <div>
+            <label className="block text-xs text-zinc-500 mb-1.5">
+              Linked Order (optional)
+            </label>
+            <select
+              value={orderId}
+              onChange={(e) => setOrderId(e.target.value)}
+              disabled={!customerId}
+              className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37] disabled:opacity-50"
+            >
+              <option value="">No linked order</option>
+              {customerOrders.map((o) => (
+                <option key={o._id} value={o._id}>
+                  {o.orderNo}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {hideFinancials && (
+          <div className="sm:col-span-2 text-xs text-zinc-500 bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5">
+            Customer and order assignment are managed by an admin and aren't shown on this account.
+          </div>
+        )}
 
         <div>
           <label className="block text-xs text-zinc-500 mb-1.5">Status</label>
@@ -223,18 +236,20 @@ export default function DigitizingJobForm({ job }: DigitizingJobFormProps) {
           </select>
         </div>
 
-        <div>
-          <label className="block text-xs text-zinc-500 mb-1.5">Price</label>
-          <input
-            type="number"
-            step="0.01"
-            min="0"
-            value={price}
-            onChange={(e) => setPrice(e.target.value)}
-            className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
-            placeholder="0.00"
-          />
-        </div>
+        {!hideFinancials && (
+          <div>
+            <label className="block text-xs text-zinc-500 mb-1.5">Price</label>
+            <input
+              type="number"
+              step="0.01"
+              min="0"
+              value={price}
+              onChange={(e) => setPrice(e.target.value)}
+              className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
+              placeholder="0.00"
+            />
+          </div>
+        )}
 
         <div className="sm:col-span-2">
           <label className="block text-xs text-zinc-500 mb-1.5">Notes</label>
