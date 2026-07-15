@@ -25,6 +25,18 @@ export default function PaymentForm({ payment }: PaymentFormProps) {
   const [reference, setReference] = useState(payment?.reference || "");
   const [confirmed, setConfirmed] = useState(payment?.confirmed ?? true);
   const [notes, setNotes] = useState(payment?.notes || "");
+  const [bookedMonth, setBookedMonth] = useState(payment?.bookedMonth || "");
+
+  // Last 12 months, most recent first, for the "count this payment toward"
+  // override dropdown — covers the common case of confirming a payment
+  // late and wanting it to still land in the month it was actually meant for.
+  const monthOptions = Array.from({ length: 12 }, (_, i) => {
+    const d = new Date();
+    d.setMonth(d.getMonth() - i);
+    const value = d.toISOString().slice(0, 7);
+    const label = d.toLocaleDateString("en-US", { month: "long", year: "numeric" });
+    return { value, label };
+  });
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -76,6 +88,7 @@ export default function PaymentForm({ payment }: PaymentFormProps) {
         reference,
         confirmed,
         notes,
+        bookedMonth: bookedMonth || undefined,
       };
 
       const url = payment ? `/api/rsm/payments/${payment._id}` : "/api/rsm/payments";
@@ -173,6 +186,26 @@ export default function PaymentForm({ payment }: PaymentFormProps) {
             onChange={(e) => setDate(e.target.value)}
             className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
           />
+        </div>
+
+        <div>
+          <label className="block text-xs text-zinc-500 mb-1.5">
+            Count Toward Month (optional)
+          </label>
+          <select
+            value={bookedMonth}
+            onChange={(e) => setBookedMonth(e.target.value)}
+            className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
+          >
+            <option value="">Same month as Date above</option>
+            {monthOptions.map((m) => (
+              <option key={m.value} value={m.value}>{m.label}</option>
+            ))}
+          </select>
+          <p className="text-xs text-zinc-600 mt-1">
+            Use this if you're confirming a payment late and want it to count toward the month
+            it was actually meant for, instead of the month you're confirming it in.
+          </p>
         </div>
 
         <div>
