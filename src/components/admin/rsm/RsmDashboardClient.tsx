@@ -447,7 +447,17 @@ export default function RsmDashboardClient({
     const monthExpenses = expenses.filter((e) => e.date.startsWith(selectedMonth));
     const totalExpenses = monthExpenses.reduce((sum, e) => sum + e.amount, 0);
 
-    const monthPayments = payments.filter((p) => p.date.startsWith(selectedMonth));
+    // Match the same rule used by the stats cards above: only confirmed
+    // payments count as "collected", bucketed by bookedMonth (manual
+    // override) or confirmedAt, falling back to the raw date — this keeps
+    // Cash Collected from including pending payments or ones whose
+    // imported `date` field doesn't reflect which month they actually
+    // landed in.
+    const monthPayments = payments.filter(
+      (p) =>
+        p.confirmed &&
+        (p.bookedMonth || p.confirmedAt || p.date).startsWith(selectedMonth)
+    );
     const totalCollected = monthPayments.reduce((sum, p) => sum + p.amount, 0);
 
     const netProfit = totalCollected - totalExpenses;
