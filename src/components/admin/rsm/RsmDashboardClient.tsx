@@ -144,7 +144,9 @@ export default function RsmDashboardClient({
       if (p.date && p.date.length >= 7) {
         monthsSet.add(p.date.substring(0, 7));
       }
-      if (p.confirmed && p.confirmedAt && p.confirmedAt.length >= 7) {
+      if (p.confirmed && p.bookedMonth && p.bookedMonth.length >= 7) {
+        monthsSet.add(p.bookedMonth.substring(0, 7));
+      } else if (p.confirmed && p.confirmedAt && p.confirmedAt.length >= 7) {
         monthsSet.add(p.confirmedAt.substring(0, 7));
       }
     });
@@ -168,12 +170,15 @@ export default function RsmDashboardClient({
       0
     );
 
-    // "Cash collected" counts only confirmed payments, bucketed by the month
-    // they were CONFIRMED in (not their original date) — this also fixes
-    // payments imported from the old Firebase database, whose `date` field
-    // isn't always in a reliable format.
+    // "Cash collected" counts only confirmed payments, bucketed by
+    // bookedMonth when explicitly set (manual override), falling back to
+    // the month they were CONFIRMED in, then their original date — this
+    // also fixes payments imported from the old Firebase database, whose
+    // `date` field isn't always in a reliable format.
     const selectedMonthPayments = payments.filter(
-      (p) => p.confirmed && (p.confirmedAt || p.date).startsWith(selectedMonth)
+      (p) =>
+        p.confirmed &&
+        (p.bookedMonth || p.confirmedAt || p.date).startsWith(selectedMonth)
     );
     const totalPaymentsReceived = selectedMonthPayments.reduce(
       (sum, p) => sum + p.amount,
@@ -200,7 +205,8 @@ export default function RsmDashboardClient({
         (p) =>
           p.customerId === c._id &&
           p.confirmed &&
-          (p.confirmedAt || p.date).substring(0, 7) <= selectedMonth
+          (p.bookedMonth || p.confirmedAt || p.date).substring(0, 7) <=
+            selectedMonth
       );
       const invoicedVal = clientInvoices.reduce((s, o) => s + o.total, 0);
       const paidVal = clientPayments.reduce((s, p) => s + p.amount, 0);
@@ -269,7 +275,11 @@ export default function RsmDashboardClient({
 
     const revenue = months.map((m) =>
       payments
-        .filter((p) => p.confirmed && (p.confirmedAt || p.date).startsWith(m))
+        .filter(
+          (p) =>
+            p.confirmed &&
+            (p.bookedMonth || p.confirmedAt || p.date).startsWith(m)
+        )
         .reduce((sum, p) => sum + p.amount, 0)
     );
     const expenseTotals = months.map((m) =>
