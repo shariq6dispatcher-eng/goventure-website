@@ -165,6 +165,7 @@ export interface Payment {
   reference?: string;
   screenshot?: string; // Cloudinary URL (reuses existing site upload pipeline)
   notes?: string;
+  bookedMonth?: string; // YYYY-MM, optional override for which month this payment is counted in on Reports/ledger (e.g. confirming a missed June payment in July but wanting it to show under June). Falls back to date's month when unset.
   confirmed: boolean;
   confirmedBy?: string;
   confirmedAt?: string; // ISO datetime, set when marked confirmed — used for cash-collection month bucketing
