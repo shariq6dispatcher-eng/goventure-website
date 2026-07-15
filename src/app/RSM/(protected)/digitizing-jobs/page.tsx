@@ -55,6 +55,8 @@ export default function DigitizingJobsPage() {
 
   if (!me) return null;
 
+  const hideFinancials = !!me.hideFinancials;
+
   return (
     <RsmShell
       staffName={me.username}
@@ -88,13 +90,15 @@ export default function DigitizingJobsPage() {
             ))}
           </select>
 
-          <Link
-            href="/RSM/digitizing-jobs/new"
-            className="flex items-center justify-center gap-2 bg-[#D4AF37] text-black font-medium text-sm px-4 py-2.5 rounded-xl hover:opacity-90 transition-opacity whitespace-nowrap"
-          >
-            <Plus size={16} />
-            <span className="hidden sm:inline">New Job</span>
-          </Link>
+          {!hideFinancials && (
+            <Link
+              href="/RSM/digitizing-jobs/new"
+              className="flex items-center justify-center gap-2 bg-[#D4AF37] text-black font-medium text-sm px-4 py-2.5 rounded-xl hover:opacity-90 transition-opacity whitespace-nowrap"
+            >
+              <Plus size={16} />
+              <span className="hidden sm:inline">New Job</span>
+            </Link>
+          )}
         </div>
       </div>
 
@@ -136,7 +140,9 @@ export default function DigitizingJobsPage() {
                     >
                       {j.designName}
                     </Link>
-                    <p className="text-xs text-zinc-400 mt-0.5 truncate">{j.customerName}</p>
+                    {!hideFinancials && (
+                      <p className="text-xs text-zinc-400 mt-0.5 truncate">{j.customerName}</p>
+                    )}
                     <div className="flex items-center gap-2 mt-1.5">
                       <RsmJobStatusBadge status={j.status} />
                       <span className="text-[11px] text-zinc-500">{j.format}</span>
@@ -172,7 +178,11 @@ export default function DigitizingJobsPage() {
                   </div>
                 </div>
                 <div className="flex items-center justify-between mt-3 pt-3 border-t border-zinc-900 text-xs">
-                  <span className="font-mono font-bold text-white">${j.price.toFixed(2)}</span>
+                  {hideFinancials ? (
+                    <span />
+                  ) : (
+                    <span className="font-mono font-bold text-white">${j.price.toFixed(2)}</span>
+                  )}
                   <Link
                     href={`/RSM/digitizing-jobs/${j._id}#submit-files`}
                     className="flex items-center gap-1.5 text-[11px] font-bold text-[#D4AF37] active:opacity-70"
@@ -191,10 +201,14 @@ export default function DigitizingJobsPage() {
                 <thead>
                   <tr className="border-b border-zinc-900 text-zinc-500 text-xs uppercase tracking-wide">
                     <th className="text-left px-5 py-3 font-medium">Design Name</th>
-                    <th className="text-left px-5 py-3 font-medium">Customer</th>
+                    {!hideFinancials && (
+                      <th className="text-left px-5 py-3 font-medium">Customer</th>
+                    )}
                     <th className="text-left px-5 py-3 font-medium">Format</th>
                     <th className="text-left px-5 py-3 font-medium">Status</th>
-                    <th className="text-right px-5 py-3 font-medium">Price</th>
+                    {!hideFinancials && (
+                      <th className="text-right px-5 py-3 font-medium">Price</th>
+                    )}
                     <th className="text-right px-5 py-3 font-medium">Actions</th>
                   </tr>
                 </thead>
@@ -212,12 +226,16 @@ export default function DigitizingJobsPage() {
                           {j.designName}
                         </Link>
                       </td>
-                      <td className="px-5 py-3 text-zinc-400">{j.customerName}</td>
+                      {!hideFinancials && (
+                        <td className="px-5 py-3 text-zinc-400">{j.customerName}</td>
+                      )}
                       <td className="px-5 py-3 text-zinc-400">{j.format}</td>
                       <td className="px-5 py-3">
                         <RsmJobStatusBadge status={j.status} />
                       </td>
-                      <td className="px-5 py-3 text-right">${j.price.toFixed(2)}</td>
+                      {!hideFinancials && (
+                        <td className="px-5 py-3 text-right">${j.price.toFixed(2)}</td>
+                      )}
                       <td className="px-5 py-3">
                      <div className="flex items-center justify-end gap-2">
                           <Link
