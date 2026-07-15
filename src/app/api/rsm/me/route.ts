@@ -10,7 +10,7 @@ export async function GET() {
   // Admins always see everything, so we skip the lookup and just say so —
   // no need to hit the database on every single page load for that case.
   if (auth.role === "admin") {
-    return NextResponse.json({ ...auth, allowedModules: null });
+    return NextResponse.json({ ...auth, allowedModules: null, hideFinancials: false });
   }
 
   try {
@@ -19,10 +19,15 @@ export async function GET() {
     });
 
     const allowedModules: RsmModule[] = staffDoc?.allowedModules || [];
-    return NextResponse.json({ ...auth, allowedModules });
+    return NextResponse.json({
+      ...auth,
+      allowedModules,
+      hideFinancials: !!staffDoc?.hideFinancials,
+    });
   } catch (err) {
-    // If the lookup fails for any reason, fail closed (empty list) rather
-    // than accidentally granting a staff account access to everything.
-    return NextResponse.json({ ...auth, allowedModules: [] });
+    // If the lookup fails for any reason, fail closed (empty list, hide
+    // financials) rather than accidentally granting a staff account
+    // access to everything.
+    return NextResponse.json({ ...auth, allowedModules: [], hideFinancials: true });
   }
 }
