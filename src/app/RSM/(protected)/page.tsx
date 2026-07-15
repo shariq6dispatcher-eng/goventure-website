@@ -1,4 +1,6 @@
+import { redirect } from "next/navigation";
 import { getRsmAuth } from "@/lib/rsm-auth";
+import { shouldHideFinancials } from "@/lib/rsm-perms";
 import { mongo } from "@/lib/mongodb";
 import { RSM_COLLECTIONS } from "@/types/constants";
 import RsmShell from "@/components/admin/rsm/RsmShell";
@@ -7,6 +9,13 @@ import type { Order, Payment, Customer, Expense, DigitizingJob, OnlineOrder } fr
 
 export default async function RsmHomePage() {
   const auth = await getRsmAuth();
+
+  // The Dashboard is entirely financial (revenue, receivables, expenses,
+  // client names on active orders) — restricted (digitizer) accounts never
+  // see it, so send them straight to the one module they do have.
+  if (await shouldHideFinancials()) {
+    redirect("/RSM/digitizing-jobs");
+  }
 
  const [orders, payments, customers, expenses, digitizingJobs, onlineOrders] = await Promise.all([
     mongo.find<Order>(RSM_COLLECTIONS.orders),
