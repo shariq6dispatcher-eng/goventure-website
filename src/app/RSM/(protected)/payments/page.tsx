@@ -99,7 +99,8 @@ export default function PaymentsPage() {
       `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, "0")}`
     );
     payments.forEach((p) => {
-      if (p.date && p.date.length >= 7) monthsSet.add(p.date.substring(0, 7));
+      const bucket = p.bookedMonth || p.date;
+      if (bucket && bucket.length >= 7) monthsSet.add(bucket.substring(0, 7));
     });
     return Array.from(monthsSet).sort((a, b) => b.localeCompare(a));
   }, [payments]);
@@ -107,7 +108,7 @@ export default function PaymentsPage() {
   const monthFiltered =
     selectedMonth === "all"
       ? payments
-      : payments.filter((p) => p.date.startsWith(selectedMonth));
+      : payments.filter((p) => (p.bookedMonth || p.date).startsWith(selectedMonth));
 
   const filtered = monthFiltered.filter((p) => {
     const q = query.toLowerCase();
@@ -269,7 +270,14 @@ export default function PaymentsPage() {
                     <span className="font-mono font-bold text-white">${p.amount.toFixed(2)}</span>
                   </div>
                   <div className="text-zinc-500">{p.paymentMethod}</div>
-                  <div className="text-zinc-500">{p.date}</div>
+                  <div className="text-zinc-500 text-right">
+                    <div>{p.date}</div>
+                    {p.bookedMonth && p.bookedMonth !== p.date.slice(0, 7) && (
+                      <div className="text-[9px] text-[#D4AF37]">
+                        counts in {new Date(p.bookedMonth + "-02").toLocaleString("default", { month: "short", year: "numeric" })}
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             ))}
@@ -300,7 +308,14 @@ export default function PaymentsPage() {
                       <td className="px-5 py-3 text-zinc-400">{p.customerName}</td>
                       <td className="px-5 py-3 text-zinc-400">{p.paymentMethod}</td>
                       <td className="px-5 py-3 text-right">${p.amount.toFixed(2)}</td>
-                      <td className="px-5 py-3 text-zinc-400">{p.date}</td>
+                      <td className="px-5 py-3 text-zinc-400">
+                        {p.date}
+                        {p.bookedMonth && p.bookedMonth !== p.date.slice(0, 7) && (
+                          <div className="text-[10px] text-[#D4AF37]">
+                            counts in {new Date(p.bookedMonth + "-02").toLocaleString("default", { month: "short", year: "numeric" })}
+                          </div>
+                        )}
+                      </td>
                       <td className="px-5 py-3">
                         <RsmConfirmBadge confirmed={p.confirmed} />
                         {p.confirmed && p.confirmedBy && (
