@@ -95,11 +95,21 @@ export default function RsmSidebar({ staffName, staffRole }: RsmSidebarProps) {
 
   const NavContent = (
     <>
-      <div className="px-6 pt-8 pb-6">
-        <p className="text-xs uppercase tracking-[3px] text-[#D4AF37]">
-          GoVenture
-        </p>
-        <h1 className="text-xl font-bold mt-1">RSM Panel</h1>
+      <div className="px-6 pt-8 pb-6 flex items-center gap-3">
+        <Image
+          src="/images/logo.png"
+          alt="GoVenture logo"
+          width={36}
+          height={36}
+        />
+        <div>
+          <p className="text-xs uppercase tracking-[3px] text-[#D4AF37]">
+            GoVenture
+          </p>
+          <h1 className="text-xl font-bold mt-1">RSM Panel</h1>
+        </div>
+      </div>
+      <div className="hidden">
         <p className="text-zinc-500 text-xs mt-2">
           {staffName} <span className="text-zinc-700">·</span>{" "}
           {staffRole === "admin" ? "Admin" : "Staff"}
