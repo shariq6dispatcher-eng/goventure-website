@@ -1,6 +1,16 @@
+import type { Metadata } from "next";
 import PageHero from "@/components/ui/common/PageHero";
 import CategoryPreview from "@/components/ui/gallery/CategoryPreview";
 import { mongo } from "@/lib/mongodb";
+
+export const metadata: Metadata = {
+  title: "Embroidery & Patch Portfolio",
+  description:
+    "Browse our portfolio of custom embroidery digitizing, patches, jerseys, and apparel manufacturing projects delivered to clients worldwide.",
+  alternates: {
+    canonical: "https://www.goventuresembroidery.shop/Portfolio",
+  },
+};
 
 interface PortfolioProject {
   category: string;
