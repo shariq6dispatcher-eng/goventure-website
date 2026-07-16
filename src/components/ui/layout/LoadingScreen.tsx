@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import Image from "next/image";
 
 /**
  * Full-screen intro splash shown briefly when the site first loads.
@@ -42,48 +43,19 @@ export default function LoadingScreen() {
             transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
             className="flex flex-col items-center gap-4"
           >
-            {/* Logo mark */}
-            <motion.svg
-              width="56"
-              height="56"
-              viewBox="0 0 56 56"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
+           {/* Logo mark */}
+            <motion.div
               initial={{ opacity: 0, scale: 0.7, rotate: -20 }}
               animate={{ opacity: 1, scale: 1, rotate: 0 }}
               transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             >
-              <circle cx="28" cy="34" r="10" fill="#D4AF37" />
-              {[...Array(8)].map((_, i) => {
-                const angle = (i * Math.PI) / 4;
-                const x1 = 28 + Math.cos(angle) * 16;
-                const y1 = 34 - Math.sin(angle) * 16 - 4;
-                const x2 = 28 + Math.cos(angle) * 24;
-                const y2 = 34 - Math.sin(angle) * 24 - 4;
-                if (y1 > 34 || y2 > 34) return null;
-                return (
-                  <line
-                    key={i}
-                    x1={x1}
-                    y1={y1}
-                    x2={x2}
-                    y2={y2}
-                    stroke="#D4AF37"
-                    strokeWidth="2.5"
-                    strokeLinecap="round"
-                  />
-                );
-              })}
-              <line
-                x1="4"
-                y1="44"
-                x2="52"
-                y2="44"
-                stroke="#D4AF37"
-                strokeWidth="2.5"
-                strokeLinecap="round"
+              <Image
+                src="/images/logo.png"
+                alt="GoVenture Embroidery & Manufacturing logo"
+                width={64}
+                height={64}
               />
-            </motion.svg>
+            </motion.div>
 
             {/* Wordmark */}
             <motion.h1
