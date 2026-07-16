@@ -28,7 +28,7 @@ function CategoryCard({ cat, index }: { cat: Category; index: number }) {
       {!errored ? (
         <Image
           src={cat.image}
-          alt={cat.category}
+          alt={`${cat.category} custom embroidery portfolio - GoVenture`}
           fill
           sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
           className="object-cover transition-transform duration-700 ease-out group-hover:scale-110"
