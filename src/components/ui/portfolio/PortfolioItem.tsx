@@ -28,7 +28,7 @@ export default function PortfolioItem({
       <div className="relative aspect-square w-full">
         <Image
           src={image}
-          alt={title}
+          alt={`${title} - ${category} custom embroidery by GoVenture`}
           fill
           sizes="33vw"
           className="object-cover transition-transform duration-700"
