@@ -25,7 +25,7 @@ export default function AboutPage() {
           >
             <Image
               src="\images\pricing\patches.jpeg"
-              alt="GoVenture Story"
+              alt="GoVenture Embroidery custom patch close-up"
               fill
               sizes="50vw"
               className="object-cover hover:scale-105 transition duration-700"
@@ -77,7 +77,7 @@ export default function AboutPage() {
               <div className="relative h-64">
                 <Image
                   src="/images/about/mission.jpeg"
-                  alt="Mission"
+                  alt="GoVenture Embroidery mission - custom embroidery digitizing"
                   fill
                   sizes="50vw"
                   className="object-cover"
@@ -100,7 +100,7 @@ export default function AboutPage() {
               <div className="relative h-64">
                 <Image
                   src="/images/about/vision.jpg"
-                  alt="Vision"
+                  alt="GoVenture Embroidery vision - apparel manufacturing"
                   fill
                   sizes="50vw"
                   className="object-cover"
@@ -201,7 +201,7 @@ export default function AboutPage() {
               >
                 <Image
                   src={img}
-                  alt="Manufacturing"
+                  alt="Custom apparel manufacturing production line"
                   fill
                   sizes="33vw"
                   className="object-cover"
