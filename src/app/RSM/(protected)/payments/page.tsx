@@ -26,6 +26,7 @@ export default function PaymentsPage() {
   const [selectedMonth, setSelectedMonth] = useState(currentMonthKey);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [confirmingId, setConfirmingId] = useState<string | null>(null);
+  const [viewingScreenshot, setViewingScreenshot] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/rsm/payments", { cache: "no-store" })
@@ -229,6 +230,20 @@ export default function PaymentsPage() {
                     <p className="text-xs text-zinc-400 mt-1 truncate">{p.customerName}</p>
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
+                    {p.screenshot && (
+                      <button
+                        onClick={() => setViewingScreenshot(p.screenshot!)}
+                        className="w-8 h-8 rounded-lg overflow-hidden border border-zinc-800 active:border-[#D4AF37] transition-colors shrink-0"
+                        aria-label="View payment screenshot"
+                      >
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        <img
+                          src={p.screenshot}
+                          alt="Payment proof"
+                          className="w-full h-full object-cover"
+                        />
+                      </button>
+                    )}
                     {!p.confirmed && (
                       <button
                         onClick={() => handleConfirm(p)}
@@ -295,6 +310,7 @@ export default function PaymentsPage() {
                     <th className="text-right px-5 py-3 font-medium">Amount</th>
                     <th className="text-left px-5 py-3 font-medium">Date</th>
                     <th className="text-left px-5 py-3 font-medium">Status</th>
+                    <th className="text-center px-5 py-3 font-medium">Proof</th>
                     <th className="text-right px-5 py-3 font-medium">Actions</th>
                   </tr>
                 </thead>
@@ -320,6 +336,24 @@ export default function PaymentsPage() {
                         <RsmConfirmBadge confirmed={p.confirmed} />
                         {p.confirmed && p.confirmedBy && (
                           <p className="text-[10px] text-zinc-500 mt-1">by {p.confirmedBy}</p>
+                        )}
+                      </td>
+                      <td className="px-5 py-3 text-center">
+                        {p.screenshot ? (
+                          <button
+                            onClick={() => setViewingScreenshot(p.screenshot!)}
+                            className="inline-block w-10 h-10 rounded-lg overflow-hidden border border-zinc-800 hover:border-[#D4AF37] transition-colors"
+                            aria-label="View payment screenshot"
+                          >
+                            {/* eslint-disable-next-line @next/next/no-img-element */}
+                            <img
+                              src={p.screenshot}
+                              alt="Payment proof"
+                              className="w-full h-full object-cover"
+                            />
+                          </button>
+                        ) : (
+                          <span className="text-zinc-700 text-xs">—</span>
                         )}
                       </td>
                       <td className="px-5 py-3">
@@ -366,6 +400,27 @@ export default function PaymentsPage() {
             </div>
           </div>
         </>
+      )}
+      {viewingScreenshot && (
+        <div
+          onClick={() => setViewingScreenshot(null)}
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 sm:p-8 cursor-zoom-out"
+        >
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            src={viewingScreenshot}
+            alt="Payment proof — full view"
+            className="max-w-full max-h-full object-contain rounded-lg shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+          <button
+            onClick={() => setViewingScreenshot(null)}
+            className="absolute top-4 right-4 sm:top-6 sm:right-6 text-white/80 hover:text-white bg-white/10 hover:bg-white/20 rounded-full w-9 h-9 flex items-center justify-center transition-colors"
+            aria-label="Close"
+          >
+            ✕
+          </button>
+        </div>
       )}
     </RsmShell>
   );
