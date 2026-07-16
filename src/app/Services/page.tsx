@@ -212,7 +212,7 @@ export default function ServicesPage() {
   <div className="relative h-56">
     <Image
       src="/images/portfolio/portfolio-6.jpeg"
-      alt="Digitizing"
+      alt="Embroidery digitizing service for custom logos"
       fill
       sizes="33vw"
       className="object-cover"
@@ -246,7 +246,7 @@ export default function ServicesPage() {
   <div className="relative h-56">
     <Image
       src="/images/pricing/patches.jpeg"
-      alt="Patches"
+      alt="Custom embroidered patches manufacturing"
       fill
       sizes="33vw"
       className="object-cover"
@@ -280,7 +280,7 @@ export default function ServicesPage() {
   <div className="relative h-56">
     <Image
       src="/images/pricing/manufacturing.png"
-      alt="Manufacturing"
+      alt="Custom jersey and apparel manufacturing service"
       fill
       sizes="33vw"
       className="object-cover"
