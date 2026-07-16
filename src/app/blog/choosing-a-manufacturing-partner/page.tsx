@@ -87,6 +87,14 @@ export default function Post() {
               after.
             </p>
 
+            <p>
+              Take a look at our{" "}
+              <Link href="/Services" className="text-[#D4AF37] underline">
+                manufacturing services
+              </Link>{" "}
+              to see how we handle quality control end to end.
+            </p>
+
             <p className="pt-6">
               Planning a private label or bulk apparel run?{" "}
               <Link href="/order" className="text-[#D4AF37] underline">
