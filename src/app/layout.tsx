@@ -32,6 +32,29 @@ export const metadata: Metadata = {
     "sportswear manufacturing",
     "embroidered patches",
   ],
+  openGraph: {
+    type: "website",
+    url: "https://www.goventuresembroidery.shop",
+    siteName: "GoVenture Embroidery & Manufacturing",
+    title: "GoVenture Embroidery & Manufacturing",
+    description:
+      "Premium embroidery digitizing, custom patches, apparel manufacturing, sportswear production, and private label solutions.",
+    images: [
+      {
+        url: "/images/Hero.jpg",
+        width: 1920,
+        height: 1280,
+        alt: "GoVenture Embroidery & Manufacturing",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "GoVenture Embroidery & Manufacturing",
+    description:
+      "Premium embroidery digitizing, custom patches, apparel manufacturing, sportswear production, and private label solutions.",
+    images: ["/images/Hero.jpg"],
+  },
 };
 
 export const viewport: Viewport = {
