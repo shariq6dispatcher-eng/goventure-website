@@ -12,6 +12,26 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { path: "/Contact", priority: 0.6, changeFrequency: "monthly" as const },
     { path: "/order", priority: 0.9, changeFrequency: "monthly" as const },
     { path: "/blog", priority: 0.7, changeFrequency: "weekly" as const },
+    {
+      path: "/blog/embroidery-digitizing-basics",
+      priority: 0.6,
+      changeFrequency: "monthly" as const,
+    },
+    {
+      path: "/blog/custom-patches-vs-embroidered-logos",
+      priority: 0.6,
+      changeFrequency: "monthly" as const,
+    },
+    {
+      path: "/blog/choosing-a-manufacturing-partner",
+      priority: 0.6,
+      changeFrequency: "monthly" as const,
+    },
+    {
+      path: "/blog/jersey-production-guide",
+      priority: 0.6,
+      changeFrequency: "monthly" as const,
+    },
   ];
 
   return routes.map((route) => ({
