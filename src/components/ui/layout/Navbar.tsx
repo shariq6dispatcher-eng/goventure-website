@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Menu, X } from "lucide-react";
 
 export default function Navbar() {
@@ -14,12 +15,18 @@ export default function Navbar() {
     >
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
 
-        {/* Logo */}
-        <Link
-          href="/"
-          className="text-2xl font-bold tracking-wider"
-        >
-          <span className="text-[#D4AF37]">GO</span>VENTURE
+       {/* Logo */}
+        <Link href="/" className="flex items-center gap-2">
+          <Image
+            src="/images/logo.png"
+            alt="GoVenture Embroidery & Manufacturing logo"
+            width={44}
+            height={44}
+            priority
+          />
+          <span className="hidden sm:inline text-xl font-bold tracking-wider">
+            <span className="text-[#D4AF37]">GO</span>VENTURE
+          </span>
         </Link>
 
         {/* Desktop Menu */}
