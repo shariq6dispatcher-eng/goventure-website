@@ -87,6 +87,14 @@ export default function Post() {
               balance of clarity and turnaround time.
             </p>
 
+            <p>
+              Want to see our full process? Check out our{" "}
+              <Link href="/Services" className="text-[#D4AF37] underline">
+                digitizing service page
+              </Link>{" "}
+              for turnaround times and pricing tiers.
+            </p>
+
             <p className="pt-6">
               At GoVenture, every digitizing order is reviewed by hand before
               production to check density, underlay, and color breaks — not
