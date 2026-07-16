@@ -85,6 +85,13 @@ export default function Post() {
               production time compared to a blank, unnumbered run.
             </p>
 
+           <p>
+              See fabric options and pricing on our{" "}
+              <Link href="/shop" className="text-[#D4AF37] underline">
+                sports jerseys shop page
+              </Link>.
+            </p>
+
             <p className="pt-6">
               Ready to start a jersey run for your team or brand?{" "}
               <Link href="/order" className="text-[#D4AF37] underline">
