@@ -1,5 +1,5 @@
 "use client";
-
+import Image from "next/image";
 import {
   LayoutDashboard,
   Images,
@@ -48,13 +48,20 @@ export default function Sidebar({
 
   const NavContent = (
     <>
-      <div className="px-6 pt-8 pb-6">
-        <p className="text-xs uppercase tracking-[3px] text-[#D4AF37]">
-          GoVenture
-        </p>
-        <h1 className="text-xl font-bold mt-1">Admin Dashboard</h1>
+     <div className="px-6 pt-8 pb-6 flex items-center gap-3">
+        <Image
+          src="/images/logo.png"
+          alt="GoVenture logo"
+          width={36}
+          height={36}
+        />
+        <div>
+          <p className="text-xs uppercase tracking-[3px] text-[#D4AF37]">
+            GoVenture
+          </p>
+          <h1 className="text-xl font-bold mt-1">Admin Dashboard</h1>
+        </div>
       </div>
-
       <nav className="flex-1 px-3 space-y-1">
         {NAV_ITEMS.map(({ id, label, icon: Icon }) => {
           const active = activeTab === id;
