@@ -103,7 +103,7 @@ export default function OrderInvoicePage() {
                 <p className="text-[11px] uppercase tracking-wide text-zinc-500 font-semibold mb-1.5">
                   Bill To
                 </p>
-                <p className="font-bold text-sm">{order.customerName}</p>
+                <p className="font-bold text-sm">{customer?.name || order.customerName}</p>
                 {customer?.company && (
                   <p className="text-sm text-zinc-600">{customer.company}</p>
                 )}
