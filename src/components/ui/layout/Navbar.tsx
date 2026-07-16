@@ -41,13 +41,13 @@ export default function Navbar() {
             About
           </Link>
 
-          {/* <Link href="/blog" className="hover:text-[#D4AF37] transition">
+         <Link href="/blog" className="hover:text-[#D4AF37] transition">
             Blog
           </Link>
 
           <Link href="/Contact" className="hover:text-[#D4AF37] transition">
             Contact
-          </Link> */}
+          </Link>
 
           <Link href="/shop" className="hover:text-[#D4AF37] transition">
             Shop
@@ -95,13 +95,13 @@ export default function Navbar() {
             About
           </Link>
 
-          {/* <Link href="/blog" onClick={() => setOpen(false)}>
+        <Link href="/blog" onClick={() => setOpen(false)}>
             Blog
           </Link>
 
           <Link href="/Contact" onClick={() => setOpen(false)}>
             Contact
-          </Link> */}
+          </Link>
 
           <Link href="/shop" onClick={() => setOpen(false)}>
             Shop
