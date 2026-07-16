@@ -86,6 +86,14 @@ export default function Post() {
               or hat.
             </p>
 
+            <p>
+              Browse our{" "}
+              <Link href="/shop" className="text-[#D4AF37] underline">
+                custom patches in the shop
+              </Link>{" "}
+              to see pricing and options for common patch types.
+            </p>
+
             <p className="pt-6">
               Still not sure which fits your project? {" "}
               <Link href="/Contact" className="text-[#D4AF37] underline">
