@@ -26,6 +26,7 @@ export default function ExpensesPage() {
   const [categoryFilter, setCategoryFilter] = useState<ExpenseCategory | "All">("All");
   const [selectedMonth, setSelectedMonth] = useState(currentMonthKey);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [viewingScreenshot, setViewingScreenshot] = useState<string | null>(null);
 
   useEffect(() => {
     fetch("/api/rsm/expenses")
@@ -194,6 +195,19 @@ export default function ExpensesPage() {
                     <p className="text-xs text-zinc-400 mt-1 truncate">{e.description}</p>
                   </div>
                   <div className="flex items-center gap-1 shrink-0">
+                    {e.screenshot && (
+                      <button
+                        onClick={() => setViewingScreenshot(e.screenshot!)}
+                        className="shrink-0"
+                        aria-label="View receipt screenshot"
+                      >
+                        <img
+                          src={e.screenshot}
+                          alt="Receipt proof"
+                          className="w-8 h-8 rounded-lg object-cover border border-zinc-800"
+                        />
+                      </button>
+                    )}
                     <Link
                       href={`/RSM/expenses/${e._id}/edit`}
                       className="p-2 text-zinc-400 active:text-[#D4AF37] active:bg-zinc-800 rounded-lg transition-colors"
@@ -234,6 +248,7 @@ export default function ExpensesPage() {
                     <th className="text-left px-5 py-3 font-medium">Category</th>
                     <th className="text-right px-5 py-3 font-medium">Amount</th>
                     <th className="text-left px-5 py-3 font-medium">Date</th>
+                    <th className="text-center px-5 py-3 font-medium">Proof</th>
                     <th className="text-right px-5 py-3 font-medium">Actions</th>
                   </tr>
                 </thead>
@@ -252,6 +267,24 @@ export default function ExpensesPage() {
                       </td>
                       <td className="px-5 py-3 text-right">${e.amount.toFixed(2)}</td>
                       <td className="px-5 py-3 text-zinc-400">{e.date}</td>
+                      <td className="px-5 py-3">
+                        <div className="flex items-center justify-center">
+                          {e.screenshot ? (
+                            <button
+                              onClick={() => setViewingScreenshot(e.screenshot!)}
+                              aria-label="View receipt screenshot"
+                            >
+                              <img
+                                src={e.screenshot}
+                                alt="Receipt proof"
+                                className="w-9 h-9 rounded-lg object-cover border border-zinc-800 hover:border-[#D4AF37] transition-colors"
+                              />
+                            </button>
+                          ) : (
+                            <span className="text-zinc-700">—</span>
+                          )}
+                        </div>
+                      </td>
                       <td className="px-5 py-3">
                         <div className="flex items-center justify-end gap-2">
                           <Link
@@ -282,6 +315,27 @@ export default function ExpensesPage() {
             </div>
           </div>
         </>
+      )}
+
+      {viewingScreenshot && (
+        <div
+          onClick={() => setViewingScreenshot(null)}
+          className="fixed inset-0 z-50 bg-black/90 flex items-center justify-center p-4 cursor-zoom-out"
+        >
+          <img
+            src={viewingScreenshot}
+            alt="Receipt proof — full view"
+            className="max-w-full max-h-full object-contain rounded-lg"
+            onClick={(e) => e.stopPropagation()}
+          />
+          <button
+            onClick={() => setViewingScreenshot(null)}
+            className="absolute top-4 right-4 text-white bg-zinc-900/80 hover:bg-zinc-800 rounded-full p-2 transition-colors"
+            aria-label="Close"
+          >
+            ✕
+          </button>
+        </div>
       )}
     </RsmShell>
   );
