@@ -186,6 +186,10 @@ export default function WorkVaultPage() {
                   Client:{" "}
                   <span className="text-[#D4AF37]">{p.job.customerName}</span>
                 </p>
+                <p className="text-zinc-500">
+                  Submitted by:{" "}
+                  <span className="text-zinc-200">{p.job.uploadedBy}</span>
+                </p>
               </div>
 
               <p className="text-[11px] uppercase tracking-wide text-zinc-600 font-medium mb-2">
