@@ -11,6 +11,7 @@ import {
   FileText,
 } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
+import WorkVaultDispatchModal from "@/components/admin/rsm/WorkVaultDispatchModal";
 import { useRsmAccess } from "@/lib/useRsmAccess";
 import type { DigitizingJob, DigitizingJobFile } from "@/types/rsm";
 
@@ -36,6 +37,7 @@ export default function WorkVaultPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [query, setQuery] = useState("");
+  const [dispatchJob, setDispatchJob] = useState<DigitizingJob | null>(null);
 
   useEffect(() => {
     fetch("/api/rsm/digitizing-jobs")
@@ -163,9 +165,9 @@ export default function WorkVaultPage() {
                 </div>
                 <button
                   type="button"
-                  title="Share files via email — coming in the next update"
-                  disabled
-                  className="p-2 rounded-lg text-zinc-600 border border-zinc-800 cursor-not-allowed shrink-0"
+                  title="Share files via email"
+                  onClick={() => setDispatchJob(p.job)}
+                  className="p-2 rounded-lg text-zinc-400 border border-zinc-800 hover:text-[#D4AF37] hover:border-[#D4AF37] transition-colors shrink-0"
                   aria-label="Share folder"
                 >
                   <Share2 size={15} />
@@ -222,6 +224,15 @@ export default function WorkVaultPage() {
             </div>
           ))}
         </div>
+      )}
+
+      {dispatchJob && (
+        <WorkVaultDispatchModal
+          jobId={dispatchJob._id}
+          designName={dispatchJob.designName}
+          clientName={dispatchJob.customerName}
+          onClose={() => setDispatchJob(null)}
+        />
       )}
     </RsmShell>
   );
