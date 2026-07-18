@@ -7,7 +7,7 @@
 // raw TCP/SMTP sockets. Resend's HTTP API works everywhere fetch() does,
 // including for downloading each file (plain https fetch) and attaching
 // it as base64.
-//  
+//   
 // To make emails genuinely come from your Hostinger domain:
 //   1. Resend dashboard -> Domains -> Add Domain -> goventuresdispatch.com
 //   2. Resend will show 2-3 DNS records (SPF/DKIM). Add those exact
