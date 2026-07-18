@@ -20,6 +20,7 @@ export const RSM_COLLECTIONS = {
   staff: "rsm_staff",
   notifications: "rsm_notifications",
   onlineOrders: "rsm_online_orders",
+  dispatchLogs: "rsm_dispatch_logs",
 } as const;
 
 export const SERVICE_CATEGORIES: ServiceCategory[] = [
