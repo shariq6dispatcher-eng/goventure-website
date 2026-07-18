@@ -4,15 +4,6 @@ import { RSM_COLLECTIONS } from "@/types/constants";
 import { getRsmAuth } from "@/lib/rsm-auth";
 import { sendDispatchEmail } from "@/lib/send-dispatch-email";
 import type { DigitizingJob, DispatchLog } from "@/types/rsm";
- 
-function displayJobId(id: string) {
-  const numeric = id
-    .split("")
-    .map((c) => c.charCodeAt(0))
-    .join("")
-    .slice(-7);
-  return `DIGI-${numeric}`;
-}
 
 // GET: list previous dispatch logs for this job's folder, newest first.
 export async function GET(
@@ -65,9 +56,7 @@ export async function POST(
 
   const result = await sendDispatchEmail({
     recipientEmail,
-    clientName: job.customerName,
     designName: job.designName,
-    jobDisplayId: displayJobId(job._id),
     files: files.map((f) => ({ name: f.name, url: f.url })),
   });
 
