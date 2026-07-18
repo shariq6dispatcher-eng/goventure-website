@@ -362,3 +362,20 @@ export type OnlineOrderInput = Omit<
   | "createdAt"
   | "updatedAt"
 >;
+
+// ---------------------------------------------------------------------------
+// Work Vault direct-dispatch: emailing a job's production bundle straight
+// to the customer's inbox from the RSM panel.
+// ---------------------------------------------------------------------------
+export type DispatchStatus = "sent" | "failed";
+
+export interface DispatchLog {
+  _id: string;
+  jobId: string;
+  recipientEmail: string;
+  fileCount: number;
+  sentBy: string; // RsmStaff.username
+  status: DispatchStatus;
+  error?: string;
+  createdAt: string;
+}
