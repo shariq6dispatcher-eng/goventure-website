@@ -13,7 +13,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import type { DispatchLog } from "@/types/rsm";
-
+ 
 interface WorkVaultDispatchModalProps {
   jobId: string;
   designName: string;
