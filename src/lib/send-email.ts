@@ -5,7 +5,7 @@
 // Fire-and-forget: if this fails (missing key, Resend down, etc.) it
 // only logs an error — it must never break the calling action (e.g. a
 // new order should still save even if the email fails to send).
-
+ 
 export async function sendAdminEmail(subject: string, message: string): Promise<void> {
   const apiKey = process.env.RESEND_API_KEY;
   const toEmail = process.env.ADMIN_NOTIFY_EMAIL;
