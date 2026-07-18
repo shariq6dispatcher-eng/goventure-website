@@ -1,9 +1,12 @@
 // Sends the "Work Vault direct dispatch" email — a production bundle's
-// files, emailed straight to a customer — using Resend's HTTP API.
+// actual files, attached and emailed straight to a customer — using
+// Resend's HTTP API.
 //
 // Why not real SMTP to Hostinger's mail server? This site runs on
 // Cloudflare Pages/Workers (see src/lib/mongodb.ts), which cannot open
-// raw TCP/SMTP sockets. Resend's HTTP API works everywhere fetch() does.
+// raw TCP/SMTP sockets. Resend's HTTP API works everywhere fetch() does,
+// including for downloading each file (plain https fetch) and attaching
+// it as base64.
 //
 // To make emails genuinely come from your Hostinger domain:
 //   1. Resend dashboard -> Domains -> Add Domain -> goventuresdispatch.com
@@ -12,6 +15,12 @@
 //   3. Wait for Resend to mark the domain "Verified" (usually minutes).
 //   4. Set DISPATCH_FROM_EMAIL to info@goventuresdispatch.com below.
 // Until the domain is verified, Resend will reject sends from it.
+//
+// Resend caps the total request (all attachments combined, base64
+// included) at roughly 40MB. Embroidery bundles (DST/PES/EMB/PDF) are
+// almost always well under that, but very large jobs could hit the
+// limit — see the explicit error thrown below if a file can't be
+// downloaded, so a bad link never fails silently.
 
 export interface DispatchFile {
   name: string;
@@ -20,9 +29,7 @@ export interface DispatchFile {
 
 interface SendDispatchEmailInput {
   recipientEmail: string;
-  clientName: string;
   designName: string;
-  jobDisplayId: string;
   files: DispatchFile[];
 }
 
@@ -31,46 +38,21 @@ interface SendDispatchResult {
   error?: string;
 }
 
-function buildEmailHtml(input: SendDispatchEmailInput): string {
-  const rows = input.files
-    .map(
-      (f) =>
-        `<tr><td style="padding:10px 14px;border-bottom:1px solid #2a2a2a;color:#e5e5e5;font-family:monospace;font-size:13px;">${escapeHtml(
-          f.name
-        )}</td><td style="padding:10px 14px;border-bottom:1px solid #2a2a2a;text-align:right;"><a href="${f.url}" style="color:#D4AF37;text-decoration:none;font-weight:600;">Download</a></td></tr>`
-    )
-    .join("");
-
-  return `
-  <div style="background:#0a0a0a;padding:32px 16px;font-family:Arial,Helvetica,sans-serif;">
-    <div style="max-width:520px;margin:0 auto;background:#141414;border:1px solid #262626;border-radius:16px;overflow:hidden;">
-      <div style="padding:24px 24px 8px;">
-        <p style="margin:0;color:#D4AF37;font-size:11px;letter-spacing:1px;text-transform:uppercase;font-weight:700;">GoVentures Direct Dispatch</p>
-        <h1 style="margin:8px 0 4px;color:#fff;font-size:20px;">${escapeHtml(
-          input.designName
-        )}</h1>
-        <p style="margin:0;color:#9ca3af;font-size:13px;">Hi ${escapeHtml(
-          input.clientName
-        )}, your production files are ready. Job ID: ${escapeHtml(
-          input.jobDisplayId
-        )}</p>
-      </div>
-      <table style="width:100%;border-collapse:collapse;margin-top:12px;">
-        ${rows}
-      </table>
-      <div style="padding:18px 24px;background:#0f0f0f;">
-        <p style="margin:0;color:#6b7280;font-size:12px;">Links stay active as long as the files remain in our system. Reply to this email if you need anything else.</p>
-      </div>
-    </div>
-  </div>`;
-}
-
-function escapeHtml(s: string): string {
-  return s
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+// Fetch a file and return it as a base64 string, the format Resend's
+// attachments API expects.
+async function fetchAsBase64(url: string): Promise<string> {
+  const res = await fetch(url);
+  if (!res.ok) {
+    throw new Error(`Could not download ${url} (status ${res.status})`);
+  }
+  const buf = await res.arrayBuffer();
+  const bytes = new Uint8Array(buf);
+  let binary = "";
+  const chunkSize = 8192;
+  for (let i = 0; i < bytes.length; i += chunkSize) {
+    binary += String.fromCharCode(...bytes.subarray(i, i + chunkSize));
+  }
+  return btoa(binary);
 }
 
 export async function sendDispatchEmail(
@@ -86,6 +68,13 @@ export async function sendDispatchEmail(
   }
 
   try {
+    const attachments = await Promise.all(
+      input.files.map(async (f) => ({
+        filename: f.name,
+        content: await fetchAsBase64(f.url),
+      }))
+    );
+
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
@@ -95,8 +84,9 @@ export async function sendDispatchEmail(
       body: JSON.stringify({
         from: `${fromName} <${fromEmail}>`,
         to: [input.recipientEmail],
-        subject: `Your files are ready — ${input.designName} (${input.jobDisplayId})`,
-        html: buildEmailHtml(input),
+        subject: `Digitizing Files (${input.designName})`,
+        text: "Please find the attachment for the files.",
+        attachments,
       }),
     });
 
