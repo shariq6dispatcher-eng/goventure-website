@@ -1,7 +1,7 @@
 // Thin wrapper around Resend's HTTP API. No npm package needed — this
 // uses plain fetch, so it works from GitHub-only edits + Cloudflare
 // Pages builds without touching package.json or the lockfile.
-//
+// 
 // Fire-and-forget: if this fails (missing key, Resend down, etc.) it
 // only logs an error — it must never break the calling action (e.g. a
 // new order should still save even if the email fails to send).
