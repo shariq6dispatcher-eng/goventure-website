@@ -10,7 +10,7 @@
  *   - the API routes under src/app/api/rsm/*
  *   - the admin UI panels under src/components/admin/rsm/*
  */
- 
+  
 export type ServiceCategory =
   | "Embroidery Digitizing"
   | "Vector Art"
