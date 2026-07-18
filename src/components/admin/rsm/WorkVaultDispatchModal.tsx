@@ -13,7 +13,7 @@ import {
   ExternalLink,
 } from "lucide-react";
 import type { DispatchLog } from "@/types/rsm";
- 
+
 interface WorkVaultDispatchModalProps {
   jobId: string;
   designName: string;
@@ -114,7 +114,7 @@ export default function WorkVaultDispatchModal({
               {designName}
             </h2>
             <p className="text-xs text-zinc-500 mt-1">
-              Folder ke tamam files ko direct customer ki email par upload kar ke send karein.
+              Enter the client&apos;s email and send — every file in this folder goes out as an attachment.
             </p>
           </div>
           <button
@@ -167,7 +167,7 @@ export default function WorkVaultDispatchModal({
             ) : (
               <Send size={15} />
             )}
-            {sending ? "Sending…" : "Upload & Send Email (Direct Dispatch)"}
+            {sending ? "Sending…" : "Send Email with Files Attached"}
           </button>
 
           <div className="flex items-center gap-2 mb-2 text-xs text-zinc-500">
