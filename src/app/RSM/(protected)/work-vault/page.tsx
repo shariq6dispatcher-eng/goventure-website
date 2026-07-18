@@ -133,17 +133,33 @@ export default function WorkVaultPage() {
               key={p.job._id}
               className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-4 sm:p-5"
             >
-              <div className="flex items-start justify-between gap-2 mb-3">
-                <div className="min-w-0">
-                  <Link
-                    href={`/RSM/digitizing-jobs/${p.job._id}`}
-                    className="flex items-center gap-2 text-sm font-bold text-white hover:text-[#D4AF37] transition-colors"
-                  >
-                    <FolderOpen size={15} className="text-[#D4AF37] shrink-0" />
-                    <span className="truncate uppercase tracking-wide">
-                      {p.job.designName}
-                    </span>
-                  </Link>
+              <div className="flex items-start justify-between gap-3 mb-3">
+                <div className="flex items-start gap-3 min-w-0">
+                  {p.job.imageUrl ? (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img
+                      src={p.job.imageUrl}
+                      alt={`${p.job.designName} reference`}
+                      className="w-14 h-14 rounded-lg object-cover border border-zinc-800 shrink-0 bg-black/40"
+                    />
+                  ) : (
+                    <div className="w-14 h-14 rounded-lg border border-dashed border-zinc-800 shrink-0 flex items-center justify-center text-zinc-700">
+                      <FolderOpen size={18} />
+                    </div>
+                  )}
+                  <div className="min-w-0 pt-0.5">
+                    <Link
+                      href={`/RSM/digitizing-jobs/${p.job._id}`}
+                      className="flex items-center gap-2 text-sm font-bold text-white hover:text-[#D4AF37] transition-colors"
+                    >
+                      <span className="truncate uppercase tracking-wide">
+                        {p.job.designName}
+                      </span>
+                    </Link>
+                    <p className="text-xs text-zinc-500 truncate mt-0.5">
+                      {p.job.customerName}
+                    </p>
+                  </div>
                 </div>
                 <button
                   type="button"
