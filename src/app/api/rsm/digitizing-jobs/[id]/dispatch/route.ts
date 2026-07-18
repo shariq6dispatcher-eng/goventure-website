@@ -4,7 +4,7 @@ import { RSM_COLLECTIONS } from "@/types/constants";
 import { getRsmAuth } from "@/lib/rsm-auth";
 import { sendDispatchEmail } from "@/lib/send-dispatch-email";
 import type { DigitizingJob, DispatchLog } from "@/types/rsm";
-
+ 
 // GET: list previous dispatch logs for this job's folder, newest first.
 export async function GET(
   _req: Request,
