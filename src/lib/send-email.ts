@@ -14,7 +14,7 @@ export async function sendAdminEmail(subject: string, message: string): Promise<
     console.error("sendAdminEmail: missing RESEND_API_KEY or ADMIN_NOTIFY_EMAIL env var");
     return;
   }
-
+ 
   try {
     const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
