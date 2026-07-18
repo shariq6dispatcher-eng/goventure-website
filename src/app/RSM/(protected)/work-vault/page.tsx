@@ -25,7 +25,7 @@ function displayJobId(id: string) {
     .slice(-7);
   return `DIGI-${numeric}`;
 }
-
+ 
 interface ProjectFolder {
   job: DigitizingJob;
   files: DigitizingJobFile[];
