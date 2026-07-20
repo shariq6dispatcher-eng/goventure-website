@@ -138,6 +138,14 @@ export default function OrdersPage() {
           </select>
 
           <Link
+            href="/RSM/orders/combined-invoice"
+            className="flex items-center justify-center gap-2 bg-zinc-900/60 border border-zinc-800 hover:border-zinc-700 text-zinc-200 font-medium text-sm px-4 py-2.5 rounded-xl transition-colors whitespace-nowrap"
+          >
+            <ClipboardList size={16} />
+            <span className="hidden sm:inline">Combined Invoice</span>
+          </Link>
+
+          <Link
             href="/RSM/orders/new"
             className="flex items-center justify-center gap-2 bg-[#D4AF37] text-black font-medium text-sm px-4 py-2.5 rounded-xl hover:opacity-90 transition-opacity whitespace-nowrap"
           >
