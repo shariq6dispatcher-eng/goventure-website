@@ -3,6 +3,7 @@ import { mongo, toObjectId } from "@/lib/mongodb";
 import { RSM_COLLECTIONS } from "@/types/constants";
 import { getRsmAuth } from "@/lib/rsm-auth";
 import type { Order, OrderInput, Customer } from "@/types/rsm";
+import { autoCreateDigitizingJobs } from "@/lib/rsm-auto-digitizing";
 
 export async function GET(
   req: Request,
@@ -33,7 +34,7 @@ export async function PUT(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
-  await getRsmAuth();
+  const auth = await getRsmAuth();
   const { id } = await params;
   const body = (await req.json()) as Partial<OrderInput> & {
     amountPaid?: number;
@@ -77,10 +78,19 @@ export async function PUT(
     const total = body.total ?? existing.total;
     const amountPaid = existing.amountPaid; // unchanged here, Payments module owns this
 
+    // Auto-create a Digitizing Job for any line item that needs one and
+    // doesn't have one yet (e.g. an image was just added to an existing
+    // order), so items keep their linked job through future edits.
+    const itemsWithJobs = await autoCreateDigitizingJobs(
+      { _id: id, orderNo: existing.orderNo, customerId: body.customerId ?? existing.customerId, customerName },
+      body.items,
+      auth.username
+    );
+
     const update = {
       customerId: body.customerId ?? existing.customerId,
       customerName,
-      items: body.items,
+      items: itemsWithJobs,
       status: body.status ?? existing.status,
       subtotal: body.subtotal ?? existing.subtotal,
       discount: body.discount ?? existing.discount,
