@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { Plus, Trash2, Loader2 } from "lucide-react";
+import { Plus, Trash2, Loader2, UploadCloud, X } from "lucide-react";
 import type { Customer, Order, OrderItem, OrderStatus, ServiceCategory, FileFormat } from "@/types/rsm";
 import { ORDER_STATUSES, SERVICE_CATEGORIES, FILE_FORMATS, SERVICE_PRESETS } from "@/types/constants";
 
@@ -39,6 +39,27 @@ export default function OrderForm({ order }: OrderFormProps) {
   const [notes, setNotes] = useState(order?.notes || "");
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [uploadingItemId, setUploadingItemId] = useState<string | null>(null);
+
+  const handleItemImageUpload = async (id: string, file: File) => {
+    setUploadingItemId(id);
+    setError("");
+    try {
+      const fd = new FormData();
+      fd.append("file", file);
+      const res = await fetch("/api/rsm/digitizing-jobs/upload", {
+        method: "POST",
+        body: fd,
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Image upload failed");
+      updateItem(id, "imageUrl", data.url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Image upload failed");
+    } finally {
+      setUploadingItemId(null);
+    }
+  };
 
   useEffect(() => {
     fetch("/api/rsm/customers")
@@ -299,6 +320,46 @@ export default function OrderForm({ order }: OrderFormProps) {
                   </select>
                 </div>
               </div>
+
+              {it.category === "Embroidery Digitizing" && (
+                <div>
+                  <label className="block text-xs text-zinc-500 mb-1.5">
+                    Design Reference Image
+                    <span className="text-zinc-600"> — uploading sends this straight to the digitizer</span>
+                  </label>
+                  {it.imageUrl ? (
+                    <div className="relative w-28 h-28 rounded-xl overflow-hidden border border-zinc-800">
+                      <img src={it.imageUrl} alt="Design reference" className="w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => updateItem(it.id, "imageUrl", "")}
+                        className="absolute top-1 right-1 bg-black/70 rounded-full p-1 hover:bg-black"
+                      >
+                        <X className="w-3 h-3 text-white" />
+                      </button>
+                    </div>
+                  ) : (
+                    <label className="flex items-center gap-2 w-fit cursor-pointer bg-zinc-900 border border-dashed border-zinc-800 rounded-xl px-4 py-3 text-xs text-zinc-400 hover:border-zinc-600 transition">
+                      {uploadingItemId === it.id ? (
+                        <Loader2 className="w-4 h-4 animate-spin" />
+                      ) : (
+                        <UploadCloud className="w-4 h-4" />
+                      )}
+                      {uploadingItemId === it.id ? "Uploading…" : "Click to upload image"}
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        disabled={uploadingItemId === it.id}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) handleItemImageUpload(it.id, file);
+                        }}
+                      />
+                    </label>
+                  )}
+                </div>
+              )}
 
               <div className="flex items-center justify-between">
                 <p className="text-xs text-zinc-500">
