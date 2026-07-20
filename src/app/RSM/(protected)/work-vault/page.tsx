@@ -229,6 +229,7 @@ export default function WorkVaultPage() {
       {dispatchJob && (
         <WorkVaultDispatchModal
           jobId={dispatchJob._id}
+          customerId={dispatchJob.customerId}
           designName={dispatchJob.designName}
           clientName={dispatchJob.customerName}
           onClose={() => setDispatchJob(null)}
