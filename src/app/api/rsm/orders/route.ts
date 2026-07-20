@@ -3,6 +3,7 @@ import { mongo } from "@/lib/mongodb";
 import { RSM_COLLECTIONS } from "@/types/constants";
 import { getRsmAuth } from "@/lib/rsm-auth";
 import { getNextOrderNo } from "@/lib/rsm-counters";
+import { autoCreateDigitizingJobs } from "@/lib/rsm-auto-digitizing";
 import type { Order, OrderInput, Customer, LedgerEntry } from "@/types/rsm";
 
 export async function GET() {
@@ -24,7 +25,7 @@ export async function GET() {
 }
 
 export async function POST(req: Request) {
-  await getRsmAuth();
+  const auth = await getRsmAuth();
 
   const body = (await req.json()) as OrderInput;
 
@@ -95,9 +96,26 @@ const customer = await mongo.findOne<Customer>(RSM_COLLECTIONS.customers, {
       createdAt: new Date().toISOString(),
     });
 
+    // Auto-create a Digitizing Job for any line item that needs one
+    // (Embroidery Digitizing category + reference image attached), so
+    // the digitizer sees it immediately without a second manual entry.
+    const itemsWithJobs = await autoCreateDigitizingJobs(
+      { _id: String(result.insertedId), orderNo, customerId: body.customerId, customerName: customer.name },
+      body.items,
+      auth.username
+    );
+    const jobsCreated = itemsWithJobs.some((it, i) => it.digitizingJobId && !body.items[i]?.digitizingJobId);
+    if (jobsCreated) {
+      await mongo.updateOne(
+        RSM_COLLECTIONS.orders,
+        { _id: result.insertedId },
+        { ...doc, items: itemsWithJobs }
+      );
+    }
+
     return NextResponse.json({
       success: true,
-      order: { _id: result.insertedId, ...doc },
+      order: { _id: result.insertedId, ...doc, items: itemsWithJobs },
     });
   } catch (err) {
     return NextResponse.json(
