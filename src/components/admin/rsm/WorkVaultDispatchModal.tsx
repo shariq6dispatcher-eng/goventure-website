@@ -12,10 +12,11 @@ import {
   Mail,
   ExternalLink,
 } from "lucide-react";
-import type { DispatchLog } from "@/types/rsm";
+import type { Customer, DispatchLog } from "@/types/rsm";
 
 interface WorkVaultDispatchModalProps {
   jobId: string;
+  customerId?: string;
   designName: string;
   clientName: string;
   onClose: () => void;
@@ -50,11 +51,13 @@ function CopyButton({ value }: { value: string }) {
 
 export default function WorkVaultDispatchModal({
   jobId,
+  customerId,
   designName,
   clientName,
   onClose,
 }: WorkVaultDispatchModalProps) {
   const [recipientEmail, setRecipientEmail] = useState("");
+  const [autoFilled, setAutoFilled] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
@@ -74,6 +77,23 @@ export default function WorkVaultDispatchModal({
     loadLogs();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [jobId]);
+
+  // Pull the customer's saved email from Customers and prefill it — still
+  // fully editable, since not every customer has an email on file yet.
+  useEffect(() => {
+    if (!customerId) return;
+    fetch(`/api/rsm/customers/${customerId}`)
+      .then((r) => r.json())
+      .then((data: { customer?: Customer }) => {
+        const email = data.customer?.email?.trim();
+        if (email) {
+          setRecipientEmail(email);
+          setAutoFilled(true);
+        }
+      })
+      .catch(() => {});
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [customerId]);
 
   const handleSend = async () => {
     setError("");
@@ -136,11 +156,19 @@ export default function WorkVaultDispatchModal({
             <Mail size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-500" />
             <input
               value={recipientEmail}
-              onChange={(e) => setRecipientEmail(e.target.value)}
+              onChange={(e) => {
+                setRecipientEmail(e.target.value);
+                setAutoFilled(false);
+              }}
               placeholder="customer@example.com dakhil karein"
               className="w-full bg-black/40 border border-zinc-800 rounded-xl pl-9 pr-3 py-2.5 text-sm text-white placeholder:text-zinc-600 focus:outline-none focus:border-[#D4AF37]"
             />
           </div>
+          {autoFilled && (
+            <p className="text-[11px] text-emerald-400 mb-1.5">
+              Auto-filled from Customers
+            </p>
+          )}
           <p className="text-xs text-zinc-500 mb-4">
             Client Name: <span className="text-white font-medium">{clientName}</span>
           </p>
