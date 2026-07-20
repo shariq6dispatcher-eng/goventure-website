@@ -6,8 +6,9 @@ import Link from "next/link";
 import { Loader2, ArrowLeft, Pencil, Printer } from "lucide-react";
 import RsmShell from "@/components/admin/rsm/RsmShell";
 import RsmStatusBadge from "@/components/admin/rsm/RsmStatusBadge";
+import RsmJobStatusBadge from "@/components/admin/rsm/RsmJobStatusBadge";
 import { useRsmAccess } from "@/lib/useRsmAccess";
-import type { Order } from "@/types/rsm";
+import type { Order, DigitizingJob } from "@/types/rsm";
 
 export default function ViewOrderPage() {
   const params = useParams();
@@ -17,6 +18,7 @@ export default function ViewOrderPage() {
   const [order, setOrder] = useState<Order | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [jobsById, setJobsById] = useState<Record<string, DigitizingJob>>({});
 
   useEffect(() => {
     fetch(`/api/rsm/orders/${id}`)
@@ -24,6 +26,19 @@ export default function ViewOrderPage() {
       .then((data) => {
         if (data.error) throw new Error(data.error);
         setOrder(data.order);
+
+        const jobIds = (data.order?.items || [])
+          .map((it: Order["items"][number]) => it.digitizingJobId)
+          .filter(Boolean) as string[];
+
+        jobIds.forEach((jobId) => {
+          fetch(`/api/rsm/digitizing-jobs/${jobId}`)
+            .then((r) => r.json())
+            .then((jd) => {
+              if (jd.job) setJobsById((prev) => ({ ...prev, [jobId]: jd.job }));
+            })
+            .catch(() => {});
+        });
       })
       .catch((err) => setError(err.message || "Failed to load order"))
       .finally(() => setLoading(false));
@@ -128,6 +143,7 @@ export default function ViewOrderPage() {
                     <th className="text-right px-5 py-3 font-medium">Qty</th>
                     <th className="text-right px-5 py-3 font-medium">Price</th>
                     <th className="text-right px-5 py-3 font-medium">Line Total</th>
+                    <th className="text-left px-5 py-3 font-medium">Digitizing</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -140,6 +156,22 @@ export default function ViewOrderPage() {
                       <td className="px-5 py-3 text-right">${it.price.toFixed(2)}</td>
                       <td className="px-5 py-3 text-right font-medium">
                         ${(it.quantity * it.price).toFixed(2)}
+                      </td>
+                      <td className="px-5 py-3">
+                        {it.digitizingJobId ? (
+                          jobsById[it.digitizingJobId] ? (
+                            <Link
+                              href={`/RSM/digitizing-jobs/${it.digitizingJobId}`}
+                              className="inline-flex items-center gap-2 hover:opacity-80"
+                            >
+                              <RsmJobStatusBadge status={jobsById[it.digitizingJobId].status} />
+                            </Link>
+                          ) : (
+                            <span className="text-zinc-600 text-xs">Loading…</span>
+                          )
+                        ) : (
+                          <span className="text-zinc-600 text-xs">—</span>
+                        )}
                       </td>
                     </tr>
                   ))}
