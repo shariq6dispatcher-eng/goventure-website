@@ -15,7 +15,6 @@ export default function RsmLoginPage() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  const [showWelcome, setShowWelcome] = useState(false);
 
   const router = useRouter();
 
@@ -32,49 +31,18 @@ export default function RsmLoginPage() {
       });
 
       if (res.ok) {
-        if (username.trim().toLowerCase() === "zain") {
-          // Show the special welcome screen for 3.5s, then continue.
-          setShowWelcome(true);
-          setTimeout(() => {
-            router.push("/RSM");
-            router.refresh();
-          }, 3500);
-        } else {
-          router.push("/RSM");
-          router.refresh();
-        }
+        router.push("/RSM");
+        router.refresh();
       } else {
         const data = await res.json().catch(() => ({}));
         setError(data.error || "Invalid username or password.");
-        setLoading(false);
       }
     } catch {
       setError("Something went wrong. Please try again.");
+    } finally {
       setLoading(false);
     }
   };
-
-  if (showWelcome) {
-    return (
-      <div className="relative min-h-screen bg-black flex flex-col items-center justify-center px-4 overflow-hidden">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[280px] h-[280px] sm:w-[500px] sm:h-[500px] bg-[#D4AF37]/10 blur-[100px] sm:blur-[160px] rounded-full pointer-events-none" />
-        <img
-          src="/zain-welcome.png"
-          alt="Welcome"
-          className="relative w-40 h-40 sm:w-56 sm:h-56 object-contain mb-6 animate-[fadeIn_0.6s_ease-out]"
-        />
-        <p className="relative text-2xl sm:text-4xl font-bold text-[#D4AF37] tracking-wide animate-[fadeIn_0.8s_ease-out]">
-          Zain Lund Hai
-        </p>
-        <style>{`
-          @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(8px); }
-            to { opacity: 1; transform: translateY(0); }
-          }
-        `}</style>
-      </div>
-    );
-  }
 
   return (
     <div className="relative min-h-screen bg-black flex items-center justify-center px-4 sm:px-6 overflow-hidden">
