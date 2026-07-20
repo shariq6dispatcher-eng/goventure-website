@@ -115,6 +115,8 @@ export interface OrderItem {
   price: number;
   format?: FileFormat;
   details?: string;
+  imageUrl?: string; // design reference image, Cloudinary URL — set on the order line item itself
+  digitizingJobId?: string; // set once this item has spawned a DigitizingJob, so we don't create duplicates on edit
 }
 
 export interface Order {
