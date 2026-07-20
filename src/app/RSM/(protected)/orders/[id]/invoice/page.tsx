@@ -214,6 +214,21 @@ export default function OrderInvoicePage() {
               </div>
             )}
 
+            {/* Payment Details */}
+            {order.balanceDue > 0 && (
+              <div className="pt-4 border-t border-zinc-200">
+                <p className="text-[11px] uppercase tracking-wide text-zinc-500 font-semibold mb-1.5">
+                  Payment Details
+                </p>
+                <p className="text-sm text-zinc-600">
+                  PayPal: globaloutsourceventures@gmail.com
+                </p>
+                <p className="text-sm text-zinc-600">
+                  Zelle: globaloutsourceventures@gmail.com
+                </p>
+              </div>
+            )}
+
             {/* Footer */}
             <div className="pt-8 mt-4 border-t border-zinc-200 text-center">
               <p className="text-xs text-zinc-500">
