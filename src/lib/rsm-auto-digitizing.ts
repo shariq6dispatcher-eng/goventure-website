@@ -17,7 +17,7 @@ import type { Order, OrderItem, DigitizingJob } from "@/types/rsm";
  * Never throws — a failure here should never block saving the order.
  */
 export async function autoCreateDigitizingJobs(
-  order: { _id: string; orderNo: string; customerId: string; customerName: string; designName?: string },
+  order: { _id: string; orderNo: string; customerId: string; customerName: string; designName?: string; notes?: string },
   items: OrderItem[],
   uploadedBy: string
 ): Promise<OrderItem[]> {
@@ -46,7 +46,7 @@ export async function autoCreateDigitizingJobs(
         folders: [],
         price: item.price || 0,
         format: item.format || "DST",
-        notes: `Auto-created from order ${order.orderNo}`,
+        notes: order.notes?.trim() || `Auto-created from order ${order.orderNo}`,
         createdAt: new Date().toISOString(),
       };
 
