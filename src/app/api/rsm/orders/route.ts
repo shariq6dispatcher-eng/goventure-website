@@ -100,7 +100,7 @@ const customer = await mongo.findOne<Customer>(RSM_COLLECTIONS.customers, {
     // (Embroidery Digitizing category + reference image attached), so
     // the digitizer sees it immediately without a second manual entry.
     const itemsWithJobs = await autoCreateDigitizingJobs(
-      { _id: String(result.insertedId), orderNo, customerId: body.customerId, customerName: customer.name, designName: body.designName },
+      { _id: String(result.insertedId), orderNo, customerId: body.customerId, customerName: customer.name, designName: body.designName, notes: body.notes },
       body.items,
       auth.username
     );
