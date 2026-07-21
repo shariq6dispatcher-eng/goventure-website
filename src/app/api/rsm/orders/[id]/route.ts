@@ -82,7 +82,7 @@ export async function PUT(
     // doesn't have one yet (e.g. an image was just added to an existing
     // order), so items keep their linked job through future edits.
     const itemsWithJobs = await autoCreateDigitizingJobs(
-      { _id: id, orderNo: existing.orderNo, customerId: body.customerId ?? existing.customerId, customerName, designName: body.designName ?? existing.designName },
+      { _id: id, orderNo: existing.orderNo, customerId: body.customerId ?? existing.customerId, customerName, designName: body.designName ?? existing.designName, notes: body.notes ?? existing.notes },
       body.items,
       auth.username
     );
