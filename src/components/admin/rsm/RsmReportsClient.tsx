@@ -53,6 +53,13 @@ interface ReportData {
   };
   topCustomers: { name: string; amount: number }[];
   totalActiveCustomers: number;
+  detailReport: {
+    payments: { customerName: string; amount: number }[];
+    paymentsTotal: number;
+    expenses: { description: string; category: string; amount: number }[];
+    expensesTotal: number;
+    totalProfit: number;
+  };
 }
 
 function fmt(n: number) {
@@ -310,6 +317,87 @@ const handleExport = () => {
                   {data.profitability.margin.toFixed(1)}% margin
                 </p>
               </div>
+            </div>
+          </Section>
+
+          {/* Detail Report — full per-customer payments + per-expense breakdown */}
+          <Section title="Detail Report" subtitle={`Customer payments & expenses for ${monthLabel(month)}`}>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+              {/* Total payments by customer */}
+              <div>
+                <p className="text-xs uppercase tracking-wide text-zinc-500 mb-2">Total Payments</p>
+                <div className="rounded-lg border border-zinc-900 overflow-hidden">
+                  <div className="max-h-72 overflow-y-auto">
+                    <table className="w-full text-xs sm:text-sm">
+                      <tbody>
+                        {data.detailReport.payments.map((p, i) => (
+                          <tr key={p.customerName} className={i % 2 === 0 ? "bg-zinc-950" : "bg-zinc-900/40"}>
+                            <td className="px-3 py-2 text-zinc-300 truncate">{p.customerName}</td>
+                            <td className="px-3 py-2 text-white text-right font-medium">{fmt(p.amount)}</td>
+                          </tr>
+                        ))}
+                        {data.detailReport.payments.length === 0 && (
+                          <tr>
+                            <td colSpan={2} className="px-3 py-4 text-center text-zinc-600">
+                              No confirmed payments this month
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="flex items-center justify-between px-3 py-2 bg-zinc-900 border-t border-zinc-800">
+                    <span className="text-xs sm:text-sm font-bold text-white">Total</span>
+                    <span className="text-xs sm:text-sm font-bold text-emerald-400">
+                      {fmt(data.detailReport.paymentsTotal)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Total expenses, itemized */}
+              <div>
+                <p className="text-xs uppercase tracking-wide text-zinc-500 mb-2">Total Expenses</p>
+                <div className="rounded-lg border border-zinc-900 overflow-hidden">
+                  <div className="max-h-72 overflow-y-auto">
+                    <table className="w-full text-xs sm:text-sm">
+                      <tbody>
+                        {data.detailReport.expenses.map((e, i) => (
+                          <tr key={`${e.description}-${i}`} className={i % 2 === 0 ? "bg-zinc-950" : "bg-zinc-900/40"}>
+                            <td className="px-3 py-2 text-zinc-300 truncate">{e.description}</td>
+                            <td className="px-3 py-2 text-white text-right font-medium">{fmt(e.amount)}</td>
+                          </tr>
+                        ))}
+                        {data.detailReport.expenses.length === 0 && (
+                          <tr>
+                            <td colSpan={2} className="px-3 py-4 text-center text-zinc-600">
+                              No expenses logged this month
+                            </td>
+                          </tr>
+                        )}
+                      </tbody>
+                    </table>
+                  </div>
+                  <div className="flex items-center justify-between px-3 py-2 bg-zinc-900 border-t border-zinc-800">
+                    <span className="text-xs sm:text-sm font-bold text-white">Total</span>
+                    <span className="text-xs sm:text-sm font-bold text-red-400">
+                      {fmt(data.detailReport.expensesTotal)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Total profit = total payments - total expenses */}
+            <div className="mt-4 flex items-center justify-between px-4 py-3 rounded-lg bg-zinc-900 border border-zinc-800">
+              <span className="text-sm font-bold text-white">Total Profit</span>
+              <span
+                className={`text-base sm:text-lg font-bold ${
+                  data.detailReport.totalProfit >= 0 ? "text-emerald-400" : "text-red-400"
+                }`}
+              >
+                {fmt(data.detailReport.totalProfit)}
+              </span>
             </div>
           </Section>
 
