@@ -106,6 +106,28 @@ export async function GET(request: Request) {
       .sort((a, b) => b.amount - a.amount)
       .slice(0, 5);
 
+    // ---- Detail Report (per-customer payment totals + individual expenses) ----
+    const customerPaymentTotals: Record<string, number> = {};
+    for (const p of confirmedPayments) {
+      customerPaymentTotals[p.customerName] =
+        (customerPaymentTotals[p.customerName] || 0) + p.amount;
+    }
+    const detailPayments = Object.entries(customerPaymentTotals)
+      .map(([customerName, amount]) => ({ customerName, amount }))
+      .sort((a, b) => b.amount - a.amount);
+    const detailPaymentsTotal = detailPayments.reduce((s, p) => s + p.amount, 0);
+
+    const detailExpenses = expenses
+      .map((e) => ({
+        description: e.description || e.category,
+        category: e.category,
+        amount: e.amount,
+      }))
+      .sort((a, b) => b.amount - a.amount);
+    const detailExpensesTotal = detailExpenses.reduce((s, e) => s + e.amount, 0);
+
+    const detailTotalProfit = detailPaymentsTotal - detailExpensesTotal;
+
     const responseBody = {
       month,
       orders: {
@@ -145,6 +167,13 @@ export async function GET(request: Request) {
       },
       topCustomers,
       totalActiveCustomers: allCustomers.length,
+      detailReport: {
+        payments: detailPayments,
+        paymentsTotal: detailPaymentsTotal,
+        expenses: detailExpenses,
+        expensesTotal: detailExpensesTotal,
+        totalProfit: detailTotalProfit,
+      },
     };
 
     // Explicit no-store headers so Cloudflare's edge cache and the
