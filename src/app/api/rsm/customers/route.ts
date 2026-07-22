@@ -34,6 +34,20 @@ export async function POST(req: Request) {
     );
   }
 
+  const portalUsername = body.portalUsername?.trim().toLowerCase() || "";
+
+  if (portalUsername) {
+    const existing = await mongo.findOne<Customer>(RSM_COLLECTIONS.customers, {
+      portalUsername,
+    });
+    if (existing) {
+      return NextResponse.json(
+        { error: "That portal username is already taken." },
+        { status: 400 }
+      );
+    }
+  }
+
   const doc = {
     name: body.name.trim(),
     email: body.email?.trim() || "",
@@ -41,6 +55,9 @@ export async function POST(req: Request) {
     company: body.company?.trim() || "",
     address: body.address?.trim() || "",
     country: body.country?.trim() || "",
+    portalEnabled: !!body.portalEnabled,
+    portalUsername,
+    portalPassword: body.portalPassword?.trim() || "",
     createdAt: new Date().toISOString(),
   };
 
