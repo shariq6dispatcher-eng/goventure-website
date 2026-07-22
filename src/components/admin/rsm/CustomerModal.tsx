@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { X, Loader2 } from "lucide-react";
+import { X, Loader2, Eye, EyeOff } from "lucide-react";
 import type { Customer, CustomerInput } from "@/types/rsm";
 
 interface CustomerModalProps {
@@ -17,6 +17,9 @@ const EMPTY_FORM: CustomerInput = {
   company: "",
   address: "",
   country: "",
+  portalEnabled: false,
+  portalUsername: "",
+  portalPassword: "",
 };
 
 export default function CustomerModal({
@@ -27,6 +30,7 @@ export default function CustomerModal({
   const [form, setForm] = useState<CustomerInput>(EMPTY_FORM);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
 
   useEffect(() => {
     if (customer) {
@@ -37,13 +41,20 @@ export default function CustomerModal({
         company: customer.company || "",
         address: customer.address || "",
         country: customer.country || "",
+        portalEnabled: customer.portalEnabled || false,
+        portalUsername: customer.portalUsername || "",
+        portalPassword: customer.portalPassword || "",
       });
     } else {
       setForm(EMPTY_FORM);
     }
+    setShowPassword(false);
   }, [customer]);
 
-  const handleChange = (field: keyof CustomerInput, value: string) => {
+  const handleChange = (
+    field: keyof CustomerInput,
+    value: string | boolean
+  ) => {
     setForm((prev) => ({ ...prev, [field]: value }));
   };
 
@@ -54,6 +65,17 @@ export default function CustomerModal({
     if (!form.name.trim()) {
       setError("Name is required.");
       return;
+    }
+
+    if (form.portalEnabled) {
+      if (!form.portalUsername?.trim()) {
+        setError("Portal username is required to enable portal access.");
+        return;
+      }
+      if (!form.portalPassword?.trim()) {
+        setError("Portal password is required to enable portal access.");
+        return;
+      }
     }
 
     setSaving(true);
@@ -175,6 +197,73 @@ export default function CustomerModal({
               className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
               placeholder="Optional"
             />
+          </div>
+
+          <div className="border border-zinc-800 rounded-xl p-4 space-y-3">
+            <label className="flex items-center gap-2.5 cursor-pointer select-none">
+              <input
+                type="checkbox"
+                checked={!!form.portalEnabled}
+                onChange={(e) =>
+                  handleChange("portalEnabled", e.target.checked)
+                }
+                className="accent-[#D4AF37] w-4 h-4"
+              />
+              <span className="text-sm font-medium">
+                Enable Customer Portal access
+              </span>
+            </label>
+            <p className="text-xs text-zinc-500">
+              Lets this customer log in and view only their own Work Vault
+              jobs.
+            </p>
+
+            {form.portalEnabled && (
+              <div className="grid grid-cols-2 gap-3 pt-1">
+                <div>
+                  <label className="block text-xs text-zinc-500 mb-1.5">
+                    Portal Username
+                  </label>
+                  <input
+                    value={form.portalUsername}
+                    onChange={(e) =>
+                      handleChange(
+                        "portalUsername",
+                        e.target.value.toLowerCase()
+                      )
+                    }
+                    className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
+                    placeholder="e.g. john-doe"
+                  />
+                </div>
+                <div>
+                  <label className="block text-xs text-zinc-500 mb-1.5">
+                    Portal Password
+                  </label>
+                  <div className="relative">
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      value={form.portalPassword}
+                      onChange={(e) =>
+                        handleChange("portalPassword", e.target.value)
+                      }
+                      className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 pr-10 text-sm focus:outline-none focus:border-[#D4AF37]"
+                      placeholder="Set a password"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword((v) => !v)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-zinc-500 hover:text-white"
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
+                    >
+                      {showPassword ? <EyeOff size={15} /> : <Eye size={15} />}
+                    </button>
+                  </div>
+                </div>
+              </div>
+            )}
           </div>
 
           {error && (
