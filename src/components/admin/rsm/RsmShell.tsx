@@ -65,7 +65,7 @@ export default function RsmShell({
           className="relative w-40 h-40 sm:w-56 sm:h-56 object-contain mb-6 animate-[fadeIn_0.6s_ease-out]"
         />
         <p className="relative text-2xl sm:text-4xl font-bold text-[#D4AF37] tracking-wide animate-[fadeIn_0.8s_ease-out]">
-          Zain Lund Hai
+          Welcome Zain!
         </p>
         <style>{`
           @keyframes fadeIn {
