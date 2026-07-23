@@ -60,7 +60,7 @@ export default function RsmShell({
       <div className="relative min-h-screen bg-black flex flex-col items-center justify-center px-4 overflow-hidden">
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[280px] h-[280px] sm:w-[500px] sm:h-[500px] bg-[#D4AF37]/10 blur-[100px] sm:blur-[160px] rounded-full pointer-events-none" />
         <img
-          src="/zain-welcome.png"
+          src="/zain-welcome.jpeg"
           alt="Welcome"
           className="relative w-40 h-40 sm:w-56 sm:h-56 object-contain mb-6 animate-[fadeIn_0.6s_ease-out]"
         />
