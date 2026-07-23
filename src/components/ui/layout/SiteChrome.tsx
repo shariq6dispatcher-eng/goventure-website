@@ -22,6 +22,7 @@ export default function SiteChrome({
   const pathname = usePathname();
   const isAdminRoute =
     pathname?.startsWith("/admin") || pathname?.startsWith("/RSM");
+  const isPortalRoute = pathname?.startsWith("/portal");
 
   if (isAdminRoute) {
     return <main className="min-h-screen">{children}</main>;
@@ -30,8 +31,8 @@ export default function SiteChrome({
   return (
     <>
       <LoadingScreen />
-      <Navbar />
-      <main className="pt-20">{children}</main>
+      {!isPortalRoute && <Navbar />}
+      <main className={isPortalRoute ? "" : "pt-20"}>{children}</main>
       <Footer />
       <WhatsAppButton />
       <StickyQuote />
