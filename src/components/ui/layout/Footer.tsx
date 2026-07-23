@@ -1,4 +1,7 @@
+"use client";
+
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 
 function InstagramIcon() {
   const gradId = "ig-gradient";
@@ -55,6 +58,9 @@ function WhatsAppIcon() {
 }
 
 export default function Footer() {
+  const pathname = usePathname();
+  const isPortal = pathname?.startsWith("/portal");
+
   return (
     <footer className="border-t border-zinc-900">
 
@@ -73,25 +79,29 @@ export default function Footer() {
             </p>
 
             <div className="flex items-center gap-3 mt-6">
-              <a
-                href="https://www.instagram.com/go_ventures.11"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Instagram"
-                className="w-9 h-9 rounded-full overflow-hidden hover:scale-110 hover:opacity-90 transition-transform"
-              >
-                <InstagramIcon />
-              </a>
+              {!isPortal && (
+                <>
+                  <a
+                    href="https://www.instagram.com/go_ventures.11"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Instagram"
+                    className="w-9 h-9 rounded-full overflow-hidden hover:scale-110 hover:opacity-90 transition-transform"
+                  >
+                    <InstagramIcon />
+                  </a>
 
-              <a
-                href="https://www.etsy.com/shop/GoventuresDesign"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Etsy"
-                className="w-9 h-9 rounded-full overflow-hidden hover:scale-110 hover:opacity-90 transition-transform"
-              >
-                <EtsyIcon />
-              </a>
+                  <a
+                    href="https://www.etsy.com/shop/GoventuresDesign"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Etsy"
+                    className="w-9 h-9 rounded-full overflow-hidden hover:scale-110 hover:opacity-90 transition-transform"
+                  >
+                    <EtsyIcon />
+                  </a>
+                </>
+              )}
 
               <a
                 href="https://wa.me/18322807084"
