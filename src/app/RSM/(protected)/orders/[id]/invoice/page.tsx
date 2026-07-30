@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
@@ -15,6 +15,32 @@ export default function OrderInvoicePage() {
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+
+  // --- Shrink-to-fit-one-page logic ---
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+  const [scale, setScale] = useState(1);
+
+  const recomputeScale = () => {
+    if (!wrapRef.current || !contentRef.current) return;
+    const available = wrapRef.current.clientHeight;
+    const needed = contentRef.current.scrollHeight;
+    setScale(needed > available ? available / needed : 1);
+  };
+
+  useLayoutEffect(() => {
+    recomputeScale();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [order, customer]);
+
+  useEffect(() => {
+    window.addEventListener("beforeprint", recomputeScale);
+    window.addEventListener("resize", recomputeScale);
+    return () => {
+      window.removeEventListener("beforeprint", recomputeScale);
+      window.removeEventListener("resize", recomputeScale);
+    };
+  }, []);
 
   useEffect(() => {
     fetch(`/api/rsm/orders/${id}`)
@@ -47,7 +73,7 @@ export default function OrderInvoicePage() {
   return (
     <div className="min-h-screen bg-zinc-950 print:bg-white py-6 sm:py-10 print:py-0">
       <style>{`
-        @page { size: A4; margin: 0; }
+        @page { size: A4; margin: 8mm; }
         @media print {
           html, body { background: #fff !important; }
         }
@@ -84,192 +110,201 @@ export default function OrderInvoicePage() {
             </button>
           </div>
 
-          {/* Invoice sheet */}
-          <div className="max-w-[850px] mx-auto bg-[#EDEDED] text-zinc-900 rounded-2xl print:rounded-none shadow-2xl print:shadow-none overflow-hidden">
-            {/* Black header banner */}
-            <div className="bg-black text-white px-8 sm:px-10 pt-8 pb-24 relative">
-              <div className="flex items-start justify-between gap-6 flex-wrap">
-                <div className="flex items-center gap-4">
-                  <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-white shrink-0 relative">
-                    <Image
-                      src="/images/logo.png"
-                      alt="Goventures"
-                      fill
-                      className="object-contain"
-                    />
+          {/* Fixed-size print frame — content is scaled down to fit inside it */}
+          <div
+            ref={wrapRef}
+            className="max-w-[850px] mx-auto print:max-w-none print:w-[194mm] print:h-[281mm] print:overflow-hidden rounded-2xl print:rounded-none shadow-2xl print:shadow-none"
+          >
+            <div
+              ref={contentRef}
+              style={{ transform: `scale(${scale})`, transformOrigin: "top left" }}
+              className="bg-[#EDEDED] text-zinc-900 overflow-hidden print:w-[194mm]"
+            >
+              {/* Black header banner */}
+              <div className="bg-black text-white px-8 sm:px-10 pt-8 pb-24 relative">
+                <div className="flex items-start justify-between gap-6 flex-wrap">
+                  <div className="flex items-center gap-4">
+                    <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-full overflow-hidden bg-white shrink-0 relative">
+                      <Image
+                        src="/images/logo.png"
+                        alt="Goventures"
+                        fill
+                        className="object-contain"
+                      />
+                    </div>
+                    <div>
+                      <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
+                        Goventures
+                      </h1>
+                      <p className="text-xs sm:text-sm text-zinc-300 mt-1">
+                        embroidery@goventuresdispatch.com
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
+                  <div className="text-right">
+                    <h2 className="text-xl sm:text-2xl font-bold leading-tight">
                       Goventures
-                    </h1>
-                    <p className="text-xs sm:text-sm text-zinc-300 mt-1">
-                      embroidery@goventuresdispatch.com
-                    </p>
+                      <br />
+                      Embroidery &amp;
+                      <br />
+                      Manufacturing
+                    </h2>
                   </div>
+                </div>
+              </div>
+
+              {/* Overlapping light panel */}
+              <div className="bg-[#EDEDED] px-8 sm:px-10 -mt-16 relative pb-8">
+                <div className="pt-6">
+                  <h1 className="text-5xl sm:text-6xl font-black text-[#D6197F] tracking-tight mb-6">
+                    INVOICE
+                  </h1>
+
+                  <div className="flex flex-wrap justify-between gap-6">
+                    <div>
+                      <p className="text-sm sm:text-base font-bold">
+                        ORDER NO:{" "}
+                        <span className="font-mono">{order.orderNo}</span>
+                      </p>
+                      <p className="text-sm sm:text-base font-bold mt-2">
+                        DATE: {formatDate(order.orderDate)}
+                      </p>
+                    </div>
+                    <div className="text-sm">
+                      <p className="font-bold mb-1">Bank Details</p>
+                      <p className="text-zinc-600">
+                        PayPal: globaloutsourceventures@gmail.com
+                      </p>
+                      <p className="text-zinc-600">
+                        Zelle: globaloutsourceventures@gmail.com
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Bill To */}
+              <div className="px-8 sm:px-10 pb-2">
+                <p className="text-[11px] uppercase tracking-wide text-zinc-500 font-semibold mb-1.5">
+                  Bill To
+                </p>
+                <p className="font-bold text-sm">
+                  {customer?.name || order.customerName}
+                </p>
+                {customer?.company && (
+                  <p className="text-sm text-zinc-600">{customer.company}</p>
+                )}
+                {customer?.email && (
+                  <p className="text-sm text-zinc-600">{customer.email}</p>
+                )}
+                {customer?.phone && (
+                  <p className="text-sm text-zinc-600">{customer.phone}</p>
+                )}
+                {customer?.address && (
+                  <p className="text-sm text-zinc-600">{customer.address}</p>
+                )}
+              </div>
+
+              {/* Line items table */}
+              <div className="px-8 sm:px-10 pt-6">
+                <table className="w-full text-sm border-collapse">
+                  <thead>
+                    <tr className="bg-[#F5539E] text-white">
+                      <th className="text-left py-3 px-3 font-bold uppercase text-xs sm:text-sm rounded-tl-lg">
+                        Item Description
+                      </th>
+                      <th className="text-right py-3 px-3 font-bold uppercase text-xs sm:text-sm">
+                        Qty
+                      </th>
+                      <th className="text-right py-3 px-3 font-bold uppercase text-xs sm:text-sm">
+                        Price
+                      </th>
+                      <th className="text-right py-3 px-3 font-bold uppercase text-xs sm:text-sm rounded-tr-lg">
+                        Total
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="bg-[#F5F5F5]">
+                    {order.items.map((it) => (
+                      <tr key={it.id}>
+                        <td className="py-2.5 px-3">
+                          <p className="font-bold">{it.name}</p>
+                          {it.format && (
+                            <p className="text-xs text-zinc-500">{it.format}</p>
+                          )}
+                        </td>
+                        <td className="py-2.5 px-3 text-right">
+                          {it.quantity}
+                        </td>
+                        <td className="py-2.5 px-3 text-right">
+                          ${it.price.toFixed(2)}
+                        </td>
+                        <td className="py-2.5 px-3 text-right font-medium">
+                          ${(it.quantity * it.price).toFixed(2)}
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              {/* Totals */}
+              <div className="px-8 sm:px-10 pt-4 flex justify-end">
+                <div className="w-full sm:w-72 space-y-1.5 text-sm">
+                  <div className="flex justify-between font-bold">
+                    <span>SUB TOTAL</span>
+                    <span>${order.subtotal.toFixed(2)}</span>
+                  </div>
+                  {order.discount > 0 && (
+                    <div className="flex justify-between font-bold">
+                      <span>DISCOUNT</span>
+                      <span>-${order.discount.toFixed(2)}</span>
+                    </div>
+                  )}
+                  <div className="flex justify-between font-bold">
+                    <span>TAX</span>
+                    <span>${order.tax.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-base font-black pt-1 border-t border-zinc-400 mt-1">
+                    <span>GRAND TOTAL</span>
+                    <span>${order.total.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between pt-2 text-emerald-700 font-semibold">
+                    <span>Amount Paid</span>
+                    <span>${order.amountPaid.toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between font-black">
+                    <span>Balance Due</span>
+                    <span className={order.balanceDue > 0 ? "text-amber-700" : "text-zinc-500"}>
+                      ${order.balanceDue.toFixed(2)}
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              {/* Notes */}
+              {order.notes && (
+                <div className="px-8 sm:px-10 pt-8">
+                  <p className="text-sm font-bold tracking-wide mb-2">NOTES:</p>
+                  <p className="text-sm font-medium text-zinc-800 whitespace-pre-wrap">
+                    {order.notes}
+                  </p>
+                </div>
+              )}
+
+              {/* Terms + signature */}
+              <div className="px-8 sm:px-10 pt-10 pb-10 flex items-end justify-between gap-6 flex-wrap">
+                <div>
+                  <p className="text-sm font-bold mb-1">Term and Conditions:</p>
+                  <p className="text-sm italic text-zinc-600 max-w-xs">
+                    Payment is due by the date listed above. Late payments may
+                    delay production.
+                  </p>
                 </div>
                 <div className="text-right">
-                  <h2 className="text-xl sm:text-2xl font-bold leading-tight">
-                    Goventures
-                    <br />
-                    Embroidery &amp;
-                    <br />
-                    Manufacturing
-                  </h2>
+                  <p className="font-serif italic text-2xl">Naqqash</p>
+                  <p className="text-sm font-bold mt-1">Naqqash Ali</p>
                 </div>
-              </div>
-            </div>
-
-            {/* Overlapping light panel */}
-            <div className="bg-[#EDEDED] px-8 sm:px-10 -mt-16 relative pb-8">
-              <div className="pt-6">
-                <h1 className="text-5xl sm:text-6xl font-black text-[#D6197F] tracking-tight mb-6">
-                  INVOICE
-                </h1>
-
-                <div className="flex flex-wrap justify-between gap-6">
-                  <div>
-                    <p className="text-sm sm:text-base font-bold">
-                      ORDER NO:{" "}
-                      <span className="font-mono">{order.orderNo}</span>
-                    </p>
-                    <p className="text-sm sm:text-base font-bold mt-2">
-                      DATE: {formatDate(order.orderDate)}
-                    </p>
-                  </div>
-                  <div className="text-sm">
-                    <p className="font-bold mb-1">Bank Details</p>
-                    <p className="text-zinc-600">
-                      PayPal: globaloutsourceventures@gmail.com
-                    </p>
-                    <p className="text-zinc-600">
-                      Zelle: globaloutsourceventures@gmail.com
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {/* Bill To */}
-            <div className="px-8 sm:px-10 pb-2">
-              <p className="text-[11px] uppercase tracking-wide text-zinc-500 font-semibold mb-1.5">
-                Bill To
-              </p>
-              <p className="font-bold text-sm">
-                {customer?.name || order.customerName}
-              </p>
-              {customer?.company && (
-                <p className="text-sm text-zinc-600">{customer.company}</p>
-              )}
-              {customer?.email && (
-                <p className="text-sm text-zinc-600">{customer.email}</p>
-              )}
-              {customer?.phone && (
-                <p className="text-sm text-zinc-600">{customer.phone}</p>
-              )}
-              {customer?.address && (
-                <p className="text-sm text-zinc-600">{customer.address}</p>
-              )}
-            </div>
-
-            {/* Line items table */}
-            <div className="px-8 sm:px-10 pt-6">
-              <table className="w-full text-sm border-collapse">
-                <thead>
-                  <tr className="bg-[#F5539E] text-white">
-                    <th className="text-left py-3 px-3 font-bold uppercase text-xs sm:text-sm rounded-tl-lg">
-                      Item Description
-                    </th>
-                    <th className="text-right py-3 px-3 font-bold uppercase text-xs sm:text-sm">
-                      Qty
-                    </th>
-                    <th className="text-right py-3 px-3 font-bold uppercase text-xs sm:text-sm">
-                      Price
-                    </th>
-                    <th className="text-right py-3 px-3 font-bold uppercase text-xs sm:text-sm rounded-tr-lg">
-                      Total
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="bg-[#F5F5F5]">
-                  {order.items.map((it) => (
-                    <tr key={it.id}>
-                      <td className="py-2.5 px-3">
-                        <p className="font-bold">{it.name}</p>
-                        {it.format && (
-                          <p className="text-xs text-zinc-500">{it.format}</p>
-                        )}
-                      </td>
-                      <td className="py-2.5 px-3 text-right">
-                        {it.quantity}
-                      </td>
-                      <td className="py-2.5 px-3 text-right">
-                        ${it.price.toFixed(2)}
-                      </td>
-                      <td className="py-2.5 px-3 text-right font-medium">
-                        ${(it.quantity * it.price).toFixed(2)}
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-
-            {/* Totals */}
-            <div className="px-8 sm:px-10 pt-4 flex justify-end">
-              <div className="w-full sm:w-72 space-y-1.5 text-sm">
-                <div className="flex justify-between font-bold">
-                  <span>SUB TOTAL</span>
-                  <span>${order.subtotal.toFixed(2)}</span>
-                </div>
-                {order.discount > 0 && (
-                  <div className="flex justify-between font-bold">
-                    <span>DISCOUNT</span>
-                    <span>-${order.discount.toFixed(2)}</span>
-                  </div>
-                )}
-                <div className="flex justify-between font-bold">
-                  <span>TAX</span>
-                  <span>${order.tax.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between text-base font-black pt-1 border-t border-zinc-400 mt-1">
-                  <span>GRAND TOTAL</span>
-                  <span>${order.total.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between pt-2 text-emerald-700 font-semibold">
-                  <span>Amount Paid</span>
-                  <span>${order.amountPaid.toFixed(2)}</span>
-                </div>
-                <div className="flex justify-between font-black">
-                  <span>Balance Due</span>
-                  <span className={order.balanceDue > 0 ? "text-amber-700" : "text-zinc-500"}>
-                    ${order.balanceDue.toFixed(2)}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* Notes */}
-            {order.notes && (
-              <div className="px-8 sm:px-10 pt-8">
-                <p className="text-sm font-bold tracking-wide mb-2">NOTES:</p>
-                <p className="text-sm font-medium text-zinc-800 whitespace-pre-wrap">
-                  {order.notes}
-                </p>
-              </div>
-            )}
-
-            {/* Terms + signature */}
-            <div className="px-8 sm:px-10 pt-10 pb-10 flex items-end justify-between gap-6 flex-wrap">
-              <div>
-                <p className="text-sm font-bold mb-1">Term and Conditions:</p>
-                <p className="text-sm italic text-zinc-600 max-w-xs">
-                  Payment is due by the date listed above. Late payments may
-                  delay production.
-                </p>
-              </div>
-              <div className="text-right">
-                <p className="font-serif italic text-2xl">Naqqash</p>
-                <p className="text-sm font-bold mt-1">Naqqash Ali</p>
               </div>
             </div>
           </div>
