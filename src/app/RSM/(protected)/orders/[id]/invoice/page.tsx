@@ -21,26 +21,23 @@ export default function OrderInvoicePage() {
   const contentRef = useRef<HTMLDivElement>(null);
   const [scale, setScale] = useState(1);
 
+  // A4 print area in px at 96dpi, after an 8mm page margin on each side
+  // (matches the @page margin below). Fixed pixel numbers — not dependent
+  // on print vs. screen media — so the scale is baked in well before the
+  // browser starts printing, instead of racing a "beforeprint" recompute.
+  const PAGE_W_PX = 733; // 194mm
+  const PAGE_H_PX = 1062; // 281mm
+
   const recomputeScale = () => {
-    if (!wrapRef.current || !contentRef.current) return;
-    const available = wrapRef.current.clientHeight;
+    if (!contentRef.current) return;
     const needed = contentRef.current.scrollHeight;
-    setScale(needed > available ? available / needed : 1);
+    setScale(needed > PAGE_H_PX ? PAGE_H_PX / needed : 1);
   };
 
   useLayoutEffect(() => {
     recomputeScale();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [order, customer]);
-
-  useEffect(() => {
-    window.addEventListener("beforeprint", recomputeScale);
-    window.addEventListener("resize", recomputeScale);
-    return () => {
-      window.removeEventListener("beforeprint", recomputeScale);
-      window.removeEventListener("resize", recomputeScale);
-    };
-  }, []);
 
   useEffect(() => {
     fetch(`/api/rsm/orders/${id}`)
@@ -110,15 +107,22 @@ export default function OrderInvoicePage() {
             </button>
           </div>
 
-          {/* Fixed-size print frame — content is scaled down to fit inside it */}
+          {/* Fixed A4-size print frame — content is scaled down to fit inside it.
+              This box is always this exact size (screen and print alike), so what
+              you see on screen is exactly what prints — no last-second resizing. */}
           <div
             ref={wrapRef}
-            className="max-w-[850px] mx-auto print:max-w-none print:w-[194mm] print:h-[281mm] print:overflow-hidden rounded-2xl print:rounded-none shadow-2xl print:shadow-none"
+            style={{ width: PAGE_W_PX, height: PAGE_H_PX }}
+            className="mx-auto overflow-hidden rounded-2xl print:rounded-none shadow-2xl print:shadow-none"
           >
             <div
               ref={contentRef}
-              style={{ transform: `scale(${scale})`, transformOrigin: "top left" }}
-              className="bg-[#EDEDED] text-zinc-900 overflow-hidden print:w-[194mm]"
+              style={{
+                width: PAGE_W_PX,
+                transform: `scale(${scale})`,
+                transformOrigin: "top left",
+              }}
+              className="bg-[#EDEDED] text-zinc-900"
             >
               {/* Black header banner */}
               <div className="bg-black text-white px-8 sm:px-10 pt-8 pb-24 relative">
