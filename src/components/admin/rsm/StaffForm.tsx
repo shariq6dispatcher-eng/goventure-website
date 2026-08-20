@@ -16,6 +16,7 @@ const MODULE_OPTIONS: { value: RsmModule; label: string }[] = [
   { value: "ledgers", label: "Customer Ledger" },
   { value: "expenses", label: "Expenses" },
   { value: "customers", label: "Customers" },
+  { value: "leads", label: "Leads" },
   { value: "reports", label: "Reports" },
   { value: "digitizing", label: "Digitizing Jobs" },
   { value: "digitizing_work", label: "Work Vault" },
