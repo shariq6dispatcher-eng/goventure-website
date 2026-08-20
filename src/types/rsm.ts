@@ -85,6 +85,7 @@ export type RsmModule =
   | "digitizing"
   | "digitizing_work"
   | "online_orders"
+  | "leads"
   | "users";
 
 // ---------------------------------------------------------------------------
@@ -205,6 +206,37 @@ export interface Expense {
 export type ExpenseInput = Omit <
   Expense,
   "_id" | "expenseNo" | "loggedBy" | "createdAt"
+>;
+
+// ---------------------------------------------------------------------------
+// Leads  (collection: rsm_leads)
+// Each lead is owned by the staff username that created it. Non-admin
+// staff only ever see their own leads (enforced server-side in the API
+// route, not just hidden in the UI); admins see everyone's.
+// ---------------------------------------------------------------------------
+export type LeadPlatform =
+  | "Facebook"
+  | "Instagram"
+  | "Email"
+  | "Google Voice"
+  | "Whatsapp";
+
+export interface Lead {
+  _id: string;
+  customerName: string;
+  phone?: string;
+  email?: string;
+  platform: LeadPlatform;
+  followUpDate?: string; // YYYY-MM-DD
+  comment?: string;
+  createdBy: string; // RsmStaff.username who owns this lead — set server-side
+  createdAt: string;
+  updatedAt?: string;
+}
+
+export type LeadInput = Omit<
+  Lead,
+  "_id" | "createdBy" | "createdAt" | "updatedAt"
 >;
 
 // ---------------------------------------------------------------------------
