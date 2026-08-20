@@ -6,6 +6,7 @@ import type {
   ExpenseCategory,
   DigitizingJobStatus,
   OnlineOrderStatus,
+  LeadPlatform,
 } from "@/types/rsm";
  
 // Mongo collection names — single source of truth so API routes and any
@@ -21,6 +22,7 @@ export const RSM_COLLECTIONS = {
   notifications: "rsm_notifications",
   onlineOrders: "rsm_online_orders",
   dispatchLogs: "rsm_dispatch_logs",
+  leads: "rsm_leads",
 } as const;
 
 export const SERVICE_CATEGORIES: ServiceCategory[] = [
@@ -61,6 +63,14 @@ export const PAYMENT_METHODS: PaymentMethod[] = [
   "Zelle",
   "Cash",
   "Other",
+];
+
+export const LEAD_PLATFORMS: LeadPlatform[] = [
+  "Facebook",
+  "Instagram",
+  "Email",
+  "Google Voice",
+  "Whatsapp",
 ];
 
 export const EXPENSE_CATEGORIES: ExpenseCategory[] = [
