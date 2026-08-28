@@ -21,7 +21,7 @@ export default function ContactPage() {
     const body = encodeURIComponent(
       `${form.message}\n\nFrom: ${form.name} (${form.email})`
     );
-    window.location.href = `mailto:embroidery@goventuresdispatch.com?subject=${subject}&body=${body}`;
+    window.location.href = `mailto:Info@gvcustom.com?subject=${subject}&body=${body}`;
     setStatus("sent");
   }
 
@@ -63,7 +63,7 @@ export default function ContactPage() {
                   href="mailto:embroidery@goventuresdispatch.com"
                   className="text-zinc-300 hover:text-[#D4AF37] transition"
                 >
-                  embroidery@goventuresdispatch.com
+                  Info@gvcustom.com
                 </a>
               </div>
 
