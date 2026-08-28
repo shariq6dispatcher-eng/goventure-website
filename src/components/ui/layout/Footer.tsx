@@ -190,7 +190,7 @@ export default function Footer() {
     href="mailto:embroidery@goventuresdispatch.com"
     className="hover:text-[#D4AF37] transition"
   >
-    embroidery@goventuresdispatch.com
+    Info@gvcustom.com
   </a>
 </li>
               <li>
