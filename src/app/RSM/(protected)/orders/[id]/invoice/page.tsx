@@ -141,7 +141,7 @@ export default function OrderInvoicePage() {
                         Goventures
                       </h1>
                       <p className="text-xs sm:text-sm text-zinc-300 mt-1">
-                        embroidery@goventuresdispatch.com
+                        Info@gvcustom.com
                       </p>
                     </div>
                   </div>
