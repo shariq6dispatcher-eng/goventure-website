@@ -9,11 +9,11 @@
 // it as base64.
 //
 // To make emails genuinely come from your Hostinger domain:
-//   1. Resend dashboard -> Domains -> Add Domain -> goventuresdispatch.com
+//   1. Resend dashboard -> Domains -> Add Domain -> gvcustom.com
 //   2. Resend will show 2-3 DNS records (SPF/DKIM). Add those exact
 //      records in Hostinger -> Domains -> DNS / Nameservers.
 //   3. Wait for Resend to mark the domain "Verified" (usually minutes).
-//   4. Set DISPATCH_FROM_EMAIL to info@goventuresdispatch.com below.
+//   4. Set DISPATCH_FROM_EMAIL to info@gvcustom.com below.
 // Until the domain is verified, Resend will reject sends from it.
 //
 // Resend caps the total request (all attachments combined, base64
@@ -60,8 +60,8 @@ export async function sendDispatchEmail(
 ): Promise<SendDispatchResult> {
   const apiKey = process.env.RESEND_API_KEY;
   const fromEmail =
-    process.env.DISPATCH_FROM_EMAIL || "info@goventuresdispatch.com";
-  const fromName = process.env.DISPATCH_FROM_NAME || "GoVentures Dispatch";
+    process.env.DISPATCH_FROM_EMAIL || "info@gvcustom.com";
+  const fromName = process.env.DISPATCH_FROM_NAME || "GV Custom";
 
   if (!apiKey) {
     return { success: false, error: "Missing RESEND_API_KEY env var" };
