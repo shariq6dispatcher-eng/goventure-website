@@ -1,7 +1,7 @@
 // Sends the "Work Vault direct dispatch" email — a production bundle's
 // actual files, attached and emailed straight to a customer — using
 // Resend's HTTP API.
-//
+// 
 // Why not real SMTP to Hostinger's mail server? This site runs on
 // Cloudflare Pages/Workers (see src/lib/mongodb.ts), which cannot open
 // raw TCP/SMTP sockets. Resend's HTTP API works everywhere fetch() does,
