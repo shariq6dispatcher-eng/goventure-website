@@ -60,7 +60,7 @@ export default function ContactPage() {
                   Email
                 </span>
                 <a
-                  href="mailto:embroidery@goventuresdispatch.com"
+                  href="mailto:Info@gvcustom.com"
                   className="text-zinc-300 hover:text-[#D4AF37] transition"
                 >
                   Info@gvcustom.com
