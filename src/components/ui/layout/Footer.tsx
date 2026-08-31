@@ -187,7 +187,7 @@ export default function Footer() {
             <ul className="space-y-2 text-zinc-500">
               <li>
   <a
-    href="mailto:embroidery@goventuresdispatch.com"
+    href="mailto:info@gvcustom.com"
     className="hover:text-[#D4AF37] transition"
   >
     Info@gvcustom.com
