@@ -23,7 +23,7 @@ interface WorkVaultDispatchModalProps {
 }
 
 const SENDER_EMAIL =
-  process.env.NEXT_PUBLIC_DISPATCH_SENDER_EMAIL || "info@goventuresdispatch.com";
+  process.env.NEXT_PUBLIC_DISPATCH_SENDER_EMAIL || "info@gvcustom.com";
 const WEBMAIL_PORTAL_URL =
   process.env.NEXT_PUBLIC_HOSTINGER_WEBMAIL_URL || "https://webmail.hostinger.com";
 
