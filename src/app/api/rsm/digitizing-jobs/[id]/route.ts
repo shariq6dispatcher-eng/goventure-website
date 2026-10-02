@@ -3,7 +3,7 @@ import { mongo, toObjectId } from "@/lib/mongodb";
 import { RSM_COLLECTIONS } from "@/types/constants";
 import { getRsmAuth } from "@/lib/rsm-auth";
 import { notifyRsm } from "@/lib/rsm-notify";
-import { shouldHideFinancials } from "@/lib/rsm-perms";
+import { shouldHideFinancials, getRsmScope, canAccessJob } from "@/lib/rsm-perms";
 import type { DigitizingJob, DigitizingJobInput, Customer } from "@/types/rsm";
 
 export async function GET(
@@ -12,6 +12,7 @@ export async function GET(
 ) {
   await getRsmAuth();
   const hideFinancials = await shouldHideFinancials();
+  const scope = await getRsmScope();
   const { id } = await params;
 
   try {
@@ -20,7 +21,9 @@ export async function GET(
       { _id: toObjectId(id) }
     );
 
-    if (!job) {
+    // Same 404 whether the job doesn't exist or isn't theirs, so a
+    // restricted digitizer can't probe which job IDs exist.
+    if (!job || !canAccessJob(scope, job)) {
       return NextResponse.json({ error: "Job not found" }, { status: 404 });
     }
 
@@ -49,6 +52,7 @@ export async function PUT(
 ) {
   await getRsmAuth();
   const hideFinancials = await shouldHideFinancials();
+  const scope = await getRsmScope();
   const { id } = await params;
   const body = (await req.json()) as Partial<DigitizingJobInput>;
 
@@ -64,7 +68,7 @@ export async function PUT(
       RSM_COLLECTIONS.digitizingJobs,
       { _id: toObjectId(id) }
     );
-    if (!existing) {
+    if (!existing || !canAccessJob(scope, existing)) {
       return NextResponse.json({ error: "Job not found" }, { status: 404 });
     }
 
@@ -83,6 +87,14 @@ export async function PUT(
       customerName = customer.name;
     }
 
+    // Only non-restricted users may change who the job is assigned to.
+    // A restricted digitizer can never reassign (or unassign) a job.
+    const assignedTo = scope.onlyAssignedJobs
+      ? existing.assignedTo
+      : body.assignedTo !== undefined
+        ? body.assignedTo.trim() || undefined
+        : existing.assignedTo;
+
     const update = {
       customerId: hideFinancials ? existing.customerId : body.customerId ?? existing.customerId,
       customerName,
@@ -94,6 +106,7 @@ export async function PUT(
       price: hideFinancials ? existing.price : body.price ?? existing.price,
       format: body.format,
       notes: body.notes ?? existing.notes ?? "",
+      assignedTo,
       updatedAt: new Date().toISOString(),
     };
 
@@ -130,7 +143,14 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   await getRsmAuth();
+  const scope = await getRsmScope();
   const { id } = await params;
+
+  // Deleting a job is an owner-level action. A restricted digitizer can
+  // view and work on their jobs but never delete them.
+  if (scope.onlyAssignedJobs) {
+    return NextResponse.json({ error: "Not allowed" }, { status: 403 });
+  }
 
   try {
     const result = await mongo.deleteOne(RSM_COLLECTIONS.digitizingJobs, {
