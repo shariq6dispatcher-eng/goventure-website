@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { mongo, toObjectId } from "@/lib/mongodb";
 import { RSM_COLLECTIONS } from "@/types/constants";
 import { getRsmAuth } from "@/lib/rsm-auth";
+import { denyRestricted } from "@/lib/rsm-perms";
 import type { Customer, CustomerInput } from "@/types/rsm";
 
 export async function GET(
@@ -9,6 +10,8 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   await getRsmAuth();
+  const denied = await denyRestricted();
+  if (denied) return denied;
   const { id } = await params;
 
   try {
@@ -34,6 +37,8 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   await getRsmAuth();
+  const denied = await denyRestricted();
+  if (denied) return denied;
   const { id } = await params;
   const body = (await req.json()) as CustomerInput;
 
@@ -96,6 +101,8 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   await getRsmAuth();
+  const denied = await denyRestricted();
+  if (denied) return denied;
   const { id } = await params;
 
   try {
