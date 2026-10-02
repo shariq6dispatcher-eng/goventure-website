@@ -2,11 +2,14 @@ import { NextResponse } from "next/server";
 import { mongo, toObjectId } from "@/lib/mongodb";
 import { RSM_COLLECTIONS } from "@/types/constants";
 import { getRsmAuth } from "@/lib/rsm-auth";
+import { denyRestricted } from "@/lib/rsm-perms";
 import { getNextPaymentNo } from "@/lib/rsm-counters";
 import type { Payment, PaymentInput, Customer, Order, LedgerEntry } from "@/types/rsm";
 
 export async function GET() {
   await getRsmAuth();
+  const denied = await denyRestricted();
+  if (denied) return denied;
 
   try {
     const payments = await mongo.find<Payment>(
@@ -25,6 +28,8 @@ export async function GET() {
 
 export async function POST(req: Request) {
   const auth = await getRsmAuth();
+  const denied = await denyRestricted();
+  if (denied) return denied;
   const body = (await req.json()) as PaymentInput & { confirmed?: boolean };
 
   if (!body.customerId || !body.amount || body.amount <= 0 || !body.paymentMethod || !body.date) {
