@@ -7,7 +7,7 @@ import type { RsmModule } from "@/types/rsm";
 interface RsmMe {
   username: string;
   role: "admin" | "staff";
-  allowedModules: RsmModule[] | null;
+  allowedModules: RsmModule[] | null; 
   hideFinancials?: boolean;
   onlyAssignedJobs?: boolean;
 }
