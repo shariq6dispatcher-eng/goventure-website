@@ -4,13 +4,15 @@ import { RSM_COLLECTIONS } from "@/types/constants";
 import { getRsmAuth } from "@/lib/rsm-auth";
 import type { Order, OrderInput, Customer } from "@/types/rsm";
 import { autoCreateDigitizingJobs } from "@/lib/rsm-auto-digitizing";
-import { getRsmScope } from "@/lib/rsm-perms";
+import { getRsmScope, denyRestricted } from "@/lib/rsm-perms";
 
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   await getRsmAuth();
+  const denied = await denyRestricted();
+  if (denied) return denied;
   const { id } = await params;
 
   try {
@@ -36,6 +38,8 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const auth = await getRsmAuth();
+  const denied = await denyRestricted();
+  if (denied) return denied;
   const { id } = await params;
   const body = (await req.json()) as Partial<OrderInput> & {
     amountPaid?: number;
@@ -150,6 +154,8 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   await getRsmAuth();
+  const denied = await denyRestricted();
+  if (denied) return denied;
   const { id } = await params;
 
   try {
