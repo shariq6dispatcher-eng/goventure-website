@@ -1,3 +1,4 @@
+import { NextResponse } from "next/server";
 import { mongo } from "@/lib/mongodb";
 import { RSM_COLLECTIONS } from "@/types/constants";
 import { getRsmAuth } from "@/lib/rsm-auth";
@@ -68,4 +69,24 @@ export function canAccessJob(
 ): boolean {
   if (!scope.onlyAssignedJobs) return true;
   return !!job.assignedTo && job.assignedTo === scope.username;
+}
+
+/**
+ * Guard for routes a restricted digitizer (onlyAssignedJobs) must never
+ * reach: orders, customers, payments, expenses, ledger, reports, search,
+ * leads, dashboard. Returns a 403 response to hand straight back, or null
+ * if the caller may continue. Admins and normal staff are unaffected.
+ * Fails closed: if the staff lookup errors, getRsmScope treats the user as
+ * restricted.
+ *
+ * Usage (right after getRsmAuth):
+ *   const denied = await denyRestricted();
+ *   if (denied) return denied;
+ */
+export async function denyRestricted(): Promise<NextResponse | null> {
+  const scope = await getRsmScope();
+  if (scope.onlyAssignedJobs) {
+    return NextResponse.json({ error: "Not allowed" }, { status: 403 });
+  }
+  return null;
 }
