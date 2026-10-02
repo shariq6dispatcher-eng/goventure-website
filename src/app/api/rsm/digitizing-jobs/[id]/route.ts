@@ -89,11 +89,13 @@ export async function PUT(
 
     // Only non-restricted users may change who the job is assigned to.
     // A restricted digitizer can never reassign (or unassign) a job.
+    // "" (not undefined) means unassigned: the DB helper drops undefined
+    // values, so an empty string is the only way to actually clear it.
     const assignedTo = scope.onlyAssignedJobs
-      ? existing.assignedTo
+      ? existing.assignedTo ?? ""
       : body.assignedTo !== undefined
-        ? body.assignedTo.trim() || undefined
-        : existing.assignedTo;
+        ? body.assignedTo.trim()
+        : existing.assignedTo ?? "";
 
     const update = {
       customerId: hideFinancials ? existing.customerId : body.customerId ?? existing.customerId,
