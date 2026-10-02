@@ -10,7 +10,7 @@ export async function GET() {
   // Admins always see everything, so we skip the lookup and just say so —
   // no need to hit the database on every single page load for that case.
   if (auth.role === "admin") {
-    return NextResponse.json({ ...auth, allowedModules: null, hideFinancials: false });
+    return NextResponse.json({ ...auth, allowedModules: null, hideFinancials: false, onlyAssignedJobs: false });
   }
 
   try {
@@ -23,11 +23,12 @@ export async function GET() {
       ...auth,
       allowedModules,
       hideFinancials: !!staffDoc?.hideFinancials,
+      onlyAssignedJobs: !!staffDoc?.onlyAssignedJobs,
     });
   } catch (err) {
     // If the lookup fails for any reason, fail closed (empty list, hide
     // financials) rather than accidentally granting a staff account
     // access to everything.
-    return NextResponse.json({ ...auth, allowedModules: [], hideFinancials: true });
+    return NextResponse.json({ ...auth, allowedModules: [], hideFinancials: true, onlyAssignedJobs: true });
   }
 }
