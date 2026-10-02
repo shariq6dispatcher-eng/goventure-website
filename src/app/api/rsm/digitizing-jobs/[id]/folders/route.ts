@@ -3,6 +3,7 @@ import { mongo, toObjectId } from "@/lib/mongodb";
 import { RSM_COLLECTIONS } from "@/types/constants";
 import { getRsmAuth } from "@/lib/rsm-auth";
 import { notifyRsm } from "@/lib/rsm-notify";
+import { getRsmScope, canAccessJob } from "@/lib/rsm-perms";
 import type { DigitizingJob, DigitizingJobFolder } from "@/types/rsm";
 
 // POST: append a completed-work folder (name + files) to a digitizing job.
@@ -14,6 +15,7 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const auth = await getRsmAuth();
+  const scope = await getRsmScope();
   const { id } = await params;
   const body = (await req.json()) as DigitizingJobFolder;
 
@@ -30,7 +32,7 @@ export async function POST(
       { _id: toObjectId(id) }
     );
 
-    if (!existing) {
+    if (!existing || !canAccessJob(scope, existing)) {
       return NextResponse.json({ error: "Job not found" }, { status: 404 });
     }
 
