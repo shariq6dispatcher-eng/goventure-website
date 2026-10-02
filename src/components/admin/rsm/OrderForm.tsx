@@ -40,6 +40,7 @@ export default function OrderForm({ order }: OrderFormProps) {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [uploadingItemId, setUploadingItemId] = useState<string | null>(null);
+  const [digitizers, setDigitizers] = useState<{ username: string; name: string }[]>([]);
 
   const handleItemImageUpload = async (id: string, file: File) => {
     setUploadingItemId(id);
@@ -65,6 +66,11 @@ export default function OrderForm({ order }: OrderFormProps) {
     fetch("/api/rsm/customers")
       .then((r) => r.json())
       .then((data) => setCustomers(data.customers || []))
+      .catch(() => {});
+
+    fetch("/api/rsm/digitizers")
+      .then((r) => r.json())
+      .then((data) => setDigitizers(data.digitizers || []))
       .catch(() => {});
   }, []);
 
@@ -320,6 +326,30 @@ export default function OrderForm({ order }: OrderFormProps) {
                   </select>
                 </div>
               </div>
+
+              {it.category === "Embroidery Digitizing" && digitizers.length > 0 && (
+                <div>
+                  <label className="block text-xs text-zinc-500 mb-1.5">
+                    Assign to Digitizer
+                    <span className="text-zinc-600"> — only this person will see the job</span>
+                  </label>
+                  <select
+                    value={it.assignedTo || ""}
+                    onChange={(e) => updateItem(it.id, "assignedTo", e.target.value)}
+                    className="w-full sm:w-72 bg-zinc-900 border border-zinc-800 rounded-xl px-3 py-2 text-sm focus:outline-none focus:border-[#D4AF37]"
+                  >
+                    <option value="">Unassigned</option>
+                    {digitizers.map((d) => (
+                      <option key={d.username} value={d.username}>
+                        {d.name} ({d.username})
+                      </option>
+                    ))}
+                    {it.assignedTo && !digitizers.some((d) => d.username === it.assignedTo) && (
+                      <option value={it.assignedTo}>{it.assignedTo}</option>
+                    )}
+                  </select>
+                </div>
+              )}
 
               {it.category === "Embroidery Digitizing" && (
                 <div>
