@@ -25,6 +25,8 @@ export default function DigitizingJobForm({ job, hideFinancials = false }: Digit
   const [notes, setNotes] = useState(job?.notes || "");
   const [imageUrl, setImageUrl] = useState(job?.imageUrl || "");
   const [uploadingImage, setUploadingImage] = useState(false);
+  const [digitizers, setDigitizers] = useState<{ username: string; name: string }[]>([]);
+  const [assignedTo, setAssignedTo] = useState(job?.assignedTo || "");
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -63,6 +65,16 @@ export default function DigitizingJobForm({ job, hideFinancials = false }: Digit
       .catch(() => {});
   }, [hideFinancials]);
 
+  // Loaded separately from the customer/order data above, because even a
+  // restricted account runs this. The server returns an empty list for
+  // restricted digitizers, which hides the dropdown for them.
+  useEffect(() => {
+    fetch("/api/rsm/digitizers")
+      .then((r) => r.json())
+      .then((data) => setDigitizers(data.digitizers || []))
+      .catch(() => {});
+  }, []);
+
   const customerOrders = orders.filter((o) => o.customerId === customerId);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -89,6 +101,7 @@ export default function DigitizingJobForm({ job, hideFinancials = false }: Digit
         format,
         notes,
         imageUrl,
+        ...(digitizers.length > 0 ? { assignedTo } : {}),
       };
       const url = job
         ? `/api/rsm/digitizing-jobs/${job._id}`
@@ -248,6 +261,30 @@ export default function DigitizingJobForm({ job, hideFinancials = false }: Digit
               className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
               placeholder="0.00"
             />
+          </div>
+        )}
+
+        {digitizers.length > 0 && (
+          <div className="sm:col-span-2">
+            <label className="block text-xs text-zinc-500 mb-1.5">
+              Assign to Digitizer
+              <span className="text-zinc-600"> — only this person will see the job</span>
+            </label>
+            <select
+              value={assignedTo}
+              onChange={(e) => setAssignedTo(e.target.value)}
+              className="w-full bg-zinc-900 border border-zinc-800 rounded-xl px-3.5 py-2.5 text-sm focus:outline-none focus:border-[#D4AF37]"
+            >
+              <option value="">Unassigned</option>
+              {digitizers.map((d) => (
+                <option key={d.username} value={d.username}>
+                  {d.name} ({d.username})
+                </option>
+              ))}
+              {assignedTo && !digitizers.some((d) => d.username === assignedTo) && (
+                <option value={assignedTo}>{assignedTo}</option>
+              )}
+            </select>
           </div>
         )}
 
