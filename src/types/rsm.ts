@@ -124,6 +124,7 @@ export interface OrderItem {
   details?: string;
   imageUrl?: string; // design reference image, Cloudinary URL — set on the order line item itself
   digitizingJobId?: string; // set once this item has spawned a DigitizingJob, so we don't create duplicates on edit
+  assignedTo?: string; // RsmStaff.username of the digitizer this line's job is assigned to (copied onto the auto-created DigitizingJob)
 }
 
 export interface Order {
@@ -284,6 +285,7 @@ export interface DigitizingJob {
   designName: string;
   imageUrl?: string; // Cloudinary URL, reference image of the design
   uploadedBy: string; // RsmStaff.username
+  assignedTo?: string; // RsmStaff.username of the digitizer who owns this job. Digitizers with onlyAssignedJobs only ever see jobs where this matches their username.
   status: DigitizingJobStatus;
   orderId?: string; // linked Order._id once invoiced
   folders: DigitizingJobFolder[];
@@ -313,6 +315,7 @@ export interface RsmStaff {
   email?: string;
   role: RsmRole;
   allowedModules: RsmModule[]; // ignored when role === "admin" (sees all)
+  onlyAssignedJobs?: boolean; // when true, this staff member only sees Digitizing Jobs / Work Vault entries whose assignedTo === their username (enforced server-side). Ignored when role === "admin".
   hideFinancials?: boolean; // when true, this staff member's UI/API responses redact order amounts, prices, and customer contact details (used for digitizer accounts). Ignored when role === "admin".
   active: boolean;
   lastActive?: string;
