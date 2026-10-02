@@ -2,12 +2,15 @@ import { NextResponse } from "next/server";
 import { mongo } from "@/lib/mongodb";
 import { RSM_COLLECTIONS } from "@/types/constants";
 import { getRsmAuth } from "@/lib/rsm-auth";
+import { denyRestricted } from "@/lib/rsm-perms";
 import { getNextOrderNo } from "@/lib/rsm-counters";
 import { autoCreateDigitizingJobs } from "@/lib/rsm-auto-digitizing";
 import type { Order, OrderInput, Customer, LedgerEntry } from "@/types/rsm";
 
 export async function GET() {
   await getRsmAuth();
+  const denied = await denyRestricted();
+  if (denied) return denied;
 
   try {
     const orders = await mongo.find<Order>(
@@ -26,6 +29,8 @@ export async function GET() {
 
 export async function POST(req: Request) {
   const auth = await getRsmAuth();
+  const denied = await denyRestricted();
+  if (denied) return denied;
 
   const body = (await req.json()) as OrderInput;
 
