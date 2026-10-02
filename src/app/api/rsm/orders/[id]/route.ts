@@ -4,6 +4,7 @@ import { RSM_COLLECTIONS } from "@/types/constants";
 import { getRsmAuth } from "@/lib/rsm-auth";
 import type { Order, OrderInput, Customer } from "@/types/rsm";
 import { autoCreateDigitizingJobs } from "@/lib/rsm-auto-digitizing";
+import { getRsmScope } from "@/lib/rsm-perms";
 
 export async function GET(
   req: Request,
@@ -86,6 +87,25 @@ export async function PUT(
       body.items,
       auth.username
     );
+
+    // If the digitizer on a line item was changed while editing the order,
+    // carry that change over to the job that line already created. ""
+    // means unassigned. Restricted accounts can't reassign jobs.
+    const scope = await getRsmScope();
+    if (!scope.onlyAssignedJobs) {
+      for (const it of itemsWithJobs) {
+        if (!it.digitizingJobId) continue;
+        try {
+          await mongo.updateOne(
+            RSM_COLLECTIONS.digitizingJobs,
+            { _id: toObjectId(it.digitizingJobId) },
+            { assignedTo: it.assignedTo?.trim() || "" }
+          );
+        } catch (err) {
+          console.error("Failed to sync digitizer assignment:", err);
+        }
+      }
+    }
 
     const update = {
       customerId: body.customerId ?? existing.customerId,
