@@ -17,6 +17,7 @@ export default function DigitizingJobsPage() {
   const [query, setQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState<DigitizingJobStatus | "All">("All");
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [digitizerNames, setDigitizerNames] = useState<Record<string, string>>({});
 
   useEffect(() => {
     fetch("/api/rsm/digitizing-jobs")
@@ -28,6 +29,19 @@ export default function DigitizingJobsPage() {
       .catch((err) => setError(err.message || "Failed to load jobs"))
       .finally(() => setLoading(false));
   }, []);
+
+  // Admins see an "Assigned to" column. Load username -> display name once.
+  useEffect(() => {
+    if (me?.role !== "admin") return;
+    fetch("/api/rsm/digitizers")
+      .then((r) => r.json())
+      .then((data) => {
+        const map: Record<string, string> = {};
+        for (const d of data.digitizers || []) map[d.username] = d.name || d.username;
+        setDigitizerNames(map);
+      })
+      .catch(() => {});
+  }, [me?.role]);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Delete this digitizing job? This cannot be undone.")) return;
@@ -56,6 +70,10 @@ export default function DigitizingJobsPage() {
   if (!me) return null;
 
   const hideFinancials = !!me.hideFinancials;
+  const isRestricted = !!me.onlyAssignedJobs;
+  const isAdmin = me.role === "admin";
+  const assignedLabel = (u?: string) =>
+    u ? digitizerNames[u] || u : "Unassigned";
 
   return (
     <RsmShell
@@ -90,7 +108,7 @@ export default function DigitizingJobsPage() {
             ))}
           </select>
 
-          {!hideFinancials && (
+          {!hideFinancials && !isRestricted && (
             <Link
               href="/RSM/digitizing-jobs/new"
               className="flex items-center justify-center gap-2 bg-[#D4AF37] text-black font-medium text-sm px-4 py-2.5 rounded-xl hover:opacity-90 transition-opacity whitespace-nowrap"
@@ -147,6 +165,11 @@ export default function DigitizingJobsPage() {
                       <RsmJobStatusBadge status={j.status} />
                       <span className="text-[11px] text-zinc-500">{j.format}</span>
                     </div>
+                    {isAdmin && (
+                      <p className="text-[11px] text-zinc-500 mt-1.5">
+                        Assigned to: {assignedLabel(j.assignedTo)}
+                      </p>
+                    )}
                   </div>
                  <div className="flex items-center gap-1 shrink-0">
                     <Link
@@ -163,6 +186,7 @@ export default function DigitizingJobsPage() {
                     >
                       <Pencil size={15} />
                     </Link>
+                    {!isRestricted && (
                     <button
                       onClick={() => handleDelete(j._id)}
                       disabled={deletingId === j._id}
@@ -175,6 +199,7 @@ export default function DigitizingJobsPage() {
                         <Trash2 size={15} />
                       )}
                     </button>
+                    )}
                   </div>
                 </div>
                 <div className="flex items-center justify-between mt-3 pt-3 border-t border-zinc-900 text-xs">
@@ -206,6 +231,9 @@ export default function DigitizingJobsPage() {
                     )}
                     <th className="text-left px-5 py-3 font-medium">Format</th>
                     <th className="text-left px-5 py-3 font-medium">Status</th>
+                    {isAdmin && (
+                      <th className="text-left px-5 py-3 font-medium">Assigned to</th>
+                    )}
                     {!hideFinancials && (
                       <th className="text-right px-5 py-3 font-medium">Price</th>
                     )}
@@ -233,6 +261,11 @@ export default function DigitizingJobsPage() {
                       <td className="px-5 py-3">
                         <RsmJobStatusBadge status={j.status} />
                       </td>
+                      {isAdmin && (
+                        <td className={`px-5 py-3 ${j.assignedTo ? "text-zinc-300" : "text-zinc-600"}`}>
+                          {assignedLabel(j.assignedTo)}
+                        </td>
+                      )}
                       {!hideFinancials && (
                         <td className="px-5 py-3 text-right">${j.price.toFixed(2)}</td>
                       )}
@@ -260,6 +293,7 @@ export default function DigitizingJobsPage() {
                           >
                             <Pencil size={15} />
                           </Link>
+                          {!isRestricted && (
                           <button
                             onClick={() => handleDelete(j._id)}
                             disabled={deletingId === j._id}
@@ -272,6 +306,7 @@ export default function DigitizingJobsPage() {
                               <Trash2 size={15} />
                             )}
                           </button>
+                          )}
                         </div>
                       </td>                    </tr>
                   ))}
