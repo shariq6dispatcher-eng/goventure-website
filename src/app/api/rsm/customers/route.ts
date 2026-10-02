@@ -2,10 +2,13 @@ import { NextResponse } from "next/server";
 import { mongo } from "@/lib/mongodb";
 import { RSM_COLLECTIONS } from "@/types/constants";
 import { getRsmAuth } from "@/lib/rsm-auth";
+import { denyRestricted } from "@/lib/rsm-perms";
 import type { Customer, CustomerInput } from "@/types/rsm";
 
 export async function GET() {
   await getRsmAuth();
+  const denied = await denyRestricted();
+  if (denied) return denied;
 
   try {
     const customers = await mongo.find<Customer>(
@@ -24,6 +27,8 @@ export async function GET() {
 
 export async function POST(req: Request) {
   await getRsmAuth();
+  const denied = await denyRestricted();
+  if (denied) return denied;
 
   const body = (await req.json()) as CustomerInput;
 
