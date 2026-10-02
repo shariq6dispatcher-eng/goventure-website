@@ -41,6 +41,7 @@ export async function autoCreateDigitizingJobs(
         designName: order.designName?.trim() || item.name || order.orderNo,
         imageUrl: item.imageUrl || "",
         uploadedBy,
+        assignedTo: item.assignedTo?.trim() || undefined,
         status: "Pending",
         orderId: order._id,
         folders: [],
