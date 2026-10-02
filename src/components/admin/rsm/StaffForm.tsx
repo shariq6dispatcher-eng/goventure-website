@@ -36,6 +36,7 @@ export default function StaffForm({ staff }: StaffFormProps) {
   );
   const [active, setActive] = useState(staff?.active ?? true);
   const [hideFinancials, setHideFinancials] = useState(staff?.hideFinancials ?? false);
+  const [onlyAssignedJobs, setOnlyAssignedJobs] = useState(staff?.onlyAssignedJobs ?? false);
 
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
@@ -70,6 +71,7 @@ export default function StaffForm({ staff }: StaffFormProps) {
         allowedModules,
         active,
         hideFinancials,
+        onlyAssignedJobs,
       };
 
       const url = staff ? `/api/rsm/staff/${staff._id}` : "/api/rsm/staff";
@@ -228,7 +230,34 @@ export default function StaffForm({ staff }: StaffFormProps) {
           </div>
         </div>
       )}
-
+            {role === "staff" && (
+        <div className="bg-zinc-900/60 border border-zinc-900 rounded-2xl p-5">
+          <h3 className="text-sm font-semibold mb-1">Digitizer: Only Assigned Jobs</h3>
+          <p className="text-xs text-zinc-500 mb-4">
+            When enabled, this account only sees the Digitizing Jobs and Work Vault entries that
+            were assigned to them when an order was recorded. Other jobs stay completely hidden.
+            Leave off for accounts that should keep seeing every job.
+          </p>
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={() => setOnlyAssignedJobs((v) => !v)}
+              className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 ${
+                onlyAssignedJobs ? "bg-[#D4AF37]" : "bg-zinc-700"
+              }`}
+            >
+              <span
+                className={`absolute top-0.5 left-0.5 w-5 h-5 bg-white rounded-full transition-transform ${
+                  onlyAssignedJobs ? "translate-x-5" : "translate-x-0"
+                }`}
+              />
+            </button>
+            <span className="text-sm">
+              {onlyAssignedJobs ? "Sees assigned jobs only" : "Sees all jobs"}
+            </span>
+          </div>
+        </div>
+      )}
       {error && <p className="text-red-400 text-sm">{error}</p>}
 
       <div className="flex gap-3">
