@@ -9,6 +9,7 @@ interface RsmMe {
   role: "admin" | "staff";
   allowedModules: RsmModule[] | null;
   hideFinancials?: boolean;
+  onlyAssignedJobs?: boolean;
 }
 
 /**
