@@ -64,6 +64,7 @@ export async function POST(req: Request) {
       role: body.role || "staff",
       allowedModules: body.allowedModules || [],
       hideFinancials: body.hideFinancials ?? false,
+      onlyAssignedJobs: body.onlyAssignedJobs ?? false,
       active: body.active ?? true,
       createdAt: new Date().toISOString(),
     };
