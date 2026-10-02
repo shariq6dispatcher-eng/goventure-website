@@ -6,7 +6,7 @@ import type { RsmStaff, RsmModule } from "@/types/rsm";
 
 export async function GET() {
   const auth = await getRsmAuth();
-
+ 
   // Admins always see everything, so we skip the lookup and just say so —
   // no need to hit the database on every single page load for that case.
   if (auth.role === "admin") {
