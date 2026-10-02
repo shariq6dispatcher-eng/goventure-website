@@ -3,16 +3,17 @@ import { mongo, toObjectId } from "@/lib/mongodb";
 import { RSM_COLLECTIONS } from "@/types/constants";
 import { getRsmAuth } from "@/lib/rsm-auth";
 import { notifyRsm } from "@/lib/rsm-notify";
-import { shouldHideFinancials } from "@/lib/rsm-perms";
+import { shouldHideFinancials, getRsmScope, jobScopeFilter } from "@/lib/rsm-perms";
 import type { DigitizingJob, DigitizingJobInput, Customer } from "@/types/rsm";
 export async function GET() {
   await getRsmAuth();
   const hideFinancials = await shouldHideFinancials();
+  const scope = await getRsmScope();
 
   try {
     const jobs = await mongo.find<DigitizingJob>(
       RSM_COLLECTIONS.digitizingJobs,
-      {},
+      jobScopeFilter(scope),
       { createdAt: -1 }
     );
 
@@ -37,6 +38,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
   const auth = await getRsmAuth();
+  const scope = await getRsmScope();
   const body = (await req.json()) as DigitizingJobInput;
 
   if (!body.customerId || !body.designName?.trim() || !body.format) {
@@ -58,12 +60,20 @@ export async function POST(req: Request) {
       );
     }
 
+    // A restricted digitizer can only create jobs for themselves, so they
+    // never create a job they then can't see. Everyone else may pick any
+    // digitizer (or leave it unassigned).
+    const assignedTo = scope.onlyAssignedJobs
+      ? auth.username
+      : body.assignedTo?.trim() || undefined;
+
     const doc = {
       customerId: body.customerId,
       customerName: customer.name,
       designName: body.designName.trim(),
       imageUrl: body.imageUrl || "",
       uploadedBy: auth.username,
+      assignedTo,
       status: body.status || "Pending",
       orderId: body.orderId || undefined,
       folders: body.folders || [],
