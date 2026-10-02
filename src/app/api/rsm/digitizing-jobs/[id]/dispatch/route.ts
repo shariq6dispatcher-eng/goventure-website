@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { mongo, toObjectId } from "@/lib/mongodb";
 import { RSM_COLLECTIONS } from "@/types/constants";
 import { getRsmAuth } from "@/lib/rsm-auth";
+import { getRsmScope, canAccessJob } from "@/lib/rsm-perms";
 import { sendDispatchEmail } from "@/lib/send-dispatch-email";
 import type { DigitizingJob, DispatchLog } from "@/types/rsm";
  
@@ -11,9 +12,21 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   await getRsmAuth();
+  const scope = await getRsmScope();
   const { id } = await params;
 
   try {
+    // A restricted digitizer may only read logs of a job assigned to them.
+    if (scope.onlyAssignedJobs) {
+      const job = await mongo.findOne<DigitizingJob>(
+        RSM_COLLECTIONS.digitizingJobs,
+        { _id: toObjectId(id) }
+      );
+      if (!job || !canAccessJob(scope, job)) {
+        return NextResponse.json({ error: "Job not found" }, { status: 404 });
+      }
+    }
+
     const logs = await mongo.find<DispatchLog>(
       RSM_COLLECTIONS.dispatchLogs,
       { jobId: id },
@@ -31,6 +44,7 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const auth = await getRsmAuth();
+  const scope = await getRsmScope();
   const { id } = await params;
   const body = (await req.json()) as { recipientEmail?: string };
   const recipientEmail = body.recipientEmail?.trim();
@@ -44,7 +58,7 @@ export async function POST(
     { _id: toObjectId(id) }
   );
 
-  if (!job) {
+  if (!job || !canAccessJob(scope, job)) {
     return NextResponse.json({ error: "Job not found" }, { status: 404 });
   }
 
