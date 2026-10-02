@@ -78,6 +78,7 @@ export async function PUT(
       role: body.role ?? existing.role,
       allowedModules: body.allowedModules ?? existing.allowedModules ?? [],
       hideFinancials: body.hideFinancials ?? existing.hideFinancials ?? false,
+      onlyAssignedJobs: body.onlyAssignedJobs ?? existing.onlyAssignedJobs ?? false,
       active: body.active ?? existing.active,
     };
 
