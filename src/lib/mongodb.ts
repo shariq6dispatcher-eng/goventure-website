@@ -10,7 +10,7 @@
  * the root cause of the Error 1103 responses on every DB-backed page.
  *
  * The fix: talk to MongoDB Atlas over HTTPS using the Atlas Data API,
- * which is just `fetch()` under the hood and works identically in
+ * which is just `fetch()` under the hood and works identically in 
  * Node.js, Vercel, and Cloudflare Workers.
  *
  * Setup required in MongoDB Atlas:
