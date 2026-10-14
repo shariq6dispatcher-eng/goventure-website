@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { mongo } from "@/lib/mongodb";
 import { RSM_COLLECTIONS } from "@/types/constants";
 import type { RsmStaff } from "@/types/rsm";
-
+ 
 export async function POST(req: Request) {
   const { username, password } = await req.json();
 
@@ -11,7 +11,7 @@ export async function POST(req: Request) {
       { error: "Username and password are required" },
       { status: 400 }
     );
-  }
+  } 
 
   let staff: RsmStaff | null = null;
   try {
