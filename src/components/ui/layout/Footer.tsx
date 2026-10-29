@@ -1,82 +1,220 @@
-import Link from 'next/link';
-import { Mail, Phone, MapPin, CheckCircle } from 'lucide-react';
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+
+function InstagramIcon() {
+  const gradId = "ig-gradient";
+  return (
+    <svg viewBox="0 0 24 24" className="w-full h-full">
+      <defs>
+        <radialGradient id={gradId} cx="30%" cy="107%" r="150%">
+          <stop offset="0%" stopColor="#fdf497" />
+          <stop offset="5%" stopColor="#fdf497" />
+          <stop offset="45%" stopColor="#fd5949" />
+          <stop offset="60%" stopColor="#d6249f" />
+          <stop offset="90%" stopColor="#285AEB" />
+        </radialGradient>
+      </defs>
+      <rect x="1" y="1" width="22" height="22" rx="6" fill={`url(#${gradId})`} />
+      <rect
+        x="6.2"
+        y="6.2"
+        width="11.6"
+        height="11.6"
+        rx="3.6"
+        fill="none"
+        stroke="#fff"
+        strokeWidth="1.4"
+      />
+      <circle cx="12" cy="12" r="3.1" fill="none" stroke="#fff" strokeWidth="1.4" />
+      <circle cx="15.6" cy="8.4" r="0.9" fill="#fff" />
+    </svg>
+  );
+}
+
+function EtsyIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="w-full h-full">
+      <circle cx="12" cy="12" r="12" fill="#F1641E" />
+      <path
+        d="M9.3 6.6c-.35 0-.55.18-.55.55v9.7c0 .37.2.55.55.55h5.55c.3 0 .45-.12.5-.4l.4-2.05h-.85c-.2.85-.4 1.15-1.2 1.15h-2.9c-.3 0-.42-.12-.42-.4v-3.35h2.35c.55 0 .7.32.83 1h.8v-2.95h-.8c-.13.68-.28 1-.83 1h-2.35V7.8c0-.28.12-.4.42-.4h2.8c.8 0 .98.42 1.15 1.15h.85l-.32-1.95c-.05-.28-.2-.4-.5-.4H9.3z"
+        fill="#fff"
+      />
+    </svg>
+  );
+}
+
+function WhatsAppIcon() {
+  return (
+    <svg viewBox="0 0 24 24" className="w-full h-full">
+      <circle cx="12" cy="12" r="12" fill="#25D366" />
+      <path
+        fill="#fff"
+        d="M12.01 5.5c-3.6 0-6.5 2.9-6.5 6.5 0 1.15.3 2.25.87 3.22L5.5 18.5l3.36-.88a6.47 6.47 0 0 0 3.15.82c3.6 0 6.5-2.9 6.5-6.5s-2.91-6.44-6.5-6.44zm3.8 9.1c-.16.44-.79.81-1.28.9-.34.06-.79.11-2.28-.49-1.91-.79-3.16-2.71-3.26-2.84-.1-.13-.78-1.04-.78-1.98s.49-1.4.67-1.6c.16-.16.35-.2.47-.2h.34c.11 0 .26-.03.4.3.16.4.53 1.31.58 1.4.05.1.08.21.02.34-.05.13-.08.2-.16.3-.08.1-.17.22-.24.3-.08.08-.16.17-.07.33.09.16.4.68.87 1.1.6.53 1.1.7 1.26.78.16.08.26.07.35-.03.11-.13.44-.51.56-.68.12-.17.24-.14.4-.08.16.05 1.03.48 1.2.57.18.09.3.13.34.2.04.08.04.44-.12.88z"
+      />
+    </svg>
+  );
+}
 
 export default function Footer() {
+  const pathname = usePathname();
+  const isPortal = pathname?.startsWith("/portal");
+
   return (
-    <footer className="bg-[#0b1b36] text-slate-300 pt-16 pb-12 border-t border-slate-800">
-      <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 pb-12 border-b border-slate-800">
-        {/* Brand Overview */}
-        <div className="space-y-4">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded bg-blue-600 flex items-center justify-center font-bold text-white text-base">
-              GV
+    <footer className="border-t border-zinc-900">
+
+      <div className="max-w-7xl mx-auto px-6 py-20">
+
+        <div className="grid md:grid-cols-4 gap-12">
+
+          <div>
+            <h3 className="text-3xl font-bold">
+              <span className="text-[#D4AF37]">GO</span>VENTURE
+            </h3>
+
+            <p className="text-zinc-500 mt-4">
+              Premium embroidery digitizing,
+              custom patches and apparel manufacturing.
+            </p>
+
+            <div className="flex items-center gap-3 mt-6">
+              {!isPortal && (
+                <>
+                  <a
+                    href="https://www.instagram.com/go_ventures.11"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Instagram"
+                    className="w-9 h-9 rounded-full overflow-hidden hover:scale-110 hover:opacity-90 transition-transform"
+                  >
+                    <InstagramIcon />
+                  </a>
+
+                  <a
+                    href="https://www.etsy.com/shop/GoventuresDesign"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    aria-label="Etsy"
+                    className="w-9 h-9 rounded-full overflow-hidden hover:scale-110 hover:opacity-90 transition-transform"
+                  >
+                    <EtsyIcon />
+                  </a>
+                </>
+              )}
+
+              <a
+                href="https://wa.me/18322807084"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="WhatsApp"
+                className="w-9 h-9 rounded-full overflow-hidden hover:scale-110 hover:opacity-90 transition-transform"
+              >
+                <WhatsAppIcon />
+              </a>
             </div>
-            <span className="text-xl font-bold text-white">GoVenture</span>
           </div>
-          <p className="text-sm text-slate-400 leading-relaxed">
-            Professional custom embroidery digitizing and vector conversion services. High-precision, machine-tested files delivered within 4 to 12 hours.
-          </p>
-          <div className="flex items-center gap-2 text-emerald-400 text-sm font-semibold">
-            <CheckCircle className="w-4 h-4" />
-            <span>Guaranteed Free Revisions</span>
+
+          <div>
+            <h4 className="font-semibold mb-4">
+              Services
+            </h4>
+
+           <ul className="space-y-2 text-zinc-500">
+  <li>
+    <Link href="/Services#digitizing" className="hover:text-[#D4AF37] transition">
+      Embroidery Digitizing
+    </Link>
+  </li>
+
+  <li>
+    <Link href="/Services#patches" className="hover:text-[#D4AF37] transition">
+      Custom Patches
+    </Link>
+  </li>
+
+  <li>
+    <Link href="/Services#sportswear" className="hover:text-[#D4AF37] transition">
+      Sportswear
+    </Link>
+  </li>
+
+  <li>
+    <Link href="/Services#manufacturing" className="hover:text-[#D4AF37] transition">
+      Apparel Manufacturing
+    </Link>
+  </li>
+</ul>
           </div>
+
+          <div>
+            <h4 className="font-semibold mb-4">
+              Company
+            </h4>
+
+            <ul className="space-y-2 text-zinc-500">
+  <li>
+    <Link href="/about" className="hover:text-[#D4AF37] transition">
+      About
+    </Link>
+  </li>
+
+  <li>
+    <Link href="/Portfolio" className="hover:text-[#D4AF37] transition">
+      Portfolio
+    </Link>
+  </li>
+
+  <li>
+    <Link href="/Contact" className="hover:text-[#D4AF37] transition">
+      Contact
+    </Link>
+  </li>
+
+  <li>
+    <Link href="/blog" className="hover:text-[#D4AF37] transition">
+      Blog
+    </Link>
+  </li>
+</ul>
+          </div>
+
+          <div>
+            <h4 className="font-semibold mb-4">
+              Contact
+            </h4>
+
+            <ul className="space-y-2 text-zinc-500">
+              <li>
+  <a
+    href="mailto:info@gvcustom.com"
+    className="hover:text-[#D4AF37] transition"
+  >
+    Info@gvcustom.com
+  </a>
+</li>
+              <li>
+  <a
+    href="https://wa.me/18322807084"
+    target="_blank"
+    rel="noopener noreferrer"
+    className="hover:text-[#D4AF37] transition"
+  >
+    WhatsApp Support
+  </a>
+</li>
+              <li>Worldwide Service</li>
+            </ul>
+          </div>
+
         </div>
 
-        {/* Quick Links */}
-        <div>
-          <h4 className="text-white font-bold text-sm tracking-wider uppercase mb-4">Our Services</h4>
-          <ul className="space-y-2.5 text-sm text-slate-400">
-            <li><Link href="/services/custom-embroidery-digitizing" className="hover:text-white transition-colors">Custom Logo Digitizing</Link></li>
-            <li><Link href="/services/3d-puff-embroidery" className="hover:text-white transition-colors">3D Puff Embroidery</Link></li>
-            <li><Link href="/services/cap-hat-digitizing" className="hover:text-white transition-colors">Cap & Hat Digitizing</Link></li>
-            <li><Link href="/services/vector-art-conversion" className="hover:text-white transition-colors">Vector Artwork Conversion</Link></li>
-            <li><Link href="/services/applique-patches" className="hover:text-white transition-colors">Embroidered Patches</Link></li>
-          </ul>
+        <div className="border-t border-zinc-900 mt-16 pt-8 text-zinc-600">
+          © 2026 GoVenture Embroidery & Manufacturing
         </div>
 
-        {/* Formats Delivered */}
-        <div>
-          <h4 className="text-white font-bold text-sm tracking-wider uppercase mb-4">Supported Formats</h4>
-          <p className="text-xs text-slate-400 mb-3">
-            Compatible with all commercial & home embroidery machines:
-          </p>
-          <div className="flex flex-wrap gap-1.5 text-[11px] font-semibold text-slate-300">
-            {['DST', 'PES', 'EXP', 'JEF', 'VP3', 'HUS', 'XXX', 'AI', 'EPS', 'PDF', 'SVG'].map((ext) => (
-              <span key={ext} className="bg-slate-800 border border-slate-700 px-2 py-1 rounded">
-                .{ext}
-              </span>
-            ))}
-          </div>
-        </div>
-
-        {/* Contact Info */}
-        <div>
-          <h4 className="text-white font-bold text-sm tracking-wider uppercase mb-4">Get In Touch</h4>
-          <ul className="space-y-3 text-sm text-slate-400">
-            <li className="flex items-center gap-3">
-              <Phone className="w-4 h-4 text-blue-400 shrink-0" />
-              <span>+1 (800) 123-4567</span>
-            </li>
-            <li className="flex items-center gap-3">
-              <Mail className="w-4 h-4 text-blue-400 shrink-0" />
-              <span>support@goventure.com</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <MapPin className="w-4 h-4 text-blue-400 shrink-0 mt-0.5" />
-              <span>Serving Embroidery Shops Worldwide (24/7 Production)</span>
-            </li>
-          </ul>
-        </div>
       </div>
 
-      {/* Copyright */}
-      <div className="max-w-7xl mx-auto px-4 pt-8 flex flex-col sm:flex-row justify-between items-center text-xs text-slate-500 gap-4">
-        <p>© 2026 GoVenture Digitizing. All rights reserved.</p>
-        <div className="flex gap-6">
-          <Link href="/privacy-policy" className="hover:text-slate-300">Privacy Policy</Link>
-          <Link href="/terms" className="hover:text-slate-300">Terms of Service</Link>
-        </div>
-      </div>
     </footer>
   );
 }
