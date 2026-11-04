@@ -16,7 +16,7 @@ export default function Navbar() {
       <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
 
        {/* Logo */}
-        <Link href="/" className="flex items-center gap-2">
+        <Link href="/" prefetch={false} className="flex items-center gap-2">
           <Image
             src="/images/logo.png"
             alt="GoVenture Embroidery & Manufacturing logo"
@@ -32,31 +32,31 @@ export default function Navbar() {
         {/* Desktop Menu */}
         <nav className="hidden lg:flex items-center gap-8 text-sm uppercase tracking-wide">
 
-          <Link href="/" className="hover:text-[#D4AF37] transition">
+          <Link href="/" prefetch={false} className="hover:text-[#D4AF37] transition">
             Home
           </Link>
 
-          <Link href="/Services" className="hover:text-[#D4AF37] transition">
+          <Link href="/Services" prefetch={false} className="hover:text-[#D4AF37] transition">
             Services
           </Link>
 
-          <Link href="/Portfolio" className="hover:text-[#D4AF37] transition">
+          <Link href="/Portfolio" prefetch={false} className="hover:text-[#D4AF37] transition">
             Portfolio
           </Link>
 
-          <Link href="/about" className="hover:text-[#D4AF37] transition">
+          <Link href="/about" prefetch={false} className="hover:text-[#D4AF37] transition">
             About
           </Link>
 
-         <Link href="/blog" className="hover:text-[#D4AF37] transition">
+         <Link href="/blog" prefetch={false} className="hover:text-[#D4AF37] transition">
             Blog
           </Link>
 
-          <Link href="/Contact" className="hover:text-[#D4AF37] transition">
+          <Link href="/Contact" prefetch={false} className="hover:text-[#D4AF37] transition">
             Contact
           </Link>
 
-          <Link href="/shop" className="hover:text-[#D4AF37] transition">
+          <Link href="/shop" prefetch={false} className="hover:text-[#D4AF37] transition">
             Shop
           </Link>
         </nav>
@@ -64,6 +64,7 @@ export default function Navbar() {
         {/* Desktop Button */}
         <Link
           href="/order"
+          prefetch={false}
           className="hidden lg:block bg-[#D4AF37] text-black px-5 py-2 rounded-full font-semibold hover:scale-105 hover:shadow-[0_0_20px_rgba(212,175,55,0.35)] transition-all duration-300"
         >
           Order Now!
@@ -86,36 +87,37 @@ export default function Navbar() {
       >
         <div className="bg-black/95 backdrop-blur-xl border-t border-white/10 px-6 py-6 flex flex-col gap-5 uppercase text-sm tracking-wide">
 
-          <Link href="/" onClick={() => setOpen(false)}>
+          <Link href="/" prefetch={false} onClick={() => setOpen(false)}>
             Home
           </Link>
 
-          <Link href="/Services" onClick={() => setOpen(false)}>
+          <Link href="/Services" prefetch={false} onClick={() => setOpen(false)}>
             Services
           </Link>
 
-          <Link href="/Portfolio" onClick={() => setOpen(false)}>
+          <Link href="/Portfolio" prefetch={false} onClick={() => setOpen(false)}>
             Portfolio
           </Link>
 
-          <Link href="/about" onClick={() => setOpen(false)}>
+          <Link href="/about" prefetch={false} onClick={() => setOpen(false)}>
             About
           </Link>
 
-        <Link href="/blog" onClick={() => setOpen(false)}>
+        <Link href="/blog" prefetch={false} onClick={() => setOpen(false)}>
             Blog
           </Link>
 
-          <Link href="/Contact" onClick={() => setOpen(false)}>
+          <Link href="/Contact" prefetch={false} onClick={() => setOpen(false)}>
             Contact
           </Link>
 
-          <Link href="/shop" onClick={() => setOpen(false)}>
+          <Link href="/shop" prefetch={false} onClick={() => setOpen(false)}>
             Shop
           </Link>
 
           <Link
             href="/order"
+            prefetch={false}
             onClick={() => setOpen(false)}
             className="mt-4 bg-[#D4AF37] text-black rounded-full py-3 text-center font-semibold"
           >
