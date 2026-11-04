@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import PageHero from "@/components/ui/common/PageHero";
 import CategoryPreview from "@/components/ui/gallery/CategoryPreview";
-import { mongo } from "@/lib/mongodb";
+import { cachedFind } from "@/lib/mongo-cache";
 
 export const metadata: Metadata = {
   title: "Embroidery & Patch Portfolio",
@@ -20,7 +20,7 @@ interface PortfolioProject {
 }
 
 async function getPortfolio(): Promise<PortfolioProject[]> {
-  const results = await mongo.find("portfolio", {}, { createdAt: -1 });
+  const results = await cachedFind("portfolio", {}, { createdAt: -1 });
   return results as PortfolioProject[];
 }
 
