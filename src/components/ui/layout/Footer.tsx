@@ -122,25 +122,25 @@ export default function Footer() {
 
            <ul className="space-y-2 text-zinc-500">
   <li>
-    <Link href="/Services#digitizing" className="hover:text-[#D4AF37] transition">
+    <Link href="/Services#digitizing" prefetch={false} className="hover:text-[#D4AF37] transition">
       Embroidery Digitizing
     </Link>
   </li>
 
   <li>
-    <Link href="/Services#patches" className="hover:text-[#D4AF37] transition">
+    <Link href="/Services#patches" prefetch={false} className="hover:text-[#D4AF37] transition">
       Custom Patches
     </Link>
   </li>
 
   <li>
-    <Link href="/Services#sportswear" className="hover:text-[#D4AF37] transition">
+    <Link href="/Services#sportswear" prefetch={false} className="hover:text-[#D4AF37] transition">
       Sportswear
     </Link>
   </li>
 
   <li>
-    <Link href="/Services#manufacturing" className="hover:text-[#D4AF37] transition">
+    <Link href="/Services#manufacturing" prefetch={false} className="hover:text-[#D4AF37] transition">
       Apparel Manufacturing
     </Link>
   </li>
@@ -154,25 +154,25 @@ export default function Footer() {
 
             <ul className="space-y-2 text-zinc-500">
   <li>
-    <Link href="/about" className="hover:text-[#D4AF37] transition">
+    <Link href="/about" prefetch={false} className="hover:text-[#D4AF37] transition">
       About
     </Link>
   </li>
 
   <li>
-    <Link href="/Portfolio" className="hover:text-[#D4AF37] transition">
+    <Link href="/Portfolio" prefetch={false} className="hover:text-[#D4AF37] transition">
       Portfolio
     </Link>
   </li>
 
   <li>
-    <Link href="/Contact" className="hover:text-[#D4AF37] transition">
+    <Link href="/Contact" prefetch={false} className="hover:text-[#D4AF37] transition">
       Contact
     </Link>
   </li>
 
   <li>
-    <Link href="/blog" className="hover:text-[#D4AF37] transition">
+    <Link href="/blog" prefetch={false} className="hover:text-[#D4AF37] transition">
       Blog
     </Link>
   </li>
