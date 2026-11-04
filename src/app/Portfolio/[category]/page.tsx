@@ -1,5 +1,5 @@
 import CategoryGridClient from "@/components/ui/gallery/CategoryGridClient";
-import { mongo } from "@/lib/mongodb";
+import { cachedFind } from "@/lib/mongo-cache";
 
 interface PortfolioProject {
   _id: string;
@@ -10,7 +10,7 @@ interface PortfolioProject {
 }
 
 async function getPortfolio(): Promise<PortfolioProject[]> {
-  return (await mongo.find(
+  return (await cachedFind(
     "portfolio",
     {},
     { createdAt: -1 }
