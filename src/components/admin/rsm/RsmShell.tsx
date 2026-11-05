@@ -25,11 +25,12 @@ export default function RsmShell({
   const [showWelcome, setShowWelcome] = useState(false);
 
   useEffect(() => {
-    const ping = () => {
+        const ping = () => {
+      if (document.hidden) return; // don't hit the database from background tabs
       fetch("/api/rsm/heartbeat", { method: "POST" }).catch(() => {});
     };
     ping(); // immediately on mount/navigation, not just after the first interval
-    const id = setInterval(ping, 30_000);
+    const id = setInterval(ping, 60_000);
     return () => clearInterval(id);
   }, []);
 
