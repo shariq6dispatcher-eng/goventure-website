@@ -37,7 +37,7 @@ export default function RsmOnlineUsers() {
         .finally(() => setLoading(false));
     };
     load();
-    const id = setInterval(load, 30_000);
+    const id = setInterval(() => {       if (!document.hidden) load();     }, 60_000);
     return () => clearInterval(id);
   }, []);
 
