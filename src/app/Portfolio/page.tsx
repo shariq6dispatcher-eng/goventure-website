@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import PageHero from "@/components/ui/common/PageHero";
 import CategoryPreview from "@/components/ui/gallery/CategoryPreview";
 import { cachedFind } from "@/lib/mongo-cache";
-
+ 
 export const metadata: Metadata = {
   title: "Embroidery & Patch Portfolio",
   description:
