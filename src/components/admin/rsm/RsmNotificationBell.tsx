@@ -21,7 +21,7 @@ export default function RsmNotificationBell() {
 
   useEffect(() => {
     loadNotifications();
-    const interval = setInterval(loadNotifications, 30000); // poll every 30s
+        const interval = setInterval(() => {       if (!document.hidden) loadNotifications();     }, 90_000); // poll every 90s, only while the tab is visible
     return () => clearInterval(interval);
   }, []);
 
