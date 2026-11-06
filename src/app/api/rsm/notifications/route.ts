@@ -41,19 +41,28 @@ export async function GET() {
       );
     }
 
-    return NextResponse.json({ notifications: mine.slice(0, 50) });
-  } catch (err) {
     return NextResponse.json(
-      { error: "Failed to load notifications" },
-      { status: 500 }
+      { notifications: mine.slice(0, 50) },
+      { status: 200 }
     );
+  } catch (err) {
+    // Background poller: never surface a 500 for a transient DB error or
+    // slow query. Log it and return an empty list so the client keeps working.
+    console.error("Notifications fetch failed safely:", err);
+    return NextResponse.json({ notifications: [] }, { status: 200 });
   }
 }
 
 // PATCH: mark one notification as read, or all (body: { id } or { all: true })
 export async function PATCH(req: Request) {
   await getRsmAuth();
-  const body = (await req.json()) as { id?: string; all?: boolean };
+
+  let body: { id?: string; all?: boolean };
+  try {
+    body = (await req.json()) as { id?: string; all?: boolean };
+  } catch {
+    return NextResponse.json({ error: "Invalid request body" }, { status: 400 });
+  }
 
   try {
     if (body.all) {
@@ -84,6 +93,7 @@ export async function PATCH(req: Request) {
 
     return NextResponse.json({ success: true });
   } catch (err) {
+    console.error("Notification update failed:", err);
     return NextResponse.json(
       { error: "Failed to update notification" },
       { status: 500 }
