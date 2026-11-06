@@ -5,7 +5,7 @@ import { getRsmAuth } from "@/lib/rsm-auth";
 import { denyRestricted } from "@/lib/rsm-perms";
 import { getNextPaymentNo } from "@/lib/rsm-counters";
 import type { Payment, PaymentInput, Customer, Order, LedgerEntry } from "@/types/rsm";
-
+ 
 export async function GET() {
   await getRsmAuth();
   const denied = await denyRestricted();
