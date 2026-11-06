@@ -13,7 +13,7 @@ import {
   Users,
   BarChart3,
   Sparkles,
-  FolderOpen, 
+  FolderOpen,
   UserCog,
   LogOut,
   Menu,
@@ -120,7 +120,7 @@ export default function RsmSidebar({ staffName, staffRole }: RsmSidebarProps) {
       </div>
 
       <nav className="flex-1 px-3 space-y-1 overflow-y-auto">
-       {visibleItems.map(({ label, href, icon: Icon, comingSoon }) => {
+        {visibleItems.map(({ label, href, icon: Icon, comingSoon }) => {
           const active = pathname === href;
 
           if (comingSoon) {
@@ -144,6 +144,7 @@ export default function RsmSidebar({ staffName, staffRole }: RsmSidebarProps) {
             <Link
               key={label}
               href={href}
+              prefetch={false}
               onClick={() => setMobileOpen(false)}
               className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-medium transition-colors ${
                 active
@@ -173,7 +174,7 @@ export default function RsmSidebar({ staffName, staffRole }: RsmSidebarProps) {
 
   return (
     <>
-     {/* Mobile top bar */}
+      {/* Mobile top bar */}
       <div className="lg:hidden sticky top-0 z-40 flex items-center justify-between px-4 h-14 bg-zinc-950/95 backdrop-blur border-b border-zinc-900">
         <div className="flex items-center gap-2">
           <span className="w-7 h-7 rounded-lg bg-[#D4AF37]/10 border border-[#D4AF37]/30 flex items-center justify-center text-[#D4AF37] text-xs font-black">
