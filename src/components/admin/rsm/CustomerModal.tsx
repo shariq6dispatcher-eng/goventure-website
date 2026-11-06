@@ -17,9 +17,6 @@ const EMPTY_FORM: CustomerInput = {
   company: "",
   address: "",
   country: "",
-  portalEnabled: false,
-  portalUsername: "",
-  portalPassword: "",
 };
 
 export default function CustomerModal({
