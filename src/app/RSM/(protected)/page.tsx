@@ -7,14 +7,18 @@ import RsmShell from "@/components/admin/rsm/RsmShell";
 import RsmDashboardClient from "@/components/admin/rsm/RsmDashboardClient";
 import type { Order, Payment, Customer, Expense, DigitizingJob, OnlineOrder } from "@/types/rsm";
 
-type DashboardData = [
-  Order[],
-  Payment[],
-  Customer[],
-  Expense[],
-  DigitizingJob[],
-  OnlineOrder[],
-];
+// Unwrap one allSettled result. A failed query falls back to an empty list
+// and is recorded so the page can warn that its numbers are incomplete.
+function unwrap<T>(
+  result: PromiseSettledResult<T[]>,
+  label: string,
+  failed: string[]
+): T[] {
+  if (result.status === "fulfilled") return result.value;
+  console.error(`RSM dashboard: failed to load ${label}:`, result.reason);
+  failed.push(label);
+  return [];
+}
 
 export default async function RsmHomePage() {
   const auth = await getRsmAuth();
@@ -26,21 +30,26 @@ export default async function RsmHomePage() {
     redirect("/RSM/digitizing-jobs");
   }
 
-  let data: DashboardData | null = null;
-  try {
-    data = await Promise.all([
-      mongo.find<Order>(RSM_COLLECTIONS.orders),
-      mongo.find<Payment>(RSM_COLLECTIONS.payments),
-      mongo.find<Customer>(RSM_COLLECTIONS.customers),
-      mongo.find<Expense>(RSM_COLLECTIONS.expenses),
-      mongo.find<DigitizingJob>(RSM_COLLECTIONS.digitizingJobs),
-      mongo.find<OnlineOrder>(RSM_COLLECTIONS.onlineOrders),
-    ]);
-  } catch (err) {
-    console.error("RSM dashboard load failed:", err);
-  }
+  // allSettled: one slow or failing query no longer takes down the whole page.
+  const results = await Promise.allSettled([
+    mongo.find<Order>(RSM_COLLECTIONS.orders),
+    mongo.find<Payment>(RSM_COLLECTIONS.payments),
+    mongo.find<Customer>(RSM_COLLECTIONS.customers),
+    mongo.find<Expense>(RSM_COLLECTIONS.expenses),
+    mongo.find<DigitizingJob>(RSM_COLLECTIONS.digitizingJobs),
+    mongo.find<OnlineOrder>(RSM_COLLECTIONS.onlineOrders),
+  ]);
 
-  if (!data) {
+  const failed: string[] = [];
+  const orders = unwrap(results[0], "orders", failed);
+  const payments = unwrap(results[1], "payments", failed);
+  const customers = unwrap(results[2], "customers", failed);
+  const expenses = unwrap(results[3], "expenses", failed);
+  const digitizingJobs = unwrap(results[4], "digitizing jobs", failed);
+  const onlineOrders = unwrap(results[5], "online orders", failed);
+
+  // Everything failed: show the full "database is busy" screen.
+  if (failed.length === results.length) {
     return (
       <RsmShell
         staffName={auth.username}
@@ -66,8 +75,6 @@ export default async function RsmHomePage() {
     );
   }
 
-  const [orders, payments, customers, expenses, digitizingJobs, onlineOrders] = data;
-
   return (
     <RsmShell
       staffName={auth.username}
@@ -75,6 +82,21 @@ export default async function RsmHomePage() {
       title="Dashboard"
       subtitle="Overview of your business at a glance"
     >
+      {failed.length > 0 && (
+        <div className="mb-6 bg-amber-950/30 border border-amber-500/30 rounded-xl px-5 py-3 flex items-center justify-between gap-4">
+          <p className="text-xs text-amber-300">
+            Some data couldn&apos;t load ({failed.join(", ")}), so the figures
+            below are incomplete. Nothing is lost.
+          </p>
+          <a
+            href="/RSM"
+            className="shrink-0 text-xs font-medium text-[#D4AF37] hover:underline"
+          >
+            Reload
+          </a>
+        </div>
+      )}
+
       <RsmDashboardClient
         orders={orders}
         payments={payments}
