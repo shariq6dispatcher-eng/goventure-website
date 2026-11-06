@@ -102,9 +102,6 @@ export interface Customer {
   // Customer Portal access — lets this customer log in at /portal and see
   // only their own Work Vault (their digitizing jobs). Optional: a customer
   // with no portalUsername simply has no portal login yet.
-  portalEnabled?: boolean;
-  portalUsername?: string;
-  portalPassword?: string; // plain string for now — MVP; matches RsmStaff.password pattern
   createdAt: string; // ISO date
   updatedAt?: string;
 }
