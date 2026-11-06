@@ -49,20 +49,6 @@ export async function PUT(
     );
   }
 
-  const portalUsername = body.portalUsername?.trim().toLowerCase() || "";
-
-  if (portalUsername) {
-    const existing = await mongo.findOne<Customer>(RSM_COLLECTIONS.customers, {
-      portalUsername,
-    });
-    if (existing && existing._id !== id) {
-      return NextResponse.json(
-        { error: "That portal username is already taken." },
-        { status: 400 }
-      );
-    }
-  }
-
   const update = {
     name: body.name.trim(),
     email: body.email?.trim() || "",
@@ -70,9 +56,6 @@ export async function PUT(
     company: body.company?.trim() || "",
     address: body.address?.trim() || "",
     country: body.country?.trim() || "",
-    portalEnabled: !!body.portalEnabled,
-    portalUsername,
-    portalPassword: body.portalPassword?.trim() || "",
     updatedAt: new Date().toISOString(),
   };
 
