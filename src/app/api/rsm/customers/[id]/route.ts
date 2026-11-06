@@ -4,7 +4,7 @@ import { RSM_COLLECTIONS } from "@/types/constants";
 import { getRsmAuth } from "@/lib/rsm-auth";
 import { denyRestricted } from "@/lib/rsm-perms";
 import type { Customer, CustomerInput } from "@/types/rsm";
-
+ 
 export async function GET(
   req: Request,
   { params }: { params: Promise<{ id: string }> }
